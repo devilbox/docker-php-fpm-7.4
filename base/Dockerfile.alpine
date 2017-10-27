@@ -1,0 +1,298 @@
+FROM alpine:latest
+MAINTAINER "cytopia" <cytopia@everythingcli.org>
+
+
+###
+### Labels
+###
+LABEL \
+	name="cytopia's PHP-FPM 7.3 Image" \
+	image="php-fpm-7.3" \
+	tag="base-alpine" \
+	vendor="devilbox" \
+	license="MIT" \
+	build-date="2017-10-27"
+
+
+
+###
+### Build Args
+###
+
+# PHP Version
+ARG PHP_GIT_BRANCH=master
+
+# PHP Configure options
+ARG PHP_PREFIX=/usr/local
+ARG PHP_CONFIG_FILE_PATH=/usr/local/etc
+ARG PHP_CONFIG_FILE_SCAN_DIR=/usr/local/etc/php.d
+ARG PHP_MAN_DIR=/usr/local/share/man
+
+# Apply stack smash protection to functions using local buffers and alloca()
+# Make PHP's main executable position-independent (improves ASLR security mechanism, and has no performance impact on x86_64)
+# Enable optimization (-O2)
+# Enable linker optimization (this sorts the hash buckets to improve cache locality, and is non-default)
+# Adds GNU HASH segments to generated executables (this is used if present, and is much faster than sysv hash; in this configuration, sysv hash is also generated)
+# https://github.com/docker-library/php/issues/272
+ARG PHP_CFLAGS="-fstack-protector-strong -fpic -fpie -O2"
+ARG PHP_CPPFLAGS="$PHP_CFLAGS"
+ARG PHP_LDFLAGS="-Wl,-O1 -Wl,--hash-style=both -pie"
+
+
+
+###
+### Envs
+###
+ENV MY_USER="devilbox" \
+	MY_GROUP="devilbox" \
+	MY_UID="1000" \
+	MY_GID="1000"
+
+
+
+###
+### User/Group
+###
+RUN set -x \
+	&& addgroup -g ${MY_GID} -S ${MY_GROUP} \
+	&& adduser -u ${MY_UID} -D -s /bin/bash -G ${MY_GROUP} ${MY_USER}
+
+
+
+###
+### Install PHP
+###
+RUN set -x \
+	&& apk update \
+	# Dependencies for compiling
+	&& apk add --no-cache --virtual .build-deps \
+		# Base
+		git \
+		wget \
+		ca-certificates \
+		# Required to actually compile
+		autoconf \
+		bison \
+		file \
+		g++ \
+		gcc \
+		libc-dev \
+		make \
+		pkgconf \
+		re2c \
+	&& update-ca-certificates \
+	\
+	# Dependencies to compile PHP
+	&& apk add --no-cache --virtual .php-build-deps \
+		curl-dev \
+		libedit-dev \
+		libxml2-dev \
+		libressl-dev \
+		sqlite-dev \
+		libbz2 \
+		bzip2-dev \
+		pcre-dev \
+		enchant-dev \
+		libwebp-dev \
+		libjpeg-turbo-dev \
+		libpng-dev \
+		libxpm-dev \
+		freetype-dev \
+		gmp-dev \
+		imap-dev \
+		krb5-dev \
+		icu-dev \
+		openldap-dev \
+		postgresql-dev \
+		readline-dev \
+		net-snmp-dev \
+		tidyhtml-dev \
+		libxslt-dev \
+		libzip-dev \
+		aspell-dev \
+	# Get php sources
+	&& mkdir -p /usr/local/src \
+	&& git clone -v https://github.com/php/php-src /usr/local/src/php-src \
+	&& cd /usr/local/src/php-src \
+	&& git checkout ${PHP_GIT_BRANCH} \
+	\
+	# Configure php sources
+	&& cd /usr/local/src/php-src \
+	\
+	&& export CFLAGS="$PHP_CFLAGS" \
+	&& export CPPFLAGS="$PHP_CPPFLAGS" \
+	&& export LDFLAGS="$PHP_LDFLAGS" \
+	\
+	&& ./buildconf --force \
+	&& ./configure \
+		\
+		--build="$(dpkg-architecture --query DEB_BUILD_GNU_TYPE)" \
+		\
+		--prefix=${PHP_PREFIX} \
+		--with-config-file-path=${PHP_CONFIG_FILE_PATH} \
+		--with-config-file-scan-dir=${PHP_CONFIG_FILE_SCAN_DIR} \
+		--mandir=${PHP_MAN_DIR} \
+		\
+		--enable-static=yes \
+		--enable-shared=no \
+		\
+		--disable-cgi \
+		\
+		--enable-bcmath \
+		--enable-calendar \
+		--enable-exif \
+		--enable-fpm \
+		--enable-ftp \
+		--enable-gd-jis-conv \
+		--enable-intl \
+		--enable-mbstring \
+		--enable-mysqlnd \
+		--enable-pcntl \
+		--enable-shmop \
+		--enable-soap \
+		--enable-sockets \
+		--enable-sysvmsg \
+		--enable-sysvsem \
+		--enable-sysvshm \
+		--enable-wddx \
+		--enable-xmlreader \
+		--enable-zip \
+		\
+		--with-pear \
+		\
+		--with-fpm-user=${MY_USER} \
+		--with-fpm-group=${MY_GROUP} \
+		\
+		--with-freetype-dir=/usr \
+		--with-iconv-dir=/usr \
+		--with-icu-dir=/usr \
+		--with-jpeg-dir=/usr \
+		--with-libxml-dir=/usr \
+		--with-openssl-dir=/usr \
+		--with-pcre-dir=/usr \
+		--with-png-dir=/usr \
+		--with-webp-dir=/usr \
+		--with-xpm-dir=/usr \
+		--with-zlib-dir=/usr \
+		\
+		--with-bz2 \
+		--with-curl=/usr \
+		--with-enchant=/usr \
+		--with-gd \
+		--with-gettext \
+		--with-gmp \
+		--with-imap \
+		--with-imap-ssl \
+#		--with-interbase=/usr \
+		--with-kerberos \
+		--with-ldap=/usr \
+		--with-ldap-sasl=/usr \
+		--with-libzip=/usr \
+		--with-mhash \
+		--with-mysqli=mysqlnd \
+		--with-openssl \
+		--with-pcre-regex=/usr \
+		--with-pcre-jit \
+#		--with-pdo-firebird \
+		--with-pdo-mysql=mysqlnd \
+		--with-pdo-pgsql \
+		--with-pdo-sqlite \
+		--with-pgsql \
+		--with-pspell=/usr \
+		--with-readline \
+		--with-snmp=/usr \
+		--with-tidy \
+		--with-xmlrpc \
+		--with-xsl \
+		--with-zlib \
+	\
+	# Compile and install PHP
+	&& make -j$(getconf _NPROCESSORS_ONLN) \
+	&& make install \
+	\
+	# PHP Post configuration
+	&& mkdir -p ${PHP_CONFIG_FILE_PATH} \
+	&& mkdir -p ${PHP_CONFIG_FILE_SCAN_DIR} \
+	&& cp /usr/local/src/php-src/php.ini-development ${PHP_CONFIG_FILE_PATH}/php.ini \
+	\
+	&& { \
+		find /usr/local/bin /usr/local/sbin -type f -perm +0111 -exec strip --strip-all '{}' + \
+		|| true; \
+	} \
+	&& make clean \
+	&& cd / \
+	&& rm -rf /usr/local/src \
+	&& apk del .build-deps \
+	\
+	# Retrieve required run-time libraries
+#	&& RUN_TIME_LIBS="$( \
+#		scanelf --needed --nobanner --recursive /usr/ \
+#		| awk '{ gsub(/,/, "\nso:", $2); print "so:" $2 }' \
+#		| sort -u \
+#		| xargs -r apk info --installed \
+#		| sort -u \
+#	)" \
+	&& RUN_TIME_LIBS="$( \
+		scanelf --needed --nobanner --format '%n#p' --recursive /usr/local \
+			| tr ',' '\n' \
+			| sort -u \
+			| awk 'system("[ -e /usr/local/lib/" $1 " ]") == 0 { next } { print "so:" $1 }' \
+	)" \
+	\
+	# Clean-up
+	&& apk del .php-build-deps \
+	&& apk add --no-cache --virtual .php-run-deps ${RUN_TIME_LIBS} \
+	\
+# https://github.com/docker-library/php/issues/443
+	&& pecl update-channels \
+	&& rm -rf ~/.pearrc \
+	&& rm -rf /tmp/*
+
+# PHP-FPM Post configuration
+RUN set -x \
+	&& cd ${PHP_CONFIG_FILE_PATH} \
+	&& { \
+		echo "[global]"; \
+		echo "error_log = /proc/self/fd/2"; \
+		echo "log_level = notice"; \
+		echo "daemonize = no"; \
+		echo "include   = ${PHP_CONFIG_FILE_PATH}/php-fpm.d/*.conf"; \
+	} | tee php-fpm.conf \
+	\
+	&& mv php-fpm.d/www.conf.default php-fpm.d/www.conf \
+	\
+	&& { \
+		echo "[www]"; \
+		echo "; if we send this to /proc/self/fd/1, it never appears"; \
+		echo "access.log = /proc/self/fd/2"; \
+		\
+		echo "listen = [::]:9000"; \
+		\
+		echo "; Keep env variables set by docker"; \
+		echo "clear_env = no"; \
+		\
+		echo "; Ensure worker stdout and stderr are sent to the main error log."; \
+		echo "catch_workers_output = yes"; \
+	} | tee ${PHP_CONFIG_FILE_PATH}/php-fpm.d/zzz-docker.conf
+
+
+
+###
+### Verify
+###
+RUN set -x \
+	&& /usr/local/sbin/php-fpm --test
+
+
+
+###
+### Ports
+###
+EXPOSE 9000
+
+
+
+###
+### Entrypoint
+###
+ENTRYPOINT ["/usr/local/sbin/php-fpm"]
