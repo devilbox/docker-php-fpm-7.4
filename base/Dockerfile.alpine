@@ -11,7 +11,7 @@ LABEL \
 	tag="base-alpine" \
 	vendor="devilbox" \
 	license="MIT" \
-	build-date="2017-10-27"
+	build-date="2017-10-29"
 
 
 
@@ -48,6 +48,49 @@ ENV MY_USER="devilbox" \
 	MY_UID="1000" \
 	MY_GID="1000"
 
+ENV BUILD_DEPS \
+	ca-certificates \
+	git \
+	wget \
+	autoconf \
+	bison \
+	file \
+	g++ \
+	gcc \
+	libc-dev \
+	make \
+	pkgconf \
+	re2c
+
+ENV PHP_BUILD_DEPS \
+	aspell-dev \
+	bzip2-dev \
+	curl-dev \
+	enchant-dev \
+	freetype-dev \
+	gmp-dev \
+	icu-dev \
+	imap-dev \
+	krb5-dev \
+	libbz2 \
+	libedit-dev \
+	libjpeg-turbo-dev \
+	libpng-dev \
+	libressl-dev \
+	libwebp-dev \
+	libxml2-dev \
+	libxpm-dev \
+	libxslt-dev \
+	libzip-dev \
+	net-snmp-dev \
+	openldap-dev \
+	pcre-dev \
+	postgresql-dev \
+	readline-dev \
+	sqlite-dev \
+	tidyhtml-dev
+
+
 
 
 ###
@@ -64,53 +107,12 @@ RUN set -x \
 ###
 RUN set -x \
 	&& apk update \
-	# Dependencies for compiling
 	&& apk add --no-cache --virtual .build-deps \
-		# Base
-		git \
-		wget \
-		ca-certificates \
-		# Required to actually compile
-		autoconf \
-		bison \
-		file \
-		g++ \
-		gcc \
-		libc-dev \
-		make \
-		pkgconf \
-		re2c \
+		${BUILD_DEPS} \
 	&& update-ca-certificates \
 	\
-	# Dependencies to compile PHP
 	&& apk add --no-cache --virtual .php-build-deps \
-		curl-dev \
-		libedit-dev \
-		libxml2-dev \
-		libressl-dev \
-		sqlite-dev \
-		libbz2 \
-		bzip2-dev \
-		pcre-dev \
-		enchant-dev \
-		libwebp-dev \
-		libjpeg-turbo-dev \
-		libpng-dev \
-		libxpm-dev \
-		freetype-dev \
-		gmp-dev \
-		imap-dev \
-		krb5-dev \
-		icu-dev \
-		openldap-dev \
-		postgresql-dev \
-		readline-dev \
-		net-snmp-dev \
-		tidyhtml-dev \
-		libxslt-dev \
-		libzip-dev \
-		aspell-dev \
-	# Get php sources
+		${PHP_BUILD_DEPS} \
 	&& mkdir -p /usr/local/src \
 	&& git clone -v https://github.com/php/php-src /usr/local/src/php-src \
 	&& cd /usr/local/src/php-src \
@@ -119,9 +121,9 @@ RUN set -x \
 	# Configure php sources
 	&& cd /usr/local/src/php-src \
 	\
-	&& export CFLAGS="$PHP_CFLAGS" \
-	&& export CPPFLAGS="$PHP_CPPFLAGS" \
-	&& export LDFLAGS="$PHP_LDFLAGS" \
+	&& export CFLAGS="${PHP_CFLAGS}" \
+	&& export CPPFLAGS="${PHP_CPPFLAGS}" \
+	&& export LDFLAGS="${PHP_LDFLAGS}" \
 	\
 	&& ./buildconf --force \
 	&& ./configure \
@@ -213,7 +215,9 @@ RUN set -x \
 	# PHP Post configuration
 	&& mkdir -p ${PHP_CONFIG_FILE_PATH} \
 	&& mkdir -p ${PHP_CONFIG_FILE_SCAN_DIR} \
-	&& cp /usr/local/src/php-src/php.ini-development ${PHP_CONFIG_FILE_PATH}/php.ini \
+	&& cp /usr/local/src/php-src/php.ini-development ${PHP_CONFIG_FILE_PATH}/php.ini-development \
+	&& cp /usr/local/src/php-src/php.ini-production ${PHP_CONFIG_FILE_PATH}/php.ini-production \
+	&& ln -sf ${PHP_CONFIG_FILE_PATH}/php.ini-development ${PHP_CONFIG_FILE_PATH}/php.ini \
 	\
 	&& { \
 		find /usr/local/bin /usr/local/sbin -type f -perm +0111 -exec strip --strip-all '{}' + \
@@ -245,7 +249,7 @@ RUN set -x \
 	\
 # https://github.com/docker-library/php/issues/443
 	&& pecl update-channels \
-	&& rm -rf ~/.pearrc \
+	&& rm -rf /root/.pearrc \
 	&& rm -rf /tmp/*
 
 # PHP-FPM Post configuration

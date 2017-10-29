@@ -11,7 +11,7 @@ LABEL \
 	tag="base-debian" \
 	vendor="devilbox" \
 	license="MIT" \
-	build-date="2017-10-27"
+	build-date="2017-10-29"
 
 
 
@@ -48,13 +48,83 @@ ENV MY_USER="devilbox" \
 	MY_UID="1000" \
 	MY_GID="1000"
 
+ENV BUILD_DEPS \
+	ca-certificates \
+	git \
+	wget \
+	autoconf \
+	bison \
+	file \
+	g++ \
+	gcc \
+	g++-6 \
+	gcc-6 \
+	make \
+	re2c
+
+ENV PHP_BUILD_DEPS \
+	firebird-dev \
+	libaspell-dev \
+	libbz2-dev \
+	libc-client-dev \
+	libcurl4-openssl-dev \
+	libenchant-dev \
+	libfbclient2 \
+	libfreetype6-dev \
+	libgmp-dev \
+	libib-util \
+	libicu-dev \
+	libjpeg-dev \
+	libkrb5-dev \
+	libldap2-dev \
+	libldb-dev \
+	libmcrypt-dev \
+	libpcre3-dev \
+	libpng-dev \
+	libpq-dev \
+	libpspell-dev \
+	libreadline-dev \
+	librecode-dev \
+	libsasl2-dev \
+	libsnmp-dev \
+	libssl-dev \
+	libtidy-dev \
+	libwebp-dev \
+	libxml2-dev \
+	libxpm-dev \
+	libxslt-dev \
+	libzip-dev \
+	snmp
+
+# Find missing run-time libs via:
+#    php -v 2>&1 \
+#      | grep -Eo 'libraries:.*: cannot' \
+#      | awk -F':' '{print $2}' \
+#      | sed 's/\.so\.//g'
+ENV RUN_TIME_LIBS \
+	libaspell15 \
+	libc-client2007e \
+	libcurl3 \
+	libenchant1c2a \
+	libfbclient2 \
+	libfreetype6 \
+	libjpeg62 \
+	libpng16-16 \
+	libpq5 \
+	libreadline7 \
+	libsnmp30 \
+	libtidy5 \
+	libwebp6 \
+	libx11-6 \
+	libxpm4 \
+	libxslt1.1 \
+	libzip4
+
 
 
 ###
-### Pre-Setup
+### User/Group
 ###
-
-# User/Group
 RUN set -x \
 	&& groupadd -g ${MY_GID} -r ${MY_GROUP} \
 	&& useradd -u ${MY_UID} -m -s /bin/bash -g ${MY_GROUP} ${MY_USER}
@@ -62,90 +132,30 @@ RUN set -x \
 
 
 ###
-### Installation
+### Install PHP
 ###
-
-# Required for git
-RUN set -x \
-	&& apt-get update \
-	&& apt-get upgrade -y \
-	&& apt-get install --no-install-recommends --no-install-suggests -y \
-		git \
-		ca-certificates \
-	&& rm -rf /var/lib/apt/lists/* \
-	&& apt-get purge -y --auto-remove
-
-# Required to build
 RUN set -x \
 	&& apt-get update \
 	&& apt-get install --no-install-recommends --no-install-suggests -y \
-		autoconf \
-		bison \
-		file \
-		locales \
-		make \
-		g++ \
-		gcc \
-		g++-6 \
-		gcc-6 \
-		re2c \
-	&& rm -rf /var/lib/apt/lists/* \
-	&& apt-get purge -y --auto-remove
-
-# Required libs for php
-RUN set -x \
-	&& apt-get update \
+		${BUILD_DEPS} \
+	&& update-ca-certificates \
+	\
 	&& apt-get install --no-install-recommends --no-install-suggests -y \
-		firebird-dev \
-		libaspell-dev \
-		libbz2-dev \
-		libc-client-dev \
-		libcurl4-openssl-dev \
-		libenchant-dev \
-		libfbclient2 \
-		libfreetype6-dev \
-		libgmp-dev \
-		libib-util \
-		libicu-dev \
-		libjpeg-dev \
-		libkrb5-dev \
-		libldap2-dev \
-		libldb-dev \
-		libmcrypt-dev \
-		libpcre3-dev \
-		libpng-dev \
-		libpq-dev \
-		libpspell-dev \
-		libreadline-dev \
-		librecode-dev \
-		libsasl2-dev \
-		libsnmp-dev \
-		libssl-dev \
-		libtidy-dev \
-		libwebp-dev \
-		libxml2-dev \
-		libxpm-dev \
-		libxslt-dev \
-		libzip-dev \
-		snmp \
+		${PHP_BUILD_DEPS} \
 	&& rm -rf /var/lib/apt/lists/* \
-	&& apt-get purge -y --auto-remove
-
+	&& apt-get purge -y --auto-remove \
+	\
 # Fix ldap linked libs
-RUN set -x \
 	&& ln -s /usr/lib/x86_64-linux-gnu/libldap* /usr/lib/ \
 	&& ln -s /usr/lib/x86_64-linux-gnu/liblber* /usr/lib/ \
-	&& ln -s /usr/lib/x86_64-linux-gnu/libpcre* /usr/lib/
-
-# Get php sources
-RUN set -x \
+	&& ln -s /usr/lib/x86_64-linux-gnu/libpcre* /usr/lib/ \
+	\
 	&& mkdir -p /usr/local/src \
 	&& git clone -v https://github.com/php/php-src /usr/local/src/php-src \
 	&& cd /usr/local/src/php-src \
-	&& git checkout ${PHP_GIT_BRANCH}
-
-# Configure php sources
-RUN set -x \
+	&& git checkout ${PHP_GIT_BRANCH} \
+	\
+	# Configure php sources
 	&& cd /usr/local/src/php-src \
 	\
 	&& export CFLAGS="${PHP_CFLAGS}" \
@@ -233,45 +243,68 @@ RUN set -x \
 		--with-tidy \
 		--with-xmlrpc \
 		--with-xsl \
-		--with-zlib
-
-# Build php sources
-RUN set -x \
-	&& cd /usr/local/src/php-src \
+		--with-zlib \
+	\
+	# Compile and install PHP
 	&& make -j$(getconf _NPROCESSORS_ONLN) \
-	&& make install
-
-# Post configuration
-RUN set -x \
+	&& make install \
+	\
+	# PHP Post configuration
 	&& mkdir -p ${PHP_CONFIG_FILE_PATH} \
 	&& mkdir -p ${PHP_CONFIG_FILE_SCAN_DIR} \
-	&& cp /usr/local/src/php-src/php.ini-development ${PHP_CONFIG_FILE_PATH}/php.ini
-
-# Pear configuration
-RUN set -x \
-	&& pecl update-channels \
+	&& cp /usr/local/src/php-src/php.ini-development ${PHP_CONFIG_FILE_PATH}/php.ini-development \
+	&& cp /usr/local/src/php-src/php.ini-production ${PHP_CONFIG_FILE_PATH}/php.ini-production \
+	&& ln -sf ${PHP_CONFIG_FILE_PATH}/php.ini-development ${PHP_CONFIG_FILE_PATH}/php.ini \
+	\
+	&& { \
+		find ${PHP_PREFIX}/bin ${PHP_PREFIX}/sbin -type f -executable -exec strip --strip-all '{}' + \
+		|| true; \
+	} \
+	&& make clean \
+	&& cd / \
+	&& rm -rf /media \
+	&& rm -rf /mnt \
+	&& rm -rf /opt \
+	&& rm -rf /srv \
+	&& rm -rf /usr/games \
+	&& rm -rf /usr/local/src \
+	&& rm -rf /usr/share/doc \
+	&& rm -rf /usr/share/man \
+	&& rm -rf /usr/src \
+	\
+	# Clean-up
+	&& apt-get update \
+	&& apt-get remove -y \
+		${BUILD_DEPS} \
+		${PHP_BUILD_DEPS} \
+	&& apt-get autoremove -y \
+	&& rm -rf /var/lib/apt/lists/* \
+	&& apt-get purge -y --auto-remove \
+	\
+	&& apt-get update \
+	&& apt-get install --no-install-recommends --no-install-suggests -y \
+		${RUN_TIME_LIBS} \
+	&& apt-get autoremove -y \
+	&& rm -rf /var/lib/apt/lists/* \
+	&& apt-get purge -y --auto-remove \
+	\
 # https://github.com/docker-library/php/issues/443
-	&& rm -rf ~/.pearrc \
+	&& pecl update-channels \
+	&& rm -rf /root/.pearrc \
 	&& rm -rf /tmp/*
 
-
-
-
-###
-### Configuration
-###
-
-# PHP-FPM
+# PHP-FPM Post configuration
 RUN set -x \
+	&& cd ${PHP_CONFIG_FILE_PATH} \
 	&& { \
 		echo "[global]"; \
 		echo "error_log = /proc/self/fd/2"; \
 		echo "log_level = notice"; \
 		echo "daemonize = no"; \
 		echo "include   = ${PHP_CONFIG_FILE_PATH}/php-fpm.d/*.conf"; \
-	} | tee ${PHP_CONFIG_FILE_PATH}/php-fpm.conf \
+	} | tee php-fpm.conf \
 	\
-	&& mv ${PHP_CONFIG_FILE_PATH}/php-fpm.d/www.conf.default ${PHP_CONFIG_FILE_PATH}/php-fpm.d/01-www.conf \
+	&& mv php-fpm.d/www.conf.default php-fpm.d/www.conf \
 	\
 	&& { \
 		echo "[www]"; \
@@ -285,45 +318,7 @@ RUN set -x \
 		\
 		echo "; Ensure worker stdout and stderr are sent to the main error log."; \
 		echo "catch_workers_output = yes"; \
-	} | tee ${PHP_CONFIG_FILE_PATH}/php-fpm.d/99-docker.conf
-
-
-
-###
-### Clean-up
-###
-RUN set -x \
-	&& apt-get update \
-	&& apt-get remove -y \
-		autoconf \
-		bison \
-		ca-certificates \
-		file \
-		git \
-		locales \
-		make \
-		g++ \
-		gcc \
-		g++-6 \
-		gcc-6 \
-		re2c \
-		snmp \
-	&& apt-get autoremove -y \
-	&& rm -rf /var/lib/apt/lists/* \
-	&& apt-get purge -y --auto-remove \
-	\
-	&& rm -rf /media \
-	&& rm -rf /mnt \
-	&& rm -rf /opt \
-	&& rm -rf /root/.pearrc \
-	&& rm -rf /srv \
-	&& rm -rf /tmp/* \
-	&& rm -rf /usr/games \
-	&& rm -rf /usr/php \
-	&& rm -rf /usr/share/doc \
-	&& rm -rf /usr/share/icons \
-	&& rm -rf /usr/share/man \
-	&& rm -rf /usr/src
+	} | tee ${PHP_CONFIG_FILE_PATH}/php-fpm.d/zzz-docker.conf
 
 
 
