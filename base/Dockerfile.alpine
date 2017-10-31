@@ -10,8 +10,7 @@ LABEL \
 	image="php-fpm-7.3" \
 	tag="base-alpine" \
 	vendor="devilbox" \
-	license="MIT" \
-	build-date="2017-10-29"
+	license="MIT"
 
 
 
@@ -89,7 +88,6 @@ ENV PHP_BUILD_DEPS \
 	readline-dev \
 	sqlite-dev \
 	tidyhtml-dev
-
 
 
 
@@ -229,13 +227,6 @@ RUN set -x \
 	&& apk del .build-deps \
 	\
 	# Retrieve required run-time libraries
-#	&& RUN_TIME_LIBS="$( \
-#		scanelf --needed --nobanner --recursive /usr/ \
-#		| awk '{ gsub(/,/, "\nso:", $2); print "so:" $2 }' \
-#		| sort -u \
-#		| xargs -r apk info --installed \
-#		| sort -u \
-#	)" \
 	&& RUN_TIME_LIBS="$( \
 		scanelf --needed --nobanner --format '%n#p' --recursive /usr/local \
 			| tr ',' '\n' \
@@ -279,6 +270,10 @@ RUN set -x \
 		echo "catch_workers_output = yes"; \
 	} | tee ${PHP_CONFIG_FILE_PATH}/php-fpm.d/zzz-docker.conf
 
+# Add System tools
+RUN set -x \
+	&& apk add --no-cache shadow
+
 
 
 ###
@@ -286,6 +281,13 @@ RUN set -x \
 ###
 RUN set -x \
 	&& /usr/local/sbin/php-fpm --test
+
+
+
+###
+### Copy files
+###
+COPY ./data/docker-entrypoint.sh /docker-entrypoint.sh
 
 
 
@@ -299,4 +301,4 @@ EXPOSE 9000
 ###
 ### Entrypoint
 ###
-ENTRYPOINT ["/usr/local/sbin/php-fpm"]
+ENTRYPOINT ["/docker-entrypoint.sh"]

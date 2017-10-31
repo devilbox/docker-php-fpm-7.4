@@ -10,8 +10,7 @@ LABEL \
 	image="php-fpm-7.3" \
 	tag="base-debian" \
 	vendor="devilbox" \
-	license="MIT" \
-	build-date="2017-10-29"
+	license="MIT"
 
 
 
@@ -331,6 +330,13 @@ RUN set -x \
 
 
 ###
+### Copy files
+###
+COPY ./data/docker-entrypoint.sh /docker-entrypoint.sh
+
+
+
+###
 ### Ports
 ###
 EXPOSE 9000
@@ -340,4 +346,4 @@ EXPOSE 9000
 ###
 ### Entrypoint
 ###
-ENTRYPOINT ["/usr/local/sbin/php-fpm"]
+ENTRYPOINT ["/docker-entrypoint.sh"]

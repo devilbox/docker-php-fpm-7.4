@@ -1,0 +1,48 @@
+FROM devilbox/php-fpm-7.3:mods-alpine
+MAINTAINER "cytopia" <cytopia@everythingcli.org>
+
+
+###
+### Labels
+###
+LABEL \
+	name="cytopia's PHP-FPM 7.3 Image" \
+	image="php-fpm-7.3" \
+	tag="prod-alpine" \
+	vendor="devilbox" \
+	license="MIT"
+
+
+
+###
+### Install
+###
+RUN set -x \
+	&& apk update \
+	&& apk add --no-cache \
+		postfix \
+		socat \
+		supervisor \
+	&& rm -rf /tmp/*
+
+
+
+###
+### Verify
+###
+RUN set -x \
+	&& /usr/local/sbin/php-fpm --test
+
+
+
+###
+### Ports
+###
+EXPOSE 9000
+
+
+
+###
+### Entrypoint
+###
+ENTRYPOINT ["/usr/local/sbin/php-fpm"]

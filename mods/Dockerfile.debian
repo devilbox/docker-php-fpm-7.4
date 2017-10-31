@@ -1,0 +1,96 @@
+FROM devilbox/php-fpm-7.3:base-debian
+MAINTAINER "cytopia" <cytopia@everythingcli.org>
+
+
+###
+### Labels
+###
+LABEL \
+	name="cytopia's PHP-FPM 7.3 Image" \
+	image="php-fpm-7.3" \
+	tag="mods-debian" \
+	vendor="devilbox" \
+	license="MIT"
+
+
+
+###
+### Envs
+###
+ENV PECL_BUILD_DEPS \
+	libssl-dev \
+	libmemcached-dev \
+	librabbitmq-dev \
+	libmagickwand-dev
+
+ENV PECL_RUNTIME_DEPS \
+	libmemcachedutil2 \
+	libmagick++-6.q16-7 \
+	librabbitmq4
+
+
+
+###
+### Install
+###
+RUN set -x \
+	&& apt-get update \
+	&& apt-get install --no-install-recommends --no-install-suggests -y \
+		${BUILD_DEPS} \
+		${PECL_BUILD_DEPS} \
+	&& rm -rf /var/lib/apt/lists/* \
+	&& apt-get purge -y --auto-remove \
+	&& update-ca-certificates \
+	\
+#	&& pecl install amqp \
+	&& pecl install igbinary \
+	&& pecl install imagick \
+#	&& pecl install memcached \
+	&& pecl install mongodb \
+	&& pecl install msgpack \
+	&& pecl install redis \
+	\
+#	&& echo "extension=amqp.so"      > /usr/local/etc/php.d/amqp.ini \
+	&& echo "extension=igbinary.so"  > /usr/local/etc/php.d/igbinary.ini \
+	&& echo "extension=imagick.so"   > /usr/local/etc/php.d/imagick.ini \
+#	&& echo "extension=memcached.so" > /usr/local/etc/php.d/memcached.ini \
+	&& echo "extension=mongodb.so"   > /usr/local/etc/php.d/mongodb.ini \
+	&& echo "extension=msgpack.so"   > /usr/local/etc/php.d/msgpack.ini \
+	&& echo "extension=redis.so"     > /usr/local/etc/php.d/redis.ini \
+	\
+	&& apt-get remove -y \
+		${BUILD_DEPS} \
+		${PECL_BUILD_DEPS} \
+	&& apt-get autoremove -y \
+	&& rm -rf /var/lib/apt/lists/* \
+	&& apt-get purge -y --auto-remove \
+	\
+	&& apt-get update \
+	&& apt-get install --no-install-recommends --no-install-suggests -y \
+		${PECL_RUNTIME_DEPS} \
+	&& rm -rf /var/lib/apt/lists/* \
+	&& apt-get purge -y --auto-remove \
+	\
+	&& rm -rf /tmp/*
+
+
+
+###
+### Verify
+###
+RUN set -x \
+	&& /usr/local/sbin/php-fpm --test
+
+
+
+###
+### Ports
+###
+EXPOSE 9000
+
+
+
+###
+### Entrypoint
+###
+ENTRYPOINT ["/docker-entrypoint.sh"]
