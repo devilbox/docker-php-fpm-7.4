@@ -3,6 +3,12 @@
 # Wrapper to have postfix run in foreground
 # mode in order to be called by supvervisord
 #
+#
+# CREDITS:
+# This script is mostly based on the following Gist:
+# https://gist.github.com/chrisnew/b0c1b8d310fc5ceaeac4
+#
+
 
 
 ###
@@ -27,6 +33,10 @@ if ! command -v pidof >/dev/null 2>&1; then
 	echo "pidof is required for cleaning up tail command."
 	exit 1
 fi
+
+# Give rsyslogd some time to start up
+sleep 2
+
 if ! pidof rsyslogd >/dev/null 2>&1; then
 	echo "rsyslogd is not running, but required for mail logging."
 	exit 1
@@ -66,7 +76,7 @@ sleep 3
 ###
 ### Wait for kill signales
 ###
-while kill -0 "$(cat "${MAILPID}")"; do
+while kill -0 "$(cat "${MAILPID}")" >/dev/null 2>&1; do
 	# Check every second
 	sleep 1
 done
