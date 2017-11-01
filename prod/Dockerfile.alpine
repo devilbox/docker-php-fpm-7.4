@@ -20,10 +20,15 @@ LABEL \
 RUN set -x \
 	&& apk update \
 	&& apk add --no-cache \
+		bash \
 		postfix \
+		postfix-pcre \
+		rsyslog \
 		socat \
 		supervisor \
-	&& rm -rf /tmp/*
+	&& rm -rf /tmp/* \
+	&& mkdir -p /etc/supervisor/conf.d \
+	&& mkdir -p /var/log/supervisor
 
 
 

@@ -22,7 +22,14 @@ set -o pipefail
 ###
 ### Variables
 ###
-MAILLOG="/var/log/mail.log"
+if [ -f "/etc/alpine-release" ]; then
+	MAILLOG="/var/log/maillog"
+elif [ -f "/etc/debian_version" ]; then
+	MAILLOG="/var/log/mail.log"
+else
+	MAILLOG="/var/log/maillog"
+fi
+
 MAILPID="/var/spool/postfix/pid/master.pid"
 
 
