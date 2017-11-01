@@ -256,7 +256,7 @@ RUN set -x \
 	&& ln -sf ${PHP_CONFIG_FILE_PATH}/php.ini-development ${PHP_CONFIG_FILE_PATH}/php.ini \
 	\
 	&& { \
-		find ${PHP_PREFIX}/bin ${PHP_PREFIX}/sbin -type f -executable -exec strip --strip-all '{}' + \
+		find ${PHP_PREFIX}/bin ${PHP_PREFIX}/sbin ${PHP_PREFIX}/lib -type f -executable -exec strip --strip-all '{}' + \
 		|| true; \
 	} \
 	&& make clean \
@@ -266,6 +266,10 @@ RUN set -x \
 	&& rm -rf /opt \
 	&& rm -rf /srv \
 	&& rm -rf /usr/games \
+	&& rm -rf /usr/local/games \
+	&& rm -rf /usr/local/man \
+	&& rm -rf /usr/local/php \
+	&& rm -rf /usr/local/share \
 	&& rm -rf /usr/local/src \
 	&& rm -rf /usr/share/doc \
 	&& rm -rf /usr/share/man \
@@ -333,6 +337,7 @@ RUN set -x \
 ### Copy files
 ###
 COPY ./data/docker-entrypoint.sh /docker-entrypoint.sh
+COPY ./data/docker-entrypoint.d /docker-entrypoint.d
 
 
 
