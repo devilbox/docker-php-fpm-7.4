@@ -152,59 +152,55 @@ The following table shows a more complete overview about the offered Docker imag
 <table>
  <thead>
   <tr>
-   <th width="125">Name</th>
-   <th width="270">Image</th>
+   <th width="80">Type</th>
+   <th width="310">Docker Image</th>
    <th>Description</th>
   </tr>
  </thead>
  <tbody>
   <tr>
-   <td>base (alpine)</td>
-   <td>devilbox/php-fpm-7.3:base-alpine</td>
+   <td rowspan="2">**base**</td>
+   <td>`devilbox/php-fpm-7.3:base-alpine`</td>
    <td><img src="https://images.microbadger.com/badges/image/devilbox/php-fpm-7.3:base-alpine.svg" /> <img src="https://images.microbadger.com/badges/version/devilbox/php-fpm-7.3:base-alpine.svg" /><br/><br/>Generic PHP-FPM base image based on Alpine.<br/><br/>Use it to derive your own php-fpm docker image from it and add more extensions, tools and injectables.<br/><br/><sub>(Does not offer any environment variables except for `NEW_UID` and `NEW_GID`)</sub></td>
   </tr>
   <tr>
-   <td>base (debian)</td>
-   <td>devilbox/php-fpm-7.3:base-debian</td>
+   <td>`devilbox/php-fpm-7.3:base-debian`</td>
    <td><img src="https://images.microbadger.com/badges/image/devilbox/php-fpm-7.3:base-debian.svg" /> <img src="https://images.microbadger.com/badges/version/devilbox/php-fpm-7.3:base-debian.svg" /><br/><br/>Generic PHP-FPM base image based on Debian.<br/><br/>Use it to derive your own php-fpm docker image from it and add more extensions, tools and injectables.<br/><br/><sub>(Does not offer any environment variables except for `NEW_UID` and `NEW_GID`)</sub></td>
   </tr>
   <tr>
    <td colspan="3"></td>
   </tr>
   <tr>
-   <td>mods (alpine)</td>
-   <td>devilbox/php-fpm-7.3:mods-alpine</td>
+   <td rowspan="2">**mods**</td>
+   <td>`devilbox/php-fpm-7.3:mods-alpine`</td>
    <td><img src="https://images.microbadger.com/badges/image/devilbox/php-fpm-7.3:mods-alpine.svg" /> <img src="https://images.microbadger.com/badges/version/devilbox/php-fpm-7.3:mods-alpine.svg" /><br/><br/>Generic PHP-FPM image with fully loaded extensions based on Alpine.<br/><br/>Use it to derive your own php-fpm docker image from it and add more extensions, tools and injectables.<br/><br/><sub>(Does not offer any environment variables except for `NEW_UID` and `NEW_GID`)</sub></td>
   </tr>
   <tr>
-   <td>mods (debian)</td>
-   <td>devilbox/php-fpm-7.3:mods-debian</td>
+   <td>`devilbox/php-fpm-7.3:mods-debian`</td>
    <td><img src="https://images.microbadger.com/badges/image/devilbox/php-fpm-7.3:mods-debian.svg" /> <img src="https://images.microbadger.com/badges/version/devilbox/php-fpm-7.3:mods-debian.svg" /><br/><br/>Generic PHP-FPM image with fully loaded extensions based on Debian.<br/><br/>Use it to derive your own php-fpm docker image from it and add more extensions, tools and injectables.<br/><br/><sub>(Does not offer any environment variables except for `NEW_UID` and `NEW_GID`)</sub></td>
   </tr>
   <tr>
    <td colspan="3"></td>
   </tr>
   <tr>
-   <td>prod (alpine)</td>
-   <td>devilbox/php-fpm-7.3:prod-alpine</td>
+   <td rowspan="2">**prod**</td>
+   <td>`devilbox/php-fpm-7.3:prod-alpine`</td>
    <td><img src="https://images.microbadger.com/badges/image/devilbox/php-fpm-7.3:prod-alpine.svg" /> <img src="https://images.microbadger.com/badges/version/devilbox/php-fpm-7.3:prod-alpine.svg" /><br/><br/>Devilbox production image based on Alpine.<br/><br/>This Docker image comes with many injectables, port-forwardings, mail-catch-all and user/group rewriting.</td>
   </tr>
   <tr>
-   <td>prod (debian)</td>
-   <td>devilbox/php-fpm-7.3:prod-debian</td>
+   <td>`devilbox/php-fpm-7.3:prod-debian`</td>
    <td><img src="https://images.microbadger.com/badges/image/devilbox/php-fpm-7.3:prod-debian.svg" /> <img src="https://images.microbadger.com/badges/version/devilbox/php-fpm-7.3:prod-debian.svg" /><br/><br/>Devilbox production image based on Debian.<br/><br/>This Docker image comes with many injectables, port-forwardings, mail-catch-all and user/group rewriting.</td>
   </tr>
   <tr>
    <td colspan="3"></td>
   </tr>
   <tr>
-   <td>work (alpine)</td>
-   <td>devilbox/php-fpm-7.3:work-alpine</td>
+   <td rowspan="2">**work**</td>
+   <td>`devilbox/php-fpm-7.3:work-alpine`</td>
    <td><img src="https://images.microbadger.com/badges/image/devilbox/php-fpm-7.3:work-alpine.svg" /> <img src="https://images.microbadger.com/badges/version/devilbox/php-fpm-7.3:work-alpine.svg" /><br/><br/>Devilbox development image based on Alpine.<br/><br/>Same as prod (alpine), but comes with lots of locally installed tools to make development inside the container as convenient as possible.</td>
   </tr>
   <tr>
-   <td>work (debian)</td>
-   <td>devilbox/php-fpm-7.3:work-debian</td>
+   <td>`devilbox/php-fpm-7.3:work-debian`</td>
    <td><img src="https://images.microbadger.com/badges/image/devilbox/php-fpm-7.3:work-debian.svg" /> <img src="https://images.microbadger.com/badges/version/devilbox/php-fpm-7.3:work-debian.svg" /><br/><br/>Devilbox development image based on Debian.<br/><br/>Same as prod (debian), but comes with lots of locally installed tools to make development inside the container as convenient as possible.</td>
   </tr>
  </tbody>
@@ -268,7 +264,7 @@ Check out this table to see which Docker image provides what PHP modules.
   <tr>
    <th>prod</th>
    <td id="mod-prod-alpine">amqp, bcmath, bz2, calendar, Core, ctype, curl, date, dom, enchant, exif, fileinfo, filter, ftp, gd, gettext, gmp, hash, iconv, igbinary, imap, intl, json, ldap, libxml, mbstring, mysqli, mysqlnd, openssl, pcntl, pcre, PDO, pdo_mysql, pdo_pgsql, pdo_sqlite, pgsql, Phar, posix, pspell, readline, redis, Reflection, session, shmop, SimpleXML, snmp, soap, sockets, SPL, sqlite3, standard, sysvmsg, sysvsem, sysvshm, tidy, tokenizer, wddx, xml, xmlreader, xmlrpc, xmlwriter, xsl, zip, zlib</td>
-   <td id="mod-prod-debian">amqp, bcmath, bz2, calendar, Core, ctype, curl, date, dom, enchant, exif, fileinfo, filter, ftp, gd, gettext, gmp, hash, iconv, igbinary, imagick, imap, interbase, intl, json, ldap, libxml, mbstring, memcached, mongodb, msgpack, mysqli, mysqlnd, openssl, pcntl, pcre, PDO, PDO_Firebird, pdo_mysql, pdo_pgsql, pdo_sqlite, pgsql, Phar, posix, pspell, readline, redis, Reflection, session, shmop, SimpleXML, snmp, soap, sockets, SPL, sqlite3, standard, sysvmsg, sysvsem, sysvshm, tidy, tokenizer, wddx, xml, xmlreader, xmlrpc, xmlwriter, xsl, zip, zlib</td>
+   <td id="mod-prod-debian">bcmath, bz2, calendar, Core, ctype, curl, date, dom, enchant, exif, fileinfo, filter, ftp, gd, gettext, gmp, hash, iconv, igbinary, imagick, imap, interbase, intl, json, ldap, libxml, mbstring, mongodb, msgpack, mysqli, mysqlnd, openssl, pcntl, pcre, PDO, PDO_Firebird, pdo_mysql, pdo_pgsql, pdo_sqlite, pgsql, Phar, posix, pspell, readline, redis, Reflection, session, shmop, SimpleXML, snmp, soap, sockets, SPL, sqlite3, standard, sysvmsg, sysvsem, sysvshm, tidy, tokenizer, wddx, xml, xmlreader, xmlrpc, xmlwriter, xsl, zip, zlib</td>
   </tr>
   <tr>
    <th>work</th>
