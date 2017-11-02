@@ -14,6 +14,7 @@ set -u
 log() {
 	_lvl="${1}"
 	_msg="${2}"
+	_debug="${3}"
 
 	_clr_ok="\033[0;32m"
 	_clr_info="\033[0;34m"
@@ -22,9 +23,13 @@ log() {
 	_clr_rst="\033[0m"
 
 	if [ "${_lvl}" = "ok" ]; then
-		printf "${_clr_ok}[OK]   %s${_clr_rst}\n" "${_msg}"
+		if [ "${_debug}" -gt "0" ]; then
+			printf "${_clr_ok}[OK]   %s${_clr_rst}\n" "${_msg}"
+		fi
 	elif [ "${_lvl}" = "info" ]; then
-		printf "${_clr_info}[INFO] %s${_clr_rst}\n" "${_msg}"
+		if [ "${_debug}" -gt "0" ]; then
+			printf "${_clr_info}[INFO] %s${_clr_rst}\n" "${_msg}"
+		fi
 	elif [ "${_lvl}" = "warn" ]; then
 		printf "${_clr_warn}[WARN] %s${_clr_rst}\n" "${_msg}" 1>&2	# stdout -> stderr
 	elif [ "${_lvl}" = "err" ]; then
@@ -40,17 +45,12 @@ log() {
 ###
 run() {
 	_cmd="${1}"
-	_debug="0"
+	_debug="${2}"
 
 	_red="\033[0;31m"
 	_green="\033[0;32m"
 	_reset="\033[0m"
 	_user="$(whoami)"
-
-	# If 2nd argument is set and enabled, allow debug command
-	if [ "${#}" = "2" ]; then
-		_debug="${2}"
-	fi
 
 	if [ "${_debug}" -gt "1" ]; then
 		printf "${_red}%s \$ ${_green}${_cmd}${_reset}\n" "${_user}"

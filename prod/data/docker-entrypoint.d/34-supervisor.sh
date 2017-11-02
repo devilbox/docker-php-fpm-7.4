@@ -47,6 +47,5 @@ supervisor_add_service() {
 ############################################################
 
 if [ ! -d "${SUPERVISOR_CONF}" ]; then
-	log "err" "supervisor config dir does not exist: ${SUPERVISOR_CONF}"
-	exit 1
+	echo "supervisor config dir does not exist: ${SUPERVISOR_CONF}"
 fi

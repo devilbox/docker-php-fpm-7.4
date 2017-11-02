@@ -113,10 +113,11 @@ port_forward_get_rport() {
 
 port_forward_validate() {
 	_env_varname="${1}"
+	_debug="${2}"
 
 	if ! env_set "${_env_varname}"; then
-		log "info" "\$${_env_varname} not set."
-		log "info" "Not ports from other machines will be forwarded to 127.0.0.1 inside this docker"
+		log "info" "\$${_env_varname} not set." "${_debug}"
+		log "info" "Not ports from other machines will be forwarded to 127.0.0.1 inside this docker" "${_debug}"
 	else
 		_env_value="$( env_get "${_env_varname}" )"
 
@@ -127,24 +128,24 @@ port_forward_validate() {
 			_rport="$( port_forward_get_rport "${forward}" )"
 
 			if ! isint "${_lport}"; then
-				log "err" "Port forwarding error: local port is not an integer: ${_lport}"
-				log "err" "Line: ${forward}"
+				log "err" "Port forwarding error: local port is not an integer: ${_lport}" "${_debug}"
+				log "err" "Line: ${forward}" "${_debug}"
 				exit 1
 			fi
 			if ! isip "${_rhost}" && ! ishostname "${_rhost}"; then
-				log "err" "Port forwarding error: remote host is not a valid IP and not a valid hostname: ${_rhost}"
-				log "err" "Line: ${forward}"
-				log "err" ""
+				log "err" "Port forwarding error: remote host is not a valid IP and not a valid hostname: ${_rhost}" "${_debug}"
+				log "err" "Line: ${forward}" "${_debug}"
+				log "err" "" "${_debug}"
 				exit 1
 			fi
 			if ! isint "${_rport}"; then
-				log "err" "Port forwarding error: remote port is not an integer: ${_rport}"
-				log "err" "Line: ${forward}"
-				log "err" ""
+				log "err" "Port forwarding error: remote port is not an integer: ${_rport}" "${_debug}"
+				log "err" "Line: ${forward}" "${_debug}"
+				log "err" "" "${_debug}"
 				exit 1
 			fi
 
-			log "info" "Forwarding ${_rhost}:${_rport} to 127.0.0.1:${_lport} inside this docker."
+			log "info" "Forwarding ${_rhost}:${_rport} to 127.0.0.1:${_lport} inside this docker." "${_debug}"
 		done
 	fi
 }

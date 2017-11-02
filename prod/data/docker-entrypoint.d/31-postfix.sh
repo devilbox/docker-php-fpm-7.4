@@ -14,45 +14,40 @@ set -u
 ###
 set_postfix() {
 	_env_mail_varname="${1}"
-	_user="${2}"
-	_group="${3}"
-	_debug=0
-
-	# If 2nd argument is set and enabled, allow debug command
-	if [ "${#}" = "4" ]; then
-		_debug="${4}"
-	fi
+	_dvl_user="${2}"
+	_dvl_group="${3}"
+	_debug="${4}"
 
 	if ! env_set "${_env_mail_varname}"; then
-		log "info" "\$${_env_mail_varname} not set."
-		log "info" "Disabling sending of emails"
+		log "info" "\$${_env_mail_varname} not set." "${_debug}"
+		log "info" "Disabling sending of emails" "${_debug}"
 	else
 		_mail="$( env_get "${_env_mail_varname}" )"
 		if [ "${_mail}" = "1" ]; then
-			log "info" "Enabling sending of emails"
+			log "info" "Enabling sending of emails" "${_debug}"
 
 			# Add Mail file if it does not exist
-			if [ ! -f "/var/mail/${_user}" ]; then
-				run "touch /var/mail/${_user}" "${_debug}"
+			if [ ! -f "/var/mail/${_dvl_user}" ]; then
+				run "touch /var/mail/${_dvl_user}" "${_debug}"
 			fi
 
 			# Fix mail user permissions after mount
-			run "chmod 0644 /var/mail/${_user}" "${_debug}"
-			run "chown ${_user}:${_group} /var/mail/${_user}" "${_debug}"
+			run "chmod 0644 /var/mail/${_dvl_user}" "${_debug}"
+			run "chown ${_dvl_user}:${_dvl_group} /var/mail/${_dvl_user}" "${_debug}"
 
 			# Postfix configuration
 			run "postconf -e 'inet_protocols=ipv4'" "${_debug}"
 			run "postconf -e 'virtual_alias_maps=pcre:/etc/postfix/virtual'" "${_debug}"
-			run "echo '/.*@.*/ ${_user}' >> /etc/postfix/virtual" "${_debug}"
+			run "echo '/.*@.*/ ${_dvl_user}' >> /etc/postfix/virtual" "${_debug}"
 
 			run "newaliases" "${_debug}"
 
 		elif [ "${_mail}" = "0" ]; then
-			log "info" "Disabling sending of emails."
+			log "info" "Disabling sending of emails." "${_debug}"
 
 		else
-			log "err" "Invalid value for \$${_env_mail_varname}"
-			log "err" "Only 1 (for on) or 0 (for off) are allowed"
+			log "err" "Invalid value for \$${_env_mail_varname}" "${_debug}"
+			log "err" "Only 1 (for on) or 0 (for off) are allowed" "${_debug}"
 			exit 1
 		fi
 	fi
@@ -64,6 +59,6 @@ set_postfix() {
 ############################################################
 
 if ! command -v postconf >/dev/null 2>&1; then
-	log "err" "postconf not found, but required."
+	echo "postconf not found, but required."
 	exit 1
 fi

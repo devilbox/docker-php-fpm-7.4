@@ -7,10 +7,10 @@ set -u
 ###
 ### Variables
 ###
-DEBUG_COMMANDS=1
-
 MY_USER="devilbox"
 MY_GROUP="devilbox"
+
+PHP_INI_PATH="/usr/local/etc/php.ini"
 
 
 ###
@@ -23,13 +23,20 @@ for f in ${init}; do
 done
 
 
+###
+### Set Debug level
+###
+DEBUG_LEVEL="$( get_debug_level "DEBUG_ENTRYPOINT" "0" )"
+log "info" "Debug level: ${DEBUG_LEVEL}" "${DEBUG_LEVEL}"
+
+
 
 #############################################################
 ## Sanity checks
 #############################################################
 
 if ! command -v socat >/dev/null 2>&1; then
-	log "err" "socat not found, but required."
+	log "err" "socat not found, but required." "${DEBUG_LEVEL}"
 	exit 1
 fi
 
@@ -42,24 +49,24 @@ fi
 ###
 ### Change uid/gid
 ###
-change_uid "NEW_UID" "${MY_USER}" "${DEBUG_COMMANDS}"
-change_gid "NEW_GID" "${MY_GROUP}" "${DEBUG_COMMANDS}"
+change_uid "NEW_UID" "${MY_USER}" "${DEBUG_LEVEL}"
+change_gid "NEW_GID" "${MY_GROUP}" "${DEBUG_LEVEL}"
 
 ###
 ### Set timezone
 ###
-set_timezone "TIMEZONE" "${DEBUG_COMMANDS}"
+set_timezone "TIMEZONE" "${PHP_INI_PATH}" "${DEBUG_LEVEL}"
 
 ###
 ### Setup postfix
 ###
-set_postfix "ENABLE_MAIL" "${MY_USER}" "${MY_GROUP}" "${DEBUG_COMMANDS}"
+set_postfix "ENABLE_MAIL" "${MY_USER}" "${MY_GROUP}" "${DEBUG_LEVEL}"
 
 
 ###
 ### Validate socat port forwards
 ###
-if ! port_forward_validate "FORWARD_PORTS_TO_LOCALHOST"; then
+if ! port_forward_validate "FORWARD_PORTS_TO_LOCALHOST" "${DEBUG_LEVEL}"; then
 	exit 1
 fi
 
@@ -74,8 +81,10 @@ for line in $( port_forward_get_lines "FORWARD_PORTS_TO_LOCALHOST" ); do
 	supervisor_add_service "socat-${lport}-${rhost}-${rport}" "/usr/bin/socat tcp-listen:${lport},reuseaddr,fork tcp:${rhost}:${rport}"
 done
 
-supervisor_add_service "rsyslogd" "/usr/sbin/rsyslogd -n" "1"
-supervisor_add_service "postfix"  "/usr/local/sbin/postfix.sh"
+if [ "$(env_get "ENABLE_MAIL")" = "1" ]; then
+	supervisor_add_service "rsyslogd" "/usr/sbin/rsyslogd -n" "1"
+	supervisor_add_service "postfix"  "/usr/local/sbin/postfix.sh"
+fi
 supervisor_add_service "php-fpm"  "/usr/local/sbin/php-fpm"
 
 
