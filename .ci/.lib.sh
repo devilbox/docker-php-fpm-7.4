@@ -61,5 +61,5 @@ docker_build() {
 		run "docker pull ${base}"
 	fi
 
-	run "docker build -t ${vend}/${name}:${tag} -f ${dockerfile} ${buildpath}/"
+	run "docker build --no-cache=true -t ${vend}/${name}:${tag} -f ${dockerfile} ${buildpath}/"
 }
