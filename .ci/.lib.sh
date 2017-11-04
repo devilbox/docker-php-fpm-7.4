@@ -61,5 +61,17 @@ docker_build() {
 		run "docker pull ${base}"
 	fi
 
-	run "docker build --no-cache=true -t ${vend}/${name}:${tag} -f ${dockerfile} ${buildpath}/"
+	# Try to build a few times in case there a network-timeouts for fetching sources
+	max=100
+	i=0
+	while [ $i -lt $max ]; do
+		if run "docker build -t ${vend}/${name}:${tag} -f ${dockerfile} ${buildpath}/"; then
+			break;
+		else
+			i=$((i+1));
+		fi
+	done
+	if [ $i -gt 98 ]; then
+		false
+	fi
 }
