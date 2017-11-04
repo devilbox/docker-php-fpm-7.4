@@ -85,33 +85,33 @@ jobs:
                 docker build -t "${IMAGE}:prod-debian-${TRAVIS_TAG}" -f prod/Dockerfile.debian prod/ &&
                 docker build -t "${IMAGE}:work-debian-${TRAVIS_TAG}" -f work/Dockerfile.debian work/ &&
                 docker images; then break; else i=$((i+1)); fi
-              done
+              done;
               if [ $i -gt 98 ]; then false; fi
             elif [ "${TRAVIS_BRANCH}" == "master" ]; then
               max=100; i=0; while [ $i -lt $max ]; do if
-                docker build --no-cache=true -t "${IMAGE}:base-alpine" -f base/Dockerfile.alpine base/ &&
-                docker build --no-cache=true -t "${IMAGE}:mods-alpine" -f mods/Dockerfile.alpine mods/ &&
-                docker build --no-cache=true -t "${IMAGE}:prod-alpine" -f prod/Dockerfile.alpine prod/ &&
-                docker build --no-cache=true -t "${IMAGE}:work-alpine" -f work/Dockerfile.alpine work/ &&
-                docker build --no-cache=true -t "${IMAGE}:base-debian" -f base/Dockerfile.debian base/ &&
-                docker build --no-cache=true -t "${IMAGE}:mods-debian" -f mods/Dockerfile.debian mods/ &&
-                docker build --no-cache=true -t "${IMAGE}:prod-debian" -f prod/Dockerfile.debian prod/ &&
-                docker build --no-cache=true -t "${IMAGE}:work-debian" -f work/Dockerfile.debian work/ &&
+                docker build -t "${IMAGE}:base-alpine" -f base/Dockerfile.alpine base/ &&
+                docker build -t "${IMAGE}:mods-alpine" -f mods/Dockerfile.alpine mods/ &&
+                docker build -t "${IMAGE}:prod-alpine" -f prod/Dockerfile.alpine prod/ &&
+                docker build -t "${IMAGE}:work-alpine" -f work/Dockerfile.alpine work/ &&
+                docker build -t "${IMAGE}:base-debian" -f base/Dockerfile.debian base/ &&
+                docker build -t "${IMAGE}:mods-debian" -f mods/Dockerfile.debian mods/ &&
+                docker build -t "${IMAGE}:prod-debian" -f prod/Dockerfile.debian prod/ &&
+                docker build -t "${IMAGE}:work-debian" -f work/Dockerfile.debian work/ &&
                 docker images; then break; else i=$((i+1)); fi
-              done
+              done;
               if [ $i -gt 98 ]; then false; fi
             elif [[ ${TRAVIS_BRANCH} =~ ^(release[/-][.0-9]+)$ ]]; then
               max=100; i=0; while [ $i -lt $max ]; do if
-                docker build --no-cache=true -t "${IMAGE}:base-alpine-${TRAVIS_BRANCH}" -f base/Dockerfile.alpine base/ &&
-                docker build --no-cache=true -t "${IMAGE}:mods-alpine-${TRAVIS_BRANCH}" -f mods/Dockerfile.alpine mods/ &&
-                docker build --no-cache=true -t "${IMAGE}:prod-alpine-${TRAVIS_BRANCH}" -f prod/Dockerfile.alpine prod/ &&
-                docker build --no-cache=true -t "${IMAGE}:work-alpine-${TRAVIS_BRANCH}" -f work/Dockerfile.alpine work/ &&
-                docker build --no-cache=true -t "${IMAGE}:base-debian-${TRAVIS_BRANCH}" -f base/Dockerfile.debian base/ &&
-                docker build --no-cache=true -t "${IMAGE}:mods-debian-${TRAVIS_BRANCH}" -f mods/Dockerfile.debian mods/ &&
-                docker build --no-cache=true -t "${IMAGE}:prod-debian-${TRAVIS_BRANCH}" -f prod/Dockerfile.debian prod/ &&
-                docker build --no-cache=true -t "${IMAGE}:work-debian-${TRAVIS_BRANCH}" -f work/Dockerfile.debian work/ &&
+                docker build -t "${IMAGE}:base-alpine-${TRAVIS_BRANCH}" -f base/Dockerfile.alpine base/ &&
+                docker build -t "${IMAGE}:mods-alpine-${TRAVIS_BRANCH}" -f mods/Dockerfile.alpine mods/ &&
+                docker build -t "${IMAGE}:prod-alpine-${TRAVIS_BRANCH}" -f prod/Dockerfile.alpine prod/ &&
+                docker build -t "${IMAGE}:work-alpine-${TRAVIS_BRANCH}" -f work/Dockerfile.alpine work/ &&
+                docker build -t "${IMAGE}:base-debian-${TRAVIS_BRANCH}" -f base/Dockerfile.debian base/ &&
+                docker build -t "${IMAGE}:mods-debian-${TRAVIS_BRANCH}" -f mods/Dockerfile.debian mods/ &&
+                docker build -t "${IMAGE}:prod-debian-${TRAVIS_BRANCH}" -f prod/Dockerfile.debian prod/ &&
+                docker build -t "${IMAGE}:work-debian-${TRAVIS_BRANCH}" -f work/Dockerfile.debian work/ &&
                 docker images; then break; else i=$((i+1)); fi
-              done
+              done;
               if [ $i -gt 98 ]; then false; fi
             else
               echo "Skipping branch ${TRAVIS_BRANCH}";
@@ -131,7 +131,7 @@ jobs:
                 docker push "${IMAGE}:mods-debian-${TRAVIS_TAG}" &&
                 docker push "${IMAGE}:prod-debian-${TRAVIS_TAG}" &&
                 docker push "${IMAGE}:work-debian-${TRAVIS_TAG}" then break; else i=$((i+1)); fi
-              done
+              done;
               if [ $i -gt 98 ]; then false; fi
             elif [ "${TRAVIS_BRANCH}" == "master" ]; then
               max=100; i=0; while [ $i -lt $max ]; do if
@@ -144,7 +144,7 @@ jobs:
                 docker push "${IMAGE}:mods-debian" &&
                 docker push "${IMAGE}:prod-debian" &&
                 docker push "${IMAGE}:work-debian" then break; else i=$((i+1)); fi
-              done
+              done;
               if [ $i -gt 98 ]; then false; fi
             elif [[ ${TRAVIS_BRANCH} =~ ^(release[/-][.0-9]+)$ ]]; then
               max=100; i=0; while [ $i -lt $max ]; do if
@@ -157,7 +157,7 @@ jobs:
                 docker push "${IMAGE}:mods-debian-${TRAVIS_BRANCH}" &&
                 docker push "${IMAGE}:prod-debian-${TRAVIS_BRANCH}" &&
                 docker push "${IMAGE}:work-debian-${TRAVIS_BRANCH}" then break; else i=$((i+1)); fi
-              done
+              done;
               if [ $i -gt 98 ]; then false; fi
             else
               echo "Skipping branch ${TRAVIS_BRANCH}";
