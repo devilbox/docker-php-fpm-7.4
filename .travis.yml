@@ -130,6 +130,7 @@ jobs:
               docker push "${IMAGE}:base-debian" &&
               docker push "${IMAGE}:mods-debian" &&
               docker push "${IMAGE}:prod-debian" &&
+              docker push "${IMAGE}:work-debian"
             elif [[ ${TRAVIS_BRANCH} =~ ^(release[/-][.0-9]+)$ ]]; then
               docker login --username "$DOCKER_USERNAME" --password "$DOCKER_PASSWORD" &&
               docker push "${IMAGE}:base-alpine-${TRAVIS_BRANCH}" &&
