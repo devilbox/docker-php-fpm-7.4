@@ -18,7 +18,7 @@ IFS=$'\n'
 ###
 
 # Current directory
-CWD="$( dirname "${0}" )"
+CWD="$(cd -P -- "$(dirname -- "$0")" && pwd -P)"
 
 # Array of tests to run
 declare -a TESTS=()
