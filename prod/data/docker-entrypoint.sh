@@ -11,6 +11,9 @@ MY_USER="devilbox"
 MY_GROUP="devilbox"
 
 PHP_INI_PATH="/usr/local/etc/php.ini"
+FPM_ERROR_LOG_CFG="/usr/local/etc/php-fpm.conf"
+FPM_ACCESS_LOG_CFG="/usr/local/etc/php-fpm.d/zzz-docker.conf"
+FPM_LOG_DIR="/var/log/php"
 
 
 ###
@@ -52,10 +55,26 @@ fi
 change_uid "NEW_UID" "${MY_USER}" "${DEBUG_LEVEL}"
 change_gid "NEW_GID" "${MY_GROUP}" "${DEBUG_LEVEL}"
 
+
 ###
 ### Set timezone
 ###
 set_timezone "TIMEZONE" "${PHP_INI_PATH}" "${DEBUG_LEVEL}"
+
+
+###
+### Set Logging
+###
+
+set_docker_logs \
+	"DOCKER_LOGS" \
+	"${FPM_LOG_DIR}" \
+	"${FPM_ERROR_LOG_CFG}" \
+	"${FPM_ACCESS_LOG_CFG}" \
+	"${MY_USER}" \
+	"${MY_GROUP}" \
+	"${DEBUG_LEVEL}"
+
 
 ###
 ### Setup postfix

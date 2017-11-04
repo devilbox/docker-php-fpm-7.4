@@ -19,7 +19,7 @@ set_timezone() {
 	if ! env_set "${_env_varname}"; then
 		log "info" "\$${_env_varname} not set." "${_debug}"
 		log "info" "Setting PHP: timezone=UTC" "${_debug}"
-		run "sed -i'' 's|^[[:space:]]*;?[[:space:]]*date\.timezone[[:space:]]*=.*$|date.timezone = UTF|g' ${_php_ini}" "${_debug}"
+		run "sed -i'' 's|^[[:space:]]*;*[[:space:]]*date\.timezone[[:space:]]*=.*$|date.timezone = UTF|g' ${_php_ini}" "${_debug}"
 	else
 		_timezone="$( env_get "${_env_varname}" )"
 		if [ -f "/usr/share/zoneinfo/${_timezone}" ]; then
@@ -30,7 +30,7 @@ set_timezone() {
 
 			# PHP Time
 			log "info" "Setting PHP: timezone=${_timezone}" "${_debug}"
-			run "sed -i'' 's|^[[:space:]]*;?[[:space:]]*date\.timezone[[:space:]]*=.*$|date.timezone = ${_timezone}|g' ${_php_ini}" "${_debug}"
+			run "sed -i'' 's|^[[:space:]]*;*[[:space:]]*date\.timezone[[:space:]]*=.*$|date.timezone = ${_timezone}|g' ${_php_ini}" "${_debug}"
 		else
 			log "err" "Invalid timezone for \$${_env_varname}." "${_debug}"
 			log "err" "\$TIMEZONE: '${_timezone}' does not exist." "${_debug}"

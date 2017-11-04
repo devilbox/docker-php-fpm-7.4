@@ -32,6 +32,20 @@ RUN set -x \
 
 
 ###
+### Configure
+###
+RUN set -x \
+	&& { \
+		echo "[mail function]"; \
+		echo "sendmail_path = /usr/sbin/sendmail -t -i"; \
+		echo ";mail.force_extra_parameters ="; \
+		echo "mail.add_x_header = On"; \
+		echo "mail.log = /var/log/php/mail.log"; \
+	} > /usr/local/etc/php.d/mail.ini
+
+
+
+###
 ### Verify
 ###
 RUN set -x \
@@ -46,6 +60,16 @@ COPY ./data/docker-entrypoint.sh /docker-entrypoint.sh
 COPY ./data/docker-entrypoint.d/*.sh /docker-entrypoint.d/
 COPY ./data/postfix.sh /usr/local/sbin/postfix.sh
 COPY ./data/supervisord.conf /etc/supervisor/supervisord.conf
+
+
+
+###
+### Volumes
+###
+VOLUME /etc/php-custom.d
+VOLUME /etc/php-modules.d
+VOLUME /var/log/php
+VOLUME /var/mail
 
 
 
