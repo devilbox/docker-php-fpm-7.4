@@ -1,0 +1,55 @@
+FROM devilbox/php-fpm-7.3:prod-alpine
+MAINTAINER "cytopia" <cytopia@everythingcli.org>
+
+
+###
+### Labels
+###
+LABEL \
+	name="cytopia's PHP-FPM 7.3 Image" \
+	image="php-fpm-7.3" \
+	tag="work-alpine" \
+	vendor="devilbox" \
+	license="MIT"
+
+
+
+###
+### Install
+###
+RUN set -x \
+	&& apk update \
+	&& apk add --no-cache \
+		bash
+
+
+
+###
+### Verify
+###
+RUN set -x \
+	&& /usr/local/sbin/php-fpm --test
+
+
+
+###
+### Volumes
+###
+VOLUME /etc/php-custom.d
+VOLUME /etc/php-modules.d
+VOLUME /var/log/php
+VOLUME /var/mail
+
+
+
+###
+### Ports
+###
+EXPOSE 9000
+
+
+
+###
+### Entrypoint
+###
+ENTRYPOINT ["/docker-entrypoint.sh"]

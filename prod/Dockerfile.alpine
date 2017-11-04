@@ -1,0 +1,87 @@
+FROM devilbox/php-fpm-7.3:mods-alpine
+MAINTAINER "cytopia" <cytopia@everythingcli.org>
+
+
+###
+### Labels
+###
+LABEL \
+	name="cytopia's PHP-FPM 7.3 Image" \
+	image="php-fpm-7.3" \
+	tag="prod-alpine" \
+	vendor="devilbox" \
+	license="MIT"
+
+
+
+###
+### Install
+###
+RUN set -x \
+	&& apk update \
+	&& apk add --no-cache \
+		bash \
+		postfix \
+		postfix-pcre \
+		rsyslog \
+		socat \
+		supervisor \
+	\
+	&& rm -rf /etc/supervisor* \
+	&& mkdir -p /etc/supervisor/conf.d
+
+
+
+###
+### Configure
+###
+RUN set -x \
+	&& { \
+		echo "[mail function]"; \
+		echo "sendmail_path = /usr/sbin/sendmail -t -i"; \
+		echo ";mail.force_extra_parameters ="; \
+		echo "mail.add_x_header = On"; \
+		echo "mail.log = /var/log/php/mail.log"; \
+	} > /usr/local/etc/php.d/mail.ini
+
+
+
+###
+### Verify
+###
+RUN set -x \
+	&& /usr/local/sbin/php-fpm --test
+
+
+
+###
+### Copy files
+###
+COPY ./data/docker-entrypoint.sh /docker-entrypoint.sh
+COPY ./data/docker-entrypoint.d/*.sh /docker-entrypoint.d/
+COPY ./data/postfix.sh /usr/local/sbin/postfix.sh
+COPY ./data/supervisord.conf /etc/supervisor/supervisord.conf
+
+
+
+###
+### Volumes
+###
+VOLUME /etc/php-custom.d
+VOLUME /etc/php-modules.d
+VOLUME /var/log/php
+VOLUME /var/mail
+
+
+
+###
+### Ports
+###
+EXPOSE 9000
+
+
+
+###
+### Entrypoint
+###
+ENTRYPOINT ["/docker-entrypoint.sh"]

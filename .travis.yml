@@ -1,0 +1,165 @@
+###
+### Enable sudo (required for docker service)
+###
+sudo: required
+
+
+###
+### Language
+###
+language: python
+
+
+###
+### Add services
+###
+services:
+  - docker
+
+
+###
+### Build Matrix definition
+###
+env:
+  global:
+    - IMAGE: devilbox/php-fpm-7.3
+    # travis encrypt DOCKER_USERNAME=user
+    # travis encrypt DOCKER_PASSWORD=pass
+    # Must be regenerated when repository name/owner changes
+    # DOCKER_USERNAME
+    - secure: "MrARiUXZqbpT/84xlr+J/D4FSx1sp0vOpVEefZdg0QTAicC0R1MOm4FIUXOZMZMGrJYD1Kdx8bdInZLE6GgLjy0G16Ke0iYt6fOsuwlRpwUgwJFYIPKmaCrekkRsWA8rCuFkF/ihfXxruikovXUhnl9CAS8Cqg/1G7g3975Dd8y8sj2+sCKECd2RBW7P5jh7zPKeet2ZZxcbxqAYfy5Qm6JwYCw0qfR2ffXo0OzQYiPn7ClDdWvHwEd1tPI7gLAxTwSGGV15xcXF5ya57XZtuECAaC5y5gHy8zJQ/UfwILYeZd/6dMbv2t1b9K6/svT++jv83Tj5ypDc1HDjDos/aejGzc74T95fzzfv6Z5jfd4z87svFGxyxWsY60YGjxU7rydziY9dKICSZU/+Xid8tN2nvgQUpgiPQahekRB8WqgkBPA8neVTdG+mLMu7lOFlRGBeEfMpiqRCIoaJRoN8RDhDuh/d6hPziNHz1c/k64/G7/uyGTHo9mg0sw/Ors1tf5GYvyPYN3GJU49U5WVrLRU5WB0GG/9JvG8UNbSV7b5LRkyXqfMN63acDLq4oHof+9tj4yY2w950cOVplUHKsP/VXx0IvHImMgdtj2ii/516PfmfvaxXmNiwCe5/abUHITQ66BQ4UZ8ovd2kby0AtdDq4CxRyN0h+5c1YcEsRRw="
+    # DOCKER_PASSWORD
+    - secure: "mq17YsAgt1X0ttin2gCr70e950eTroNjkI++BDXPnBzlIO0fOsJmzYvwyq4qbBdCBALDnznumFd0s/pwOYIjA0E28kr1SptO1l75zNGFjtqCGi2LM5uDEh4xOo0LBDKlaqX6KwnGoKortTrBeNoQRrX8Ar4u6GQs5Uf/vocMe+2Puqie2Gi1EYLhSCDKDNJSW0S6AxGC6ndW55OYo/w+inrWeyEvN4/ZtWqSIl6YfGJHTMtEUgr4zRDD9OGdgINnLANzrb0mOa14Hooy6in8vR/BoZKOst5zQg0hprF5PSDS249ZjM5cljZ6nHDnFOTF1jFQuS2l7TSCkkmcmEsExE/bK7u5CbyZoFbfYSiaAPo5lMY9L6Nh9eEd4gl3Qd490qOqWtSkq5JfNzmBhu8YLo/L8USLFjwbX63nnASpDLGDhIY+5y2RbH0BL2w7HRlRWljw9Mjb0EypzY3DVnwsgThTH6UEmYbYpGn8S3aMwnMpXkQI2DbqXpUkOXPUsnUdytavBtzHOKarl8veeYyBB/kDM3AZHTskjPg6/DZybSZnKE+EuKZ4By54GRPFRBrAjOKSgp2BbeGHqjiybFneGJx8LjGZYtQFCbep1waZBBASk2dIVR3lI/kANsQRuLCMO6EMFKGaEh0jiDElO+3rEYvr06/mUdYTL3Avslxqufc="
+
+  matrix:
+    - FLAVOUR=alpine TYPE=base
+    - FLAVOUR=alpine TYPE=mods
+    - FLAVOUR=alpine TYPE=prod
+    - FLAVOUR=alpine TYPE=work
+    - FLAVOUR=debian TYPE=base
+    - FLAVOUR=debian TYPE=mods
+    - FLAVOUR=debian TYPE=prod
+    - FLAVOUR=debian TYPE=work
+
+
+###
+### Stage definitions
+###
+stages:
+  - test
+  - deploy
+
+
+###
+### Global for all stages
+###
+install:
+  # Get newer docker version
+  - max=100; i=0; while [ $i -lt $max ]; do if sudo apt-get update; then break; else i=$((i+1)); fi done
+  - max=100; i=0; while [ $i -lt $max ]; do if sudo apt-get -y -o Dpkg::Options::="--force-confnew" install docker-ce; then break; else i=$((i+1)); fi done
+  - docker version
+script:
+  - .ci/start-ci.sh "${FLAVOUR}" "${TYPE}"
+
+
+###
+### Job definitions
+###
+jobs:
+  include:
+    # Final deploy stage
+    - stage: deploy
+      env:
+        - FLAVOUR=
+        - TYPE=
+      before_script:
+        - if [ "${TRAVIS_PULL_REQUEST}" == "false" ]; then
+            if [ -n "${TRAVIS_TAG}" ]; then
+              max=100; i=0; while [ $i -lt $max ]; do if
+                docker build -t "${IMAGE}:base-alpine-${TRAVIS_TAG}" -f base/Dockerfile.alpine base/ &&
+                docker build -t "${IMAGE}:mods-alpine-${TRAVIS_TAG}" -f mods/Dockerfile.alpine mods/ &&
+                docker build -t "${IMAGE}:prod-alpine-${TRAVIS_TAG}" -f prod/Dockerfile.alpine prod/ &&
+                docker build -t "${IMAGE}:work-alpine-${TRAVIS_TAG}" -f work/Dockerfile.alpine work/ &&
+                docker build -t "${IMAGE}:base-debian-${TRAVIS_TAG}" -f base/Dockerfile.debian base/ &&
+                docker build -t "${IMAGE}:mods-debian-${TRAVIS_TAG}" -f mods/Dockerfile.debian mods/ &&
+                docker build -t "${IMAGE}:prod-debian-${TRAVIS_TAG}" -f prod/Dockerfile.debian prod/ &&
+                docker build -t "${IMAGE}:work-debian-${TRAVIS_TAG}" -f work/Dockerfile.debian work/ &&
+                docker images; then break; else i=$((i+1)); fi
+              done;
+              if [ $i -gt 98 ]; then false; fi
+            elif [ "${TRAVIS_BRANCH}" == "master" ]; then
+              max=100; i=0; while [ $i -lt $max ]; do if
+                docker build -t "${IMAGE}:base-alpine" -f base/Dockerfile.alpine base/ &&
+                docker build -t "${IMAGE}:mods-alpine" -f mods/Dockerfile.alpine mods/ &&
+                docker build -t "${IMAGE}:prod-alpine" -f prod/Dockerfile.alpine prod/ &&
+                docker build -t "${IMAGE}:work-alpine" -f work/Dockerfile.alpine work/ &&
+                docker build -t "${IMAGE}:base-debian" -f base/Dockerfile.debian base/ &&
+                docker build -t "${IMAGE}:mods-debian" -f mods/Dockerfile.debian mods/ &&
+                docker build -t "${IMAGE}:prod-debian" -f prod/Dockerfile.debian prod/ &&
+                docker build -t "${IMAGE}:work-debian" -f work/Dockerfile.debian work/ &&
+                docker images; then break; else i=$((i+1)); fi
+              done;
+              if [ $i -gt 98 ]; then false; fi
+            elif [[ ${TRAVIS_BRANCH} =~ ^(release[/-][.0-9]+)$ ]]; then
+              max=100; i=0; while [ $i -lt $max ]; do if
+                docker build -t "${IMAGE}:base-alpine-${TRAVIS_BRANCH}" -f base/Dockerfile.alpine base/ &&
+                docker build -t "${IMAGE}:mods-alpine-${TRAVIS_BRANCH}" -f mods/Dockerfile.alpine mods/ &&
+                docker build -t "${IMAGE}:prod-alpine-${TRAVIS_BRANCH}" -f prod/Dockerfile.alpine prod/ &&
+                docker build -t "${IMAGE}:work-alpine-${TRAVIS_BRANCH}" -f work/Dockerfile.alpine work/ &&
+                docker build -t "${IMAGE}:base-debian-${TRAVIS_BRANCH}" -f base/Dockerfile.debian base/ &&
+                docker build -t "${IMAGE}:mods-debian-${TRAVIS_BRANCH}" -f mods/Dockerfile.debian mods/ &&
+                docker build -t "${IMAGE}:prod-debian-${TRAVIS_BRANCH}" -f prod/Dockerfile.debian prod/ &&
+                docker build -t "${IMAGE}:work-debian-${TRAVIS_BRANCH}" -f work/Dockerfile.debian work/ &&
+                docker images; then break; else i=$((i+1)); fi
+              done;
+              if [ $i -gt 98 ]; then false; fi
+            else
+              echo "Skipping branch ${TRAVIS_BRANCH}";
+            fi
+          fi
+      script:
+        # Push to docker hub on success
+        - if [ "${TRAVIS_PULL_REQUEST}" == "false" ]; then
+            if [ -n "${TRAVIS_TAG}" ]; then
+              max=100; i=0; while [ $i -lt $max ]; do if
+                docker login --username "$DOCKER_USERNAME" --password "$DOCKER_PASSWORD" &&
+                docker push "${IMAGE}:base-alpine-${TRAVIS_TAG}" &&
+                docker push "${IMAGE}:mods-alpine-${TRAVIS_TAG}" &&
+                docker push "${IMAGE}:prod-alpine-${TRAVIS_TAG}" &&
+                docker push "${IMAGE}:work-alpine-${TRAVIS_TAG}" &&
+                docker push "${IMAGE}:base-debian-${TRAVIS_TAG}" &&
+                docker push "${IMAGE}:mods-debian-${TRAVIS_TAG}" &&
+                docker push "${IMAGE}:prod-debian-${TRAVIS_TAG}" &&
+                docker push "${IMAGE}:work-debian-${TRAVIS_TAG}"; then break; else i=$((i+1)); fi
+              done;
+              if [ $i -gt 98 ]; then false; fi
+            elif [ "${TRAVIS_BRANCH}" == "master" ]; then
+              max=100; i=0; while [ $i -lt $max ]; do if
+                docker login --username "$DOCKER_USERNAME" --password "$DOCKER_PASSWORD" &&
+                docker push "${IMAGE}:base-alpine" &&
+                docker push "${IMAGE}:mods-alpine" &&
+                docker push "${IMAGE}:prod-alpine" &&
+                docker push "${IMAGE}:work-alpine" &&
+                docker push "${IMAGE}:base-debian" &&
+                docker push "${IMAGE}:mods-debian" &&
+                docker push "${IMAGE}:prod-debian" &&
+                docker push "${IMAGE}:work-debian"; then break; else i=$((i+1)); fi
+              done;
+              if [ $i -gt 98 ]; then false; fi
+            elif [[ ${TRAVIS_BRANCH} =~ ^(release[/-][.0-9]+)$ ]]; then
+              max=100; i=0; while [ $i -lt $max ]; do if
+                docker login --username "$DOCKER_USERNAME" --password "$DOCKER_PASSWORD" &&
+                docker push "${IMAGE}:base-alpine-${TRAVIS_BRANCH}" &&
+                docker push "${IMAGE}:mods-alpine-${TRAVIS_BRANCH}" &&
+                docker push "${IMAGE}:prod-alpine-${TRAVIS_BRANCH}" &&
+                docker push "${IMAGE}:work-alpine-${TRAVIS_BRANCH}" &&
+                docker push "${IMAGE}:base-debian-${TRAVIS_BRANCH}" &&
+                docker push "${IMAGE}:mods-debian-${TRAVIS_BRANCH}" &&
+                docker push "${IMAGE}:prod-debian-${TRAVIS_BRANCH}" &&
+                docker push "${IMAGE}:work-debian-${TRAVIS_BRANCH}"; then break; else i=$((i+1)); fi
+              done;
+              if [ $i -gt 98 ]; then false; fi
+            else
+              echo "Skipping branch ${TRAVIS_BRANCH}";
+            fi
+          fi
