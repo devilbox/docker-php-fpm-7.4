@@ -1,0 +1,107 @@
+###
+### Enable sudo (required for docker service)
+###
+sudo: required
+
+
+###
+### Language
+###
+language: python
+
+
+###
+### Add services
+###
+services:
+  - docker
+
+
+###
+### Build Matrix definition
+###
+env:
+  global:
+    # travis encrypt DOCKER_USERNAME=user
+    # travis encrypt DOCKER_PASSWORD=pass
+    # Must be regenerated when repository name/owner changes
+    # DOCKER_USERNAME
+    - secure: "gN8Tu2FkCzuLLQHbv0jDZDBgWoBrmrB8uCGk6rcc0QSB96Xedn+wuhD9EK5STfsJDfPMn4HNCs/cfbxzg7K/5F7hTZWgasY7R/L/WlSepn+Z+bwGbAgGLBgqow8ahfSMCvX5Yq/HP6S3YSmv3rWDn63Es4fxIRBEp0j1mOB98rgK9qFjRxey9KyoK55MN4x8NrMAvvqhcrOg1M+MTs4Ju+9tqyCBjwh7r8W7UXhqfQb6R3ln/5CCmbr3jWHuU/2JZSMJ4j89s4Qq1vKSJSKWiCZBlbyfp0KTQEp1i+sSSow8fbjPHIbBa3vZNlNkVl04zBZnDbydDsGhlf9jpa7tD0SbOX+pFBdp2toqzpXBBIMa8tQOCHDnZYDeSbYqmwt/Zh6CfvLCMiyMZ077tpCtqAYwOHyqsUU693trcLludh5sn5YvAsOngqKTyD2dbQ+bCoep3BLfhpv91EMQk7EJN8wh8iYvSBxQbbB2bDHBI3WhGAz38/V2PdaKt5EXVOxnmLELaDuTqusWm1xwQ3CU4hyUkwUabLY8dyIPw4odIfvifmT1j+F/TgqkiNtmmbQ0qOugzas1u8OwpoewKUaL2csf6RXZnJeCms986/wsV2GGb71HzFGCL+rTvl2AerOGJEI/llbtlfMg6xfRpvyj64fxakaDVACeItR/vLtGyNo="
+    # DOCKER_PASSWORD
+    - secure: "ZGYhAW7Cr+Cp0eyWvhB4Ash/6KuN9/7xUr+J0TQEQXAKpLdhwVXV95QA2V5tIRf/+M75OfGZQZcjsnNUkF/5I1N2z8rX4gHaWV8UP0b7OOOF6Z3ICobU3aK6g88UFiIA+GdAakHpCqpxaVxrLbEtTe3XT1R3/O/tf2FpCyxnTiDv9VeFIYwKQKvc8xpBKxjxZtARjy0FMEPRfr0eTn6GCtXcRFCNQK7ZIKEbUxPKp4ZtoXFQ5o+ul5q13KmzQs5QMnETY34wHiuxuKT5lRrZ+k+4IQFxCwjbxvPwjJagWbe3XkRXV7SgW/r+Ocj9l+0M77NOkQn6QlwI4q5LCAANkM+NwkTC6FgRAaytksXTCZcsuem4Zdrp1HbSAXrbgKS//fJd4wjdEpNCLN5MLOCcVgpYBsvZpmW8+b1EivmD4QmavGkN3St4lU0ROydXbVnXWHnbanqBz0H+4HAXY2QmBkf46EznEk/Jjhq7yzSY7q8/OAgSjPHAjhmDIoiUXJJDRTWWtmfC7yv09QbbrLuZFsAxa0JzUL8+inChcY6VuFH6QKBt35NGHjYxIB+yONFaDyHnWFa2EeF8ilxLxnGeUpbi9Mis52G3e4t7vmeolZq3sYGEaf+UNgZtj4ABdQLxkEBt7uF6dn+ojdqSKvV9CdatOtwYy6ElwI011wtT72Q="
+  matrix:
+    - FLAVOUR=alpine TYPE=base
+    - FLAVOUR=alpine TYPE=mods
+    - FLAVOUR=alpine TYPE=prod
+    - FLAVOUR=alpine TYPE=work
+    - FLAVOUR=debian TYPE=base
+    - FLAVOUR=debian TYPE=mods
+    - FLAVOUR=debian TYPE=prod
+    - FLAVOUR=debian TYPE=work
+
+
+###
+### Stage definitions
+###
+#stages:
+#  - test
+#  - deploy
+
+
+###
+### Global for all stages
+###
+install:
+  # Get newer docker version
+  - max=100; i=0; while [ $i -lt $max ]; do if sudo apt-get update; then break; else i=$((i+1)); fi done
+  - max=100; i=0; while [ $i -lt $max ]; do if sudo apt-get -y -o Dpkg::Options::="--force-confnew" install docker-ce; then break; else i=$((i+1)); fi done
+  - docker version
+script:
+  - .ci/start-ci.sh "${FLAVOUR}" "${TYPE}"
+
+
+###
+### Job definitions
+###
+#jobs:
+#  include:
+#    # Final deploy stage
+#    - stage: deploy
+#      env: TEST=
+#      before_script:
+#        - if [ "${TRAVIS_PULL_REQUEST}" == "false" ]; then
+#            if [ -n "${TRAVIS_TAG}" ]; then
+#              docker build --no-cache=true -t "${IMAGE}:${TRAVIS_TAG}" . &&
+#              docker images;
+#            elif [ "${TRAVIS_BRANCH}" == "master" ]; then
+#              docker build --no-cache=true -t "${IMAGE}:latest" . &&
+#              docker images;
+#            elif [[ ${TRAVIS_BRANCH} =~ ^(release[/-][.0-9]+)$ ]]; then
+#              docker build --no-cache=true -t "${IMAGE}:${TRAVIS_BRANCH}" . &&
+#              docker images;
+#            else
+#              echo "Skipping branch ${TRAVIS_BRANCH}";
+#            fi
+#          fi
+#      script:
+#        # Push to docker hub on success
+#        - if [ "${TRAVIS_PULL_REQUEST}" == "false" ]; then
+#            if [ -n "${TRAVIS_TAG}" ]; then
+#              docker login --username "$DOCKER_USERNAME" --password "$DOCKER_PASSWORD" &&
+#              echo "Pushing ${IMAGE}:${TRAVIS_TAG}" &&
+#              docker push "${IMAGE}:${TRAVIS_TAG}" &&
+#              docker tag "${IMAGE}:${TRAVIS_TAG}" "${IMAGE}:latest" &&
+#              echo "Pushing ${IMAGE}:latest" &&
+#              docker push "${IMAGE}:latest";
+#            elif [ "${TRAVIS_BRANCH}" == "master" ]; then
+#              docker login --username "$DOCKER_USERNAME" --password "$DOCKER_PASSWORD" &&
+#              echo "Pushing ${IMAGE}:latest" &&
+#              docker push "${IMAGE}:latest";
+#            elif [[ ${TRAVIS_BRANCH} =~ ^(release[/-][.0-9]+)$ ]]; then
+#              docker login --username "$DOCKER_USERNAME" --password "$DOCKER_PASSWORD" &&
+#              echo "Pushing ${IMAGE}:${TRAVIS_BRANCH}" &&
+#              docker push "${IMAGE}:${TRAVIS_BRANCH}";
+#            else
+#              echo "Skipping branch ${TRAVIS_BRANCH}";
+#            fi
+#          fi
