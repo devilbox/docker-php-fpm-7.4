@@ -229,48 +229,42 @@ This repository uses Docker tags to refer to different flavours and types of the
   <tr>
    <td><code>:latest</code></td>
    <td>
-    <sub>
-     <code>:base-alpine</code><br/>
-     <code>:base-debian</code><br/>
-     <code>:mods-alpine</code><br/>
-     <code>:mods-debian</code><br/>
-     <code>:prod-alpine</code><br/>
-     <code>:prod-debian</code><br/>
-     <code>:work-alpine</code><br/>
-     <code>:work-debian</code>
-    </sub>
+    <code>:base-alpine</code><br/>
+    <code>:base-debian</code><br/>
+    <code>:mods-alpine</code><br/>
+    <code>:mods-debian</code><br/>
+    <code>:prod-alpine</code><br/>
+    <code>:prod-debian</code><br/>
+    <code>:work-alpine</code><br/>
+    <code>:work-debian</code>
    </td>
    <td>Stable<br/><sub>(rolling)</sub><br/><br/>These tags are produced by the master branch of this repository.</td>
   </tr>
   <tr>
    <td><code>:&lt;git-tag-name&gt;</code></td>
    <td>
-    <sub>
-     <code>:base-alpine-&lt;git-tag-name&gt;</code><br/>
-     <code>:base-debian-&lt;git-tag-name&gt;</code><br/>
-     <code>:mods-alpine-&lt;git-tag-name&gt;</code><br/>
-     <code>:mods-debian-&lt;git-tag-name&gt;</code><br/>
-     <code>:prod-alpine-&lt;git-tag-name&gt;</code><br/>
-     <code>:prod-debian-&lt;git-tag-name&gt;</code><br/>
-     <code>:work-alpine-&lt;git-tag-name&gt;</code><br/>
-     <code>:work-debian-&lt;git-tag-name&gt;</code>
-    </sub>
+    <code>:base-alpine-&lt;git-tag-name&gt;</code><br/>
+    <code>:base-debian-&lt;git-tag-name&gt;</code><br/>
+    <code>:mods-alpine-&lt;git-tag-name&gt;</code><br/>
+    <code>:mods-debian-&lt;git-tag-name&gt;</code><br/>
+    <code>:prod-alpine-&lt;git-tag-name&gt;</code><br/>
+    <code>:prod-debian-&lt;git-tag-name&gt;</code><br/>
+    <code>:work-alpine-&lt;git-tag-name&gt;</code><br/>
+    <code>:work-debian-&lt;git-tag-name&gt;</code>
    </td>
    <td>Stable<br/><sub>(fixed)</sub><br/><br/>Every git tag will produce and preserve these Docker tags.</td>
   </tr>
   <tr>
    <td><code>:&lt;git-branch-name&gt;</code></td>
    <td>
-    <sub>
-     <code>:base-alpine-&lt;git-branch-name&gt;</code><br/>
-     <code>:base-debian-&lt;git-branch-name&gt;</code><br/>
-     <code>:mods-alpine-&lt;git-branch-name&gt;</code><br/>
-     <code>:mods-debian-&lt;git-branch-name&gt;</code><br/>
-     <code>:prod-alpine-&lt;git-branch-name&gt;</code><br/>
-     <code>:prod-debian-&lt;git-branch-name&gt;</code><br/>
-     <code>:work-alpine-&lt;git-branch-name&gt;</code><br/>
-     <code>:work-debian-&lt;git-branch-name&gt;</code>
-    </sub>
+    <code>:base-alpine-&lt;git-branch-name&gt;</code><br/>
+    <code>:base-debian-&lt;git-branch-name&gt;</code><br/>
+    <code>:mods-alpine-&lt;git-branch-name&gt;</code><br/>
+    <code>:mods-debian-&lt;git-branch-name&gt;</code><br/>
+    <code>:prod-alpine-&lt;git-branch-name&gt;</code><br/>
+    <code>:prod-debian-&lt;git-branch-name&gt;</code><br/>
+    <code>:work-alpine-&lt;git-branch-name&gt;</code><br/>
+    <code>:work-debian-&lt;git-branch-name&gt;</code>
    </td>
    <td>Feature<br/><sub>(for testing)</sub><br/><br/>Tags produced by unmerged branches. Do not rely on them as they might come and go.</td>
   </tr>
@@ -377,19 +371,19 @@ Have a look at the following table to see all supported environment variables fo
  <tbody>
   <tr>
    <td rowspan="3"><strong>base</strong><br/><br/><strong>mods</strong><br/><br/><strong>prod</strong><br/><br/><strong>work</strong></td>
-   <td><sub><code>DEBUG_ENTRYPOINT</code></sub></td>
+   <td><code>DEBUG_ENTRYPOINT</code></td>
    <td>int</td>
    <td><code>0</code></td>
    <td>Set debug level for startup.<br/><sub><code>0</code> Only warnings and errors are shown.<br/><code>1</code> All log messages are shown<br/><code>2</code> All log messages and executed commands are shown.</sub></td>
   </tr>
   <tr>
-   <td><sub><code>NEW_UID</code></sub></td>
+   <td><code>NEW_UID</code></td>
    <td>int</td>
    <td><code>1000</code></td>
    <td>Assign the PHP-FPM user a new <code>uid</code> in order to syncronize file system permissions with your host computer and the Docker container. You should use a value that matches your host systems local user.<br/><sub>(Type <code>id</code> for your uid).</sub></td>
   </tr>
   <tr>
-   <td><sub><code>NEW_GID</code></sub></td>
+   <td><code>NEW_GID</code></td>
    <td>int</td>
    <td><code>1000</code></td>
    <td>Assign the PHP-FPM group a new <code>gid</code> in order to syncronize file system permissions with your host computer and the Docker container. You should use a value that matches your host systems local group.<br/><sub>(Type <code>id</code> for your gid).</sub></td>
@@ -399,25 +393,25 @@ Have a look at the following table to see all supported environment variables fo
   </tr>
   <tr>
    <td rowspan="4"><strong>prod</strong><br/><br/><strong>work</strong></td>
-   <td><sub><code>TIMEZONE</code></sub></td>
+   <td><code>TIMEZONE</code></td>
    <td>string</td>
    <td><code>UTC</code></td>
    <td>Set docker OS timezone as well as PHP timezone.<br/>(Example: <code>Europe/Berlin</code>)</td>
   </tr>
   <tr>
-   <td><sub><code>DOCKER_LOGS</code></sub></td>
+   <td><code>DOCKER_LOGS</code></td>
    <td>bool</td>
    <td><code>1</code></td>
    <td>By default all Docker images are configured to output their PHP-FPM access and error logs to stdout and stderr. Those which support it can change the behaviour to log into files inside the container. Their respective directories are available as volumes that can be mounted to the host computer. This feature might help developer who are more comfortable with tailing or searching through actual files instead of using docker logs.<br/><br/>Set this variable to <code>0</code> in order to enable logging to files. Log files are avilable under <code>/var/log/php/</code> which is also a docker volume that can be mounted locally.</td>
   </tr>
   <tr>
-   <td><sub><code>ENABLE_MAIL</code></sub></td>
+   <td><code>ENABLE_MAIL</code></td>
    <td>bool</td>
    <td><code>0</code></td>
    <td>Enable local email catch-all.<br/>Postfix will be configured for local delivery and all mails sent (even to real domains) will be catched locally. No email will ever go out. They will all be stored in a local devilbox account.<br/>Value: <code>0</code> or <code>1</code></td>
   </tr>
   <tr>
-   <td><sub><code>FORWARD_PORTS_TO_LOCALHOST</code></sub></td>
+   <td><code>FORWARD_PORTS_TO_LOCALHOST</code></td>
    <td>string</td>
    <td></td>
    <td>List of remote ports to forward to 127.0.0.1.<br/><strong>Format:</strong><br/><sub><code>&lt;local-port&gt;:&lt;remote-host&gt;:&lt;remote-port&gt;</code></sub><br/>You can separate multiple entries by comma.<br/><strong>Example:</strong><br/><sub><code>3306:mysqlhost:3306, 6379:192.0.1.1:6379</code></sub></td>
@@ -440,19 +434,19 @@ Have a look at the following table to see all offered volumes for each Docker im
  <tbody>
   <tr>
    <td rowspan="4"><strong>prod</strong><br/><br/><strong>work</strong></td>
-   <td><sub><code>/etc/php-custom.d</code></sub></td>
+   <td><code>/etc/php-custom.d</code></td>
    <td>Mount this directory into your host computer and add custom <code>\*.ini</code> files in order to alter php behaviour.</td>
   </tr>
   <tr>
-   <td><sub><code>/etc/php-modules.d</code></sub></td>
+   <td><code>/etc/php-modules.d</code></td>
    <td>Mount this directory into your host computer and add custo <code>\*.so</code> files in order to add your php modules.<br/><br/><strong>Note:</strong>Your should then also provide a custom <code>\*.ini</code> file in order to actually load your custom provided module.</td>
   </tr>
   <tr>
-   <td><sub><code>/var/log/php</code></sub></td>
+   <td><code>/var/log/php</code></td>
    <td>When setting environment variable <code>DOCKER_LOGS</code> to <code>0</code>, log files will be available under this directory.</td>
   </tr>
   <tr>
-   <td><sub><code>/var/mail</code></sub></td>
+   <td><code>/var/mail</code></td>
    <td>Emails caught be the postfix catch-all (<code>ENABLE_MAIL=1</code>) will be available in this directory.</td>
   </tr>
  </tbody>
@@ -474,7 +468,7 @@ Have a look at the following table to see all offered exposed ports for each Doc
  <tbody>
   <tr>
    <td rowspan="1"><strong>base</strong><br/><strong>mods</strong><br/><strong>prod</strong><br/><strong>work</strong></td>
-   <td><sub><code>9000</code></sub></td>
+   <td><code>9000</code></td>
    <td>PHP-FPM listening port</td>
   </tr>
  </tbody>
