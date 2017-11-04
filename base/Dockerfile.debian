@@ -296,8 +296,14 @@ RUN set -x \
 	&& rm -rf /root/.pearrc \
 	&& rm -rf /tmp/*
 
-# PHP-FPM Post configuration
+# PHP/PHP-FPM Post configuration
 RUN set -x \
+	&& sed -i'' 's/^variables_order[[:space:]]*=.*$/variables_order = "EGPCS"/g' ${PHP_CONFIG_FILE_PATH}/php.ini \
+	&& grep -E '^variables_order\s*=\s*"EGPCS"$' ${PHP_CONFIG_FILE_PATH}/php.ini \
+	\
+	&& sed -i'' 's/^;*\s*cgi\.fix_pathinfo\s*=.*$/cgi.fix_pathinfo = 0/g' ${PHP_CONFIG_FILE_PATH}/php.ini \
+	&& grep -E '^cgi\.fix_pathinfo\s*=\s*0$' ${PHP_CONFIG_FILE_PATH}/php.ini \
+	\
 	&& cd ${PHP_CONFIG_FILE_PATH} \
 	&& { \
 		echo "[global]"; \
