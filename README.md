@@ -32,23 +32,23 @@ Choose between [Alpine](https://www.alpinelinux.org) or [Debian](https://www.deb
 #### Table of Contents
 
 1. **[Motivation](#motivation)**
-  1. [Unsynchronized permissions](#unsynchronized-permissions)
-  2. [It gets even worse](#it-gets-even-worse)
-  3. [The solution](#the-solution)
+    1. [Unsynchronized permissions](#unsynchronized-permissions)
+    2. [It gets even worse](#it-gets-even-worse)
+    3. [The solution](#the-solution)
 2. **[PHP-FPM 7.3 Flavours](#php-fpm-7.3-flavours)**
-  1. [Assembly](#assembly)
-  2. [Available Images](#available-images)
-  3. [Tagging](#tagging)
-  4. [PHP Modules](#php-modules)
+    1. [Assembly](#assembly)
+    2. [Available Images](#available-images)
+    3. [Tagging](#tagging)
+    4. [PHP Modules](#php-modules)
 3. **[PHP-FPM 7.3 Features](#php-fpm-7.3-features)**
-  1. [Image: base](#image-base)
-  2. [Image: mods](#image-mods)
-  3. [Image: prod](#image-prod)
-  4. [Image: work](#image-work)
+    1. [Image: base](#image-base)
+    2. [Image: mods](#image-mods)
+    3. [Image: prod](#image-prod)
+    4. [Image: work](#image-work)
 4. **[PHP-FPM 7.3 Options](#php-fpm-7.3-options)**
-  1. [Environment variables](#environment-variables)
-  2. [Volumes](#volumes)
-  3. [Ports](#ports)
+    1. [Environment variables](#environment-variables)
+    2. [Volumes](#volumes)
+    3. [Ports](#ports)
 5. **[Examples](#examples)**
 6. **[Automated builds](#automated-builds)**
 7. **[Contributing](#contributing)**
@@ -66,7 +66,7 @@ One main problem with a running Docker container is to **synchronize the ownersh
 
 Consider the following directory structure of a mounted volume. Your hosts computer uid/gid are `1000` which does not have a corresponding user/group within the container. Fortunately the `tmp/` directory allows everybody to create new files in it. 
 
-```
+```shell
                   [Host]                   |             [Container]
 ------------------------------------------------------------------------------------------
  $ ls -l                                   | $ ls -l
@@ -76,7 +76,7 @@ Consider the following directory structure of a mounted volume. Your hosts compu
 
 Your web application might now have created some temporary files (via the PHP-FPM process) inside the `tmp/` directory:
 
-```
+```shell
                   [Host]                   |             [Container]
 ------------------------------------------------------------------------------------------
  $ ls -l tmp/                              | $ ls -l tmp/
@@ -90,7 +90,7 @@ On the Docker container side everything is still fine, but on your host computer
 
 Consider your had created the `tmp/` directory on your host only with `0775` permissions:
 
-```
+```shell
                   [Host]                   |             [Container]
 ------------------------------------------------------------------------------------------
  $ ls -l                                   | $ ls -l
@@ -106,7 +106,7 @@ To overcome this problem, it must be made sure that the PHP-FPM process inside t
 
 This is achieved by two environment variables that can be provided during startup in order to change the uid/gid of the PHP-FPM user prior starting up PHP-FPM.
 
-```
+```shell
 $ docker run -e NEW_UID=1000 -e NEW_GID=1000 -it devilbox/php-fpm-7.3:base-alpine
 [INFO] Changing user 'devilbox' uid to: 1000
 root $ usermod -u 1000 devilbox
@@ -135,7 +135,7 @@ To tackle this on the PHP-FPM side is only half a solution to the problem. The s
 
 The provided Docker images heavily rely on inheritance to guarantee smallest possible image size. Each of them provide a working PHP-FPM server and you must decide what version works best for you. Look at the sketch below to get an overview about the two provided flavours and each of their different types.
 
-```
+```shell
       [Alpine]               [Debian]          # Base FROM image
          |                      |              #
          |                      |              #
@@ -166,48 +166,48 @@ The following table shows a more complete overview about the offered Docker imag
  </thead>
  <tbody>
   <tr>
-   <td rowspan="2">**base**</td>
-   <td>`devilbox/php-fpm-7.3:base-alpine`</td>
+   <td rowspan="2"><strong>base</strong></td>
+   <td><code>devilbox/php-fpm-7.3:base-alpine</code></td>
    <td><img src="https://images.microbadger.com/badges/image/devilbox/php-fpm-7.3:base-alpine.svg" /> <img src="https://images.microbadger.com/badges/version/devilbox/php-fpm-7.3:base-alpine.svg" /></td>
   </tr>
   <tr>
-   <td>`devilbox/php-fpm-7.3:base-debian`</td>
+   <td><code>devilbox/php-fpm-7.3:base-debian</code></td>
    <td><img src="https://images.microbadger.com/badges/image/devilbox/php-fpm-7.3:base-debian.svg" /> <img src="https://images.microbadger.com/badges/version/devilbox/php-fpm-7.3:base-debian.svg" /></td>
   </tr>
   <tr>
    <td colspan="3"></td>
   </tr>
   <tr>
-   <td rowspan="2">**mods**</td>
-   <td>`devilbox/php-fpm-7.3:mods-alpine`</td>
+   <td rowspan="2"><strong>mods</strong></td>
+   <td><code>devilbox/php-fpm-7.3:mods-alpine</code></td>
    <td><img src="https://images.microbadger.com/badges/image/devilbox/php-fpm-7.3:mods-alpine.svg" /> <img src="https://images.microbadger.com/badges/version/devilbox/php-fpm-7.3:mods-alpine.svg" /></td>
   </tr>
   <tr>
-   <td>`devilbox/php-fpm-7.3:mods-debian`</td>
+   <td><code>devilbox/php-fpm-7.3:mods-debian</code></td>
    <td><img src="https://images.microbadger.com/badges/image/devilbox/php-fpm-7.3:mods-debian.svg" /> <img src="https://images.microbadger.com/badges/version/devilbox/php-fpm-7.3:mods-debian.svg" /></td>
   </tr>
   <tr>
    <td colspan="3"></td>
   </tr>
   <tr>
-   <td rowspan="2">**prod**</td>
-   <td>`devilbox/php-fpm-7.3:prod-alpine`</td>
+   <td rowspan="2"><strong>prod</strong></td>
+   <td><code>devilbox/php-fpm-7.3:prod-alpine</code></td>
    <td><img src="https://images.microbadger.com/badges/image/devilbox/php-fpm-7.3:prod-alpine.svg" /> <img src="https://images.microbadger.com/badges/version/devilbox/php-fpm-7.3:prod-alpine.svg" /></td>
   </tr>
   <tr>
-   <td>`devilbox/php-fpm-7.3:prod-debian`</td>
+   <td><code>devilbox/php-fpm-7.3:prod-debian</code></td>
    <td><img src="https://images.microbadger.com/badges/image/devilbox/php-fpm-7.3:prod-debian.svg" /> <img src="https://images.microbadger.com/badges/version/devilbox/php-fpm-7.3:prod-debian.svg" /></td>
   </tr>
   <tr>
    <td colspan="3"></td>
   </tr>
   <tr>
-   <td rowspan="2">**work**</td>
-   <td>`devilbox/php-fpm-7.3:work-alpine`</td>
+   <td rowspan="2"><strong>work</strong></td>
+   <td><code>devilbox/php-fpm-7.3:work-alpine</code></td>
    <td><img src="https://images.microbadger.com/badges/image/devilbox/php-fpm-7.3:work-alpine.svg" /> <img src="https://images.microbadger.com/badges/version/devilbox/php-fpm-7.3:work-alpine.svg" /></td>
   </tr>
   <tr>
-   <td>`devilbox/php-fpm-7.3:work-debian`</td>
+   <td><code>devilbox/php-fpm-7.3:work-debian</code></td>
    <td><img src="https://images.microbadger.com/badges/image/devilbox/php-fpm-7.3:work-debian.svg" /> <img src="https://images.microbadger.com/badges/version/devilbox/php-fpm-7.3:work-debian.svg" /></td>
   </tr>
  </tbody>
@@ -227,18 +227,51 @@ This repository uses Docker tags to refer to different flavours and types of the
  </thead>
  <tbody>
   <tr>
-   <td>`:latest`</td>
-   <td><sub>`:base-alpine`<br/>`:base-debian`<br/>`:mods-alpine`<br/>`:mods-debian`<br/>`:prod-alpine`<br/>`:prod-debian`<br/>`:work-alpine`<br/>`:work-debian`</sub></td>
+   <td><code>:latest</code></td>
+   <td>
+    <sub>
+     <code>:base-alpine</code><br/>
+     <code>:base-debian</code><br/>
+     <code>:mods-alpine</code><br/>
+     <code>:mods-debian</code><br/>
+     <code>:prod-alpine</code><br/>
+     <code>:prod-debian</code><br/>
+     <code>:work-alpine</code><br/>
+     <code>:work-debian</code>
+    </sub>
+   </td>
    <td>Stable<br/><sub>(rolling)</sub><br/><br/>These tags are produced by the master branch of this repository.</td>
   </tr>
   <tr>
-   <td>`:<git-tag-name>`</td>
-   <td><sub>`:base-alpine-<git-tag-name>`<br/>`:base-debian-<git-tag-name>`<br/>`:mods-alpine-<git-tag-name>`<br/>`:mods-debian-<git-tag-name>`<br/>`:prod-alpine-<git-tag-name>`<br/>`:prod-debian-<git-tag-name>`<br/>`:work-alpine-<git-tag-name>`<br/>`:work-debian-<git-tag-name>`</sub></td>
+   <td><code>:&lt;git-tag-name&gt;</code></td>
+   <td>
+    <sub>
+     <code>:base-alpine-&lt;git-tag-name&gt;</code><br/>
+     <code>:base-debian-&lt;git-tag-name&gt;</code><br/>
+     <code>:mods-alpine-&lt;git-tag-name&gt;</code><br/>
+     <code>:mods-debian-&lt;git-tag-name&gt;</code><br/>
+     <code>:prod-alpine-&lt;git-tag-name&gt;</code><br/>
+     <code>:prod-debian-&lt;git-tag-name&gt;</code><br/>
+     <code>:work-alpine-&lt;git-tag-name&gt;</code><br/>
+     <code>:work-debian-&lt;git-tag-name&gt;</code>
+    </sub>
+   </td>
    <td>Stable<br/><sub>(fixed)</sub><br/><br/>Every git tag will produce and preserve these Docker tags.</td>
   </tr>
   <tr>
-   <td>`:<git-branch-name>`</td>
-   <td><sub>`:base-alpine-<git-branch-name>`<br/>`:base-debian-<git-branch-name>`<br/>`:mods-alpine-<git-branch-name>`<br/>`:mods-debian-<git-branch-name>`<br/>`:prod-alpine-<git-branch-name>`<br/>`:prod-debian-<git-branch-name>`<br/>`:work-alpine-<git-branch-name>`<br/>`:work-debian-<git-branch-name>`</sub></td>
+   <td><code>:&lt;git-branch-name&gt;</code></td>
+   <td>
+    <sub>
+     <code>:base-alpine-&lt;git-branch-name&gt;</code><br/>
+     <code>:base-debian-&lt;git-branch-name&gt;</code><br/>
+     <code>:mods-alpine-&lt;git-branch-name&gt;</code><br/>
+     <code>:mods-debian-&lt;git-branch-name&gt;</code><br/>
+     <code>:prod-alpine-&lt;git-branch-name&gt;</code><br/>
+     <code>:prod-debian-&lt;git-branch-name&gt;</code><br/>
+     <code>:work-alpine-&lt;git-branch-name&gt;</code><br/>
+     <code>:work-debian-&lt;git-branch-name&gt;</code>
+    </sub>
+   </td>
    <td>Feature<br/><sub>(for testing)</sub><br/><br/>Tags produced by unmerged branches. Do not rely on them as they might come and go.</td>
   </tr>
  </tbody>
@@ -287,7 +320,7 @@ Check out this table to see which Docker image provides what PHP modules.
 #### Image: base
 <img src="https://images.microbadger.com/badges/version/devilbox/php-fpm-7.3:base-alpine.svg" /> <img src="https://images.microbadger.com/badges/image/devilbox/php-fpm-7.3:base-alpine.svg" /><br/>
 <img src="https://images.microbadger.com/badges/version/devilbox/php-fpm-7.3:base-debian.svg" /> <img src="https://images.microbadger.com/badges/image/devilbox/php-fpm-7.3:base-debian.svg" /> 
-```
+```shell
 docker pull devilbox/php-fpm-7.3:base-alpine
 docker pull devilbox/php-fpm-7.3:base-debian
 ```
@@ -297,7 +330,7 @@ Generic PHP-FPM base image. Use it to derive your own php-fpm docker image from 
 #### Image: mods
 <img src="https://images.microbadger.com/badges/version/devilbox/php-fpm-7.3:mods-alpine.svg" /> <img src="https://images.microbadger.com/badges/image/devilbox/php-fpm-7.3:mods-alpine.svg" /><br/>
 <img src="https://images.microbadger.com/badges/version/devilbox/php-fpm-7.3:mods-debian.svg" /> <img src="https://images.microbadger.com/badges/image/devilbox/php-fpm-7.3:mods-debian.svg" /> 
-```
+```shell
 docker pull devilbox/php-fpm-7.3:mods-alpine
 docker pull devilbox/php-fpm-7.3:mods-debian
 ```
@@ -307,7 +340,7 @@ Generic PHP-FPM image with fully loaded extensions. Use it to derive your own ph
 #### Image: prod
 <img src="https://images.microbadger.com/badges/version/devilbox/php-fpm-7.3:prod-alpine.svg" /> <img src="https://images.microbadger.com/badges/image/devilbox/php-fpm-7.3:prod-alpine.svg" /><br/>
 <img src="https://images.microbadger.com/badges/version/devilbox/php-fpm-7.3:prod-debian.svg" /> <img src="https://images.microbadger.com/badges/image/devilbox/php-fpm-7.3:prod-debian.svg" />
-```
+```shell
 docker pull devilbox/php-fpm-7.3:prod-alpine
 docker pull devilbox/php-fpm-7.3:prod-debian
 ```
@@ -317,7 +350,7 @@ Devilbox production image. This Docker image comes with many injectables, port-f
 #### Image: work
 <img src="https://images.microbadger.com/badges/version/devilbox/php-fpm-7.3:work-alpine.svg" /> <img src="https://images.microbadger.com/badges/image/devilbox/php-fpm-7.3:work-alpine.svg" /><br/>
 <img src="https://images.microbadger.com/badges/version/devilbox/php-fpm-7.3:work-debian.svg" /> <img src="https://images.microbadger.com/badges/image/devilbox/php-fpm-7.3:work-debian.svg" /> 
-```
+```shell
 docker pull devilbox/php-fpm-7.3:work-alpine
 docker pull devilbox/php-fpm-7.3:work-debian
 ```
@@ -343,51 +376,51 @@ Have a look at the following table to see all supported environment variables fo
  </thead>
  <tbody>
   <tr>
-   <td rowspan="3">**base**<br/><br/>**mods**<br/><br/>**prod**<br/><br/>**work**</td>
-   <td><sub>`DEBUG_ENTRYPOINT`</sub></td>
+   <td rowspan="3"><strong>base</strong><br/><br/><strong>mods</strong><br/><br/><strong>prod</strong><br/><br/><strong>work</strong></td>
+   <td><sub><code>DEBUG_ENTRYPOINT</code></sub></td>
    <td>int</td>
-   <td>`0`</td>
-   <td>Set debug level for startup.<br/><sub>`0` Only warnings and errors are shown.<br/>`1` All log messages are shown<br/>`2` All log messages and executed commands are shown.</sub></td>
+   <td><code>0</code></td>
+   <td>Set debug level for startup.<br/><sub><code>0</code> Only warnings and errors are shown.<br/><code>1</code> All log messages are shown<br/><code>2</code> All log messages and executed commands are shown.</sub></td>
   </tr>
   <tr>
-   <td><sub>`NEW_UID`</sub></td>
+   <td><sub><code>NEW_UID</code></sub></td>
    <td>int</td>
-   <td>`1000`</td>
-   <td>Assign the PHP-FPM user a new `uid` in order to syncronize file system permissions with your host computer and the Docker container. You should use a value that matches your host systems local user.<br/><sub>(Type `id` for your uid).</sub></td>
+   <td><code>1000</code></td>
+   <td>Assign the PHP-FPM user a new <code>uid</code> in order to syncronize file system permissions with your host computer and the Docker container. You should use a value that matches your host systems local user.<br/><sub>(Type <code>id</code> for your uid).</sub></td>
   </tr>
   <tr>
-   <td><sub>`NEW_GID`</sub></td>
+   <td><sub><code>NEW_GID</code></sub></td>
    <td>int</td>
-   <td>`1000`</td>
-   <td>Assign the PHP-FPM group a new `gid` in order to syncronize file system permissions with your host computer and the Docker container. You should use a value that matches your host systems local group.<br/><sub>(Type `id` for your gid).</sub></td>
+   <td><code>1000</code></td>
+   <td>Assign the PHP-FPM group a new <code>gid</code> in order to syncronize file system permissions with your host computer and the Docker container. You should use a value that matches your host systems local group.<br/><sub>(Type <code>id</code> for your gid).</sub></td>
   </tr>
   <tr>
    <td colspan="5"></td>
   </tr>
   <tr>
-   <td rowspan="4">**prod**<br/><br/>**work**</td>
-   <td><sub>`TIMEZONE`</sub></td>
+   <td rowspan="4"><strong>prod</strong><br/><br/><strong>work</strong></td>
+   <td><sub><code>TIMEZONE</code></sub></td>
    <td>string</td>
-   <td>`UTC`</td>
-   <td>Set docker OS timezone as well as PHP timezone.<br/>(Example: `Europe/Berlin`)</td>
+   <td><code>UTC</code></td>
+   <td>Set docker OS timezone as well as PHP timezone.<br/>(Example: <code>Europe/Berlin</code>)</td>
   </tr>
   <tr>
-   <td><sub>`DOCKER_LOGS`</sub></td>
+   <td><sub><code>DOCKER_LOGS</code></sub></td>
    <td>bool</td>
-   <td>`1`</td>
-   <td>By default all Docker images are configured to output their PHP-FPM access and error logs to stdout and stderr. Those which support it can change the behaviour to log into files inside the container. Their respective directories are available as volumes that can be mounted to the host computer. This feature might help developer who are more comfortable with tailing or searching through actual files instead of using docker logs.<br/><br/>Set this variable to `0` in order to enable logging to files. Log files are avilable under `/var/log/php/` which is also a docker volume that can be mounted locally.</td>
+   <td><code>1</code></td>
+   <td>By default all Docker images are configured to output their PHP-FPM access and error logs to stdout and stderr. Those which support it can change the behaviour to log into files inside the container. Their respective directories are available as volumes that can be mounted to the host computer. This feature might help developer who are more comfortable with tailing or searching through actual files instead of using docker logs.<br/><br/>Set this variable to <code>0</code> in order to enable logging to files. Log files are avilable under <code>/var/log/php/</code> which is also a docker volume that can be mounted locally.</td>
   </tr>
   <tr>
-   <td><sub>`ENABLE_MAIL`</sub></td>
+   <td><sub><code>ENABLE_MAIL</code></sub></td>
    <td>bool</td>
-   <td>`0`</td>
-   <td>Enable local email catch-all.<br/>Postfix will be configured for local delivery and all mails sent (even to real domains) will be catched locally. No email will ever go out. They will all be stored in a local devilbox account.<br/>Value: `0` or `1`</td>
+   <td><code>0</code></td>
+   <td>Enable local email catch-all.<br/>Postfix will be configured for local delivery and all mails sent (even to real domains) will be catched locally. No email will ever go out. They will all be stored in a local devilbox account.<br/>Value: <code>0</code> or <code>1</code></td>
   </tr>
   <tr>
-   <td><sub>`FORWARD_PORTS_TO_LOCALHOST`</sub></td>
+   <td><sub><code>FORWARD_PORTS_TO_LOCALHOST</code></sub></td>
    <td>string</td>
    <td></td>
-   <td>List of remote ports to forward to 127.0.0.1.<br/>**Format:**<br/><sub>`<local-port>:<remote-host>:<remote-port>`</sub><br/>You can separate multiple entries by comma.<br/>**Example:**<br/><sub>`3306:mysqlhost:3306, 6379:192.0.1.1:6379`</sub></td>
+   <td>List of remote ports to forward to 127.0.0.1.<br/><strong>Format:</strong><br/><sub><code>&lt;local-port&gt;:&lt;remote-host&gt;:&lt;remote-port&gt;</code></sub><br/>You can separate multiple entries by comma.<br/><strong>Example:</strong><br/><sub><code>3306:mysqlhost:3306, 6379:192.0.1.1:6379</code></sub></td>
   </tr>
  </tbody>
 </table>
@@ -406,21 +439,21 @@ Have a look at the following table to see all offered volumes for each Docker im
  </thead>
  <tbody>
   <tr>
-   <td rowspan="4">**prod**<br/><br/>**work**</td>
-   <td><sub>`/etc/php-custom.d`</sub></td>
-   <td>Mount this directory into your host computer and add custom `*.ini` files in order to alter php behaviour.</td>
+   <td rowspan="4"><strong>prod</strong><br/><br/><strong>work</strong></td>
+   <td><sub><code>/etc/php-custom.d</code></sub></td>
+   <td>Mount this directory into your host computer and add custom <code>\*.ini</code> files in order to alter php behaviour.</td>
   </tr>
   <tr>
-   <td><sub>`/etc/php-modules.d`</sub></td>
-   <td>Mount this directory into your host computer and add custo `*.so` files in order to add your php modules.<br/><br/>**Note:**Your should then also provide a custom `*.ini` file in order to actually load your custom provided module.</td>
+   <td><sub><code>/etc/php-modules.d</code></sub></td>
+   <td>Mount this directory into your host computer and add custo <code>\*.so</code> files in order to add your php modules.<br/><br/><strong>Note:</strong>Your should then also provide a custom <code>\*.ini</code> file in order to actually load your custom provided module.</td>
   </tr>
   <tr>
-   <td><sub>`/var/log/php`</sub></td>
-   <td>When setting environment variable `DOCKER_LOGS` to `0`, log files will be available under this directory.</td>
+   <td><sub><code>/var/log/php</code></sub></td>
+   <td>When setting environment variable <code>DOCKER_LOGS</code> to <code>0</code>, log files will be available under this directory.</td>
   </tr>
   <tr>
-   <td><sub>`/var/mail`</sub></td>
-   <td>Emails caught be the postfix catch-all (`ENABLE_MAIL=1`) will be available in this directory.</td>
+   <td><sub><code>/var/mail</code></sub></td>
+   <td>Emails caught be the postfix catch-all (<code>ENABLE_MAIL=1</code>) will be available in this directory.</td>
   </tr>
  </tbody>
 </table>
@@ -440,8 +473,8 @@ Have a look at the following table to see all offered exposed ports for each Doc
  </thead>
  <tbody>
   <tr>
-   <td rowspan="1">**base**<br/>**mods**<br/>**prod**<br/>**work**</td>
-   <td><sub>`9000`</sub></td>
+   <td rowspan="1"><strong>base</strong><br/><strong>mods</strong><br/><strong>prod</strong><br/><strong>work</strong></td>
+   <td><sub><code>9000</code></sub></td>
    <td>PHP-FPM listening port</td>
   </tr>
  </tbody>
@@ -451,14 +484,14 @@ Have a look at the following table to see all offered exposed ports for each Doc
 <h2><img id="examples" width="20" src="https://github.com/devilbox/artwork/raw/master/submissions_logo/cytopia/01/png/logo_64_trans.png"> Examples</h2>
 
 #### Provide PHP-FPM port to host
-```
+```shell
 $ docker run -i \
     -p 127.0.0.1:9000:9000 \
     -t devilbox/php-fpm-7.3	
 ```
 
 #### Custom PHP configuration
-```
+```shell
 # Create config directory to be mounted with dummy configuration
 $ mkdir config
 $ echo "xdebug.enable = 1" > config/xdebug.ini
@@ -471,7 +504,7 @@ $ docker run -i \
 ```
 
 #### Custom PHP modules
-```
+```shell
 # Create module directory and place module into it
 $ mkdir modules
 $ cp /my/module/phalcon.so modules/
@@ -489,7 +522,7 @@ $ docker run -i \
 ```
 
 #### Webserver and PHP-FPM
-```
+```shell
 # Start myself
 $ docker run -d \
     -v ~/my-host-www:/var/www/default/htdocs \
