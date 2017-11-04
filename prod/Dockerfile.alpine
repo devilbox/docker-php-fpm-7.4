@@ -26,9 +26,9 @@ RUN set -x \
 		rsyslog \
 		socat \
 		supervisor \
-	&& rm -rf /var/lib/apt/lists/* \
-	&& apt-get purge -y --auto-remove \
-	&& rm -rf /tmp/*
+	\
+	&& rm -rf /etc/supervisor* \
+	&& mkdir -p /etc/supervisor/conf.d
 
 
 
