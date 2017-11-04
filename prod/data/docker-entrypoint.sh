@@ -129,10 +129,10 @@ copy_ini_files "${PHP_CUST_INI_DIR}" "${PHP_REAL_INI_DIR}" "${DEBUG_LEVEL}"
 ###
 ### Fix permissions
 ###
-run "chown -R ${MY_USER}:${MY_GROUP} ${PHP_CUST_MODULE_DIR}"
-run "chown -R ${MY_USER}:${MY_GROUP} ${PHP_CUST_INI_DIR}"
-run "chown -R ${MY_USER}:${MY_GROUP} ${FPM_LOG_DIR}"
-run "chown -R ${MY_USER}:${MY_GROUP} /var/mail"
+run "chown -R ${MY_USER}:${MY_GROUP} ${PHP_CUST_MODULE_DIR}" "${DEBUG_LEVEL}"
+run "chown -R ${MY_USER}:${MY_GROUP} ${PHP_CUST_INI_DIR}" "${DEBUG_LEVEL}"
+run "chown -R ${MY_USER}:${MY_GROUP} ${FPM_LOG_DIR}" "${DEBUG_LEVEL}"
+run "chown -R ${MY_USER}:${MY_GROUP} /var/mail" "${DEBUG_LEVEL}"
 
 
 ###

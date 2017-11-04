@@ -29,7 +29,7 @@ copy_ini_files() {
 		log "info" "PHP.ini: ${_name} -> ${_dst}/devilbox-${_name}" "${_debug}"
 		run "cp ${_f} ${_dst}/devilbox-${_name}" "${_debug}"
 	done
-	run "find ${_dst} -type -f -iname '*.ini' -exec chmod 0644 \"{}\" \;" "${_debug}"
+	run "find ${_dst} -type f -iname '*.ini' -exec chmod 0644 \"{}\" \;" "${_debug}"
 }
 
 

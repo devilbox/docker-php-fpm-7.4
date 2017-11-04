@@ -20,6 +20,7 @@ LABEL \
 RUN set -x \
 	&& apt-get update \
 	&& DEBIAN_FRONTEND=noninteractive apt-get install --no-install-recommends --no-install-suggests -y \
+		locales-all \
 		postfix \
 		postfix-pcre \
 		rsyslog \
