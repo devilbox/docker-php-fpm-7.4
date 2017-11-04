@@ -15,6 +15,11 @@ FPM_ERROR_LOG_CFG="/usr/local/etc/php-fpm.conf"
 FPM_ACCESS_LOG_CFG="/usr/local/etc/php-fpm.d/zzz-docker.conf"
 FPM_LOG_DIR="/var/log/php"
 
+PHP_CUST_MODULE_DIR="/etc/php-modules.d"
+
+PHP_CUST_INI_DIR="/etc/php-custom.d"
+PHP_REAL_INI_DIR="/usr/local/etc/php.d"
+
 
 ###
 ### Source libs
@@ -65,7 +70,6 @@ set_timezone "TIMEZONE" "${PHP_INI_PATH}" "${DEBUG_LEVEL}"
 ###
 ### Set Logging
 ###
-
 set_docker_logs \
 	"DOCKER_LOGS" \
 	"${FPM_LOG_DIR}" \
@@ -91,7 +95,7 @@ fi
 
 
 ###
-### Supervisor services
+### Supervisor: socat
 ###
 for line in $( port_forward_get_lines "FORWARD_PORTS_TO_LOCALHOST" ); do
 	lport="$( port_forward_get_lport "${line}" )"
@@ -100,11 +104,35 @@ for line in $( port_forward_get_lines "FORWARD_PORTS_TO_LOCALHOST" ); do
 	supervisor_add_service "socat-${lport}-${rhost}-${rport}" "/usr/bin/socat tcp-listen:${lport},reuseaddr,fork tcp:${rhost}:${rport}"
 done
 
+
+###
+### Supervisor: rsyslogd & postfix
+###
 if [ "$(env_get "ENABLE_MAIL")" = "1" ]; then
 	supervisor_add_service "rsyslogd" "/usr/sbin/rsyslogd -n" "1"
 	supervisor_add_service "postfix"  "/usr/local/sbin/postfix.sh"
 fi
+
+
+###
+### Supervisor: php-fpm
+###
 supervisor_add_service "php-fpm"  "/usr/local/sbin/php-fpm"
+
+
+###
+### Copy custom *.ini files
+###
+copy_ini_files "${PHP_CUST_INI_DIR}" "${PHP_REAL_INI_DIR}" "${DEBUG_LEVEL}"
+
+
+###
+### Fix permissions
+###
+run "chown -R ${MY_USER}:${MY_GROUP} ${PHP_CUST_MODULE_DIR}"
+run "chown -R ${MY_USER}:${MY_GROUP} ${PHP_CUST_INI_DIR}"
+run "chown -R ${MY_USER}:${MY_GROUP} ${FPM_LOG_DIR}"
+run "chown -R ${MY_USER}:${MY_GROUP} /var/mail"
 
 
 ###
