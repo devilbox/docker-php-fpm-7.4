@@ -487,7 +487,7 @@ Have a look at the following table to see all offered exposed ports for each Doc
 ```shell
 $ docker run -i \
     -p 127.0.0.1:9000:9000 \
-    -t devilbox/php-fpm-7.3	
+    -t devilbox/php-fpm-7.3
 ```
 
 #### Custom PHP configuration
@@ -499,8 +499,8 @@ $ echo "xdebug.enable = 1" > config/xdebug.ini
 # Run container and mount it
 $ docker run -i \
     -p 127.0.0.1:9000:9000 \
-	-v config:/etc/php-custom.d \
-    -t devilbox/php-fpm-7.3	
+    -v config:/etc/php-custom.d \
+    -t devilbox/php-fpm-7.3
 ```
 
 #### Custom PHP modules
@@ -516,9 +516,9 @@ $ echo "extension=phalcon.so" > config/phalcon.ini
 # Run container and mount it
 $ docker run -i \
     -p 127.0.0.1:9000:9000 \
-	-v config:/etc/php-custom.d \
-	-v modules:/etc/php-modules.d \
-    -t devilbox/php-fpm-7.3	
+    -v config:/etc/php-custom.d \
+    -v modules:/etc/php-modules.d \
+    -t devilbox/php-fpm-7.3
 ```
 
 #### Webserver and PHP-FPM
