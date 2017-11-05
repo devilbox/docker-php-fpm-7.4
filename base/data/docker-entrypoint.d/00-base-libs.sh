@@ -1,4 +1,10 @@
 #!/bin/sh
+#
+# Available global variables:
+#   + MY_USER
+#   + MY_GROUP
+#   + DEBUG_LEVEL
+
 
 set -e
 set -u
@@ -12,50 +18,60 @@ set -u
 ### Log to stdout/stderr
 ###
 log() {
-	_lvl="${1}"
-	_msg="${2}"
-	_debug="${3}"
+	log_lvl="${1}"
+	log_msg="${2}"
 
-	_clr_ok="\033[0;32m"
-	_clr_info="\033[0;34m"
-	_clr_warn="\033[0;33m"
-	_clr_err="\033[0;31m"
-	_clr_rst="\033[0m"
+	log_clr_ok="\033[0;32m"
+	log_clr_info="\033[0;34m"
+	log_clr_warn="\033[0;33m"
+	log_clr_err="\033[0;31m"
+	log_clr_rst="\033[0m"
 
-	if [ "${_lvl}" = "ok" ]; then
-		if [ "${_debug}" -gt "0" ]; then
-			printf "${_clr_ok}[OK]   %s${_clr_rst}\n" "${_msg}"
+	if [ "${log_lvl}" = "ok" ]; then
+		if [ "${DEBUG_LEVEL}" -gt "0" ]; then
+			printf "${log_clr_ok}[OK]   %s${log_clr_rst}\n" "${log_msg}"
 		fi
-	elif [ "${_lvl}" = "info" ]; then
-		if [ "${_debug}" -gt "0" ]; then
-			printf "${_clr_info}[INFO] %s${_clr_rst}\n" "${_msg}"
+	elif [ "${log_lvl}" = "info" ]; then
+		if [ "${DEBUG_LEVEL}" -gt "0" ]; then
+			printf "${log_clr_info}[INFO] %s${log_clr_rst}\n" "${log_msg}"
 		fi
-	elif [ "${_lvl}" = "warn" ]; then
-		printf "${_clr_warn}[WARN] %s${_clr_rst}\n" "${_msg}" 1>&2	# stdout -> stderr
-	elif [ "${_lvl}" = "err" ]; then
-		printf "${_clr_err}[ERR]  %s${_clr_rst}\n" "${_msg}" 1>&2	# stdout -> stderr
+	elif [ "${log_lvl}" = "warn" ]; then
+		printf "${log_clr_warn}[WARN] %s${log_clr_rst}\n" "${log_msg}" 1>&2	# stdout -> stderr
+	elif [ "${log_lvl}" = "err" ]; then
+		printf "${log_clr_err}[ERR]  %s${log_clr_rst}\n" "${log_msg}" 1>&2	# stdout -> stderr
 	else
-		printf "${_clr_err}[???]  %s${_clr_rst}\n" "${_msg}" 1>&2	# stdout -> stderr
+		printf "${log_clr_err}[???]  %s${log_clr_rst}\n" "${log_msg}" 1>&2	# stdout -> stderr
 	fi
+
+	unset -v log_lvl
+	unset -v log_msg
+	unset -v log_clr_ok
+	unset -v log_clr_info
+	unset -v log_clr_warn
+	unset -v log_clr_err
+	unset -v log_clr_rst
 }
 
 
 ###
-### Wrapper for run command
+### Wrapper for run_run command
 ###
 run() {
-	_cmd="${1}"
-	_debug="${2}"
+	run_cmd="${1}"
 
-	_red="\033[0;31m"
-	_green="\033[0;32m"
-	_reset="\033[0m"
-	_user="$(whoami)"
+	run_clr_red="\033[0;31m"
+	run_clr_green="\033[0;32m"
+	run_clr_reset="\033[0m"
 
-	if [ "${_debug}" -gt "1" ]; then
-		printf "${_red}%s \$ ${_green}${_cmd}${_reset}\n" "${_user}"
+	if [ "${DEBUG_LEVEL}" -gt "1" ]; then
+		printf "${run_clr_red}%s \$ ${run_clr_green}${run_cmd}${run_clr_reset}\n" "$( whoami )"
 	fi
-	/bin/sh -c "LANG=C LC_ALL=C ${_cmd}"
+	/bin/sh -c "LANG=C LC_ALL=C ${run_cmd}"
+
+	unset -v run_cmd
+	unset -v run_clr_red
+	unset -v run_clr_green
+	unset -v run_clr_reset
 }
 
 
@@ -71,9 +87,7 @@ isint() {
 ### Is env variable set?
 ###
 env_set() {
-	_varname="${1}"
-
-	if set | grep "^${_varname}=" >/dev/null 2>&1; then
+	if set | grep "^${1}=" >/dev/null 2>&1; then
 		return 0
 	else
 		return 1
@@ -85,22 +99,21 @@ env_set() {
 ### Get env variable by name
 ###
 env_get() {
-	_varname="${1}"
-
 	if ! env_set "${1}"; then
 		return 1
 	fi
 
-	_val="$( set | grep "^${_varname}=" | awk -F '=' '{for (i=2; i<NF; i++) printf $i "="; print $NF}' )"
+	env_get_value="$( set | grep "^${1}=" | awk -F '=' '{for (i=2; i<NF; i++) printf $i "="; print $NF}' )"
 
 	# Remove surrounding quotes
-	_val="$( echo "${_val}" | sed "s/^'//g" )"
-	_val="$( echo "${_val}" | sed 's/^"//g' )"
+	env_get_value="$( echo "${env_get_value}" | sed "s/^'//g" )"
+	env_get_value="$( echo "${env_get_value}" | sed 's/^"//g' )"
 
-	_val="$( echo "${_val}" | sed "s/'$//g" )"
-	_val="$( echo "${_val}" | sed 's/"$//g' )"
+	env_get_value="$( echo "${env_get_value}" | sed "s/'$//g" )"
+	env_get_value="$( echo "${env_get_value}" | sed 's/"$//g' )"
 
-	echo "${_val}"
+	echo "${env_get_value}"
+	unset -v env_get_value
 }
 
 

@@ -28,8 +28,26 @@ RUN set -x \
 		supervisor \
 	\
 	&& rm -rf /etc/supervisor* \
-	&& mkdir -p /etc/supervisor/conf.d
+	&& mkdir -p /etc/supervisor/conf.d \
+	&& mkdir -p /var/log/supervisor
 
+# Locale support
+RUN set -x \
+	&& apk add --no-cache --virtual .locale-build-tools \
+		cmake \
+		g++ \
+		gcc \
+		gettext-dev\
+		git \
+		make \
+	&& git clone https://github.com/rilian-la-te/musl-locales /tmp/musl-locales \
+	&& cd /tmp/musl-locales \
+	&& cmake . \
+	&& make \
+	&& make install \
+	&& cd / \
+	&& rm -rf /tmp/* \
+	&& apk del .locale-build-tools
 
 
 ###

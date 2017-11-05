@@ -1,4 +1,10 @@
 #!/bin/sh
+#
+# Available global variables:
+#   + MY_USER
+#   + MY_GROUP
+#   + DEBUG_LEVEL
+
 
 set -e
 set -u
@@ -13,44 +19,45 @@ set -u
 ### Setup Postfix for catch-all
 ###
 set_postfix() {
-	_env_mail_varname="${1}"
-	_dvl_user="${2}"
-	_dvl_group="${3}"
-	_debug="${4}"
+	postfix_env_varname="${1}"
 
-	if ! env_set "${_env_mail_varname}"; then
-		log "info" "\$${_env_mail_varname} not set." "${_debug}"
-		log "info" "Disabling sending of emails" "${_debug}"
+	if ! env_set "${postfix_env_varname}"; then
+		log "info" "\$${postfix_env_varname} not set."
+		log "info" "Disabling sending of emails"
 	else
-		_mail="$( env_get "${_env_mail_varname}" )"
-		if [ "${_mail}" = "1" ]; then
-			log "info" "Enabling sending of emails" "${_debug}"
+		postfix_env_value="$( env_get "${postfix_env_varname}" )"
+		if [ "${postfix_env_value}" = "1" ]; then
+			log "info" "Enabling sending of emails"
 
 			# Add Mail file if it does not exist
-			if [ ! -f "/var/mail/${_dvl_user}" ]; then
-				run "touch /var/mail/${_dvl_user}" "${_debug}"
+			if [ ! -f "/var/mail/${MY_USER}" ]; then
+				run "touch /var/mail/${MY_USER}"
 			fi
 
 			# Fix mail user permissions after mount
-			run "chmod 0644 /var/mail/${_dvl_user}" "${_debug}"
-			run "chown ${_dvl_user}:${_dvl_group} /var/mail/${_dvl_user}" "${_debug}"
+			run "chmod 0644 /var/mail/${MY_USER}"
+			run "chown ${MY_USER}:${MY_GROUP} /var/mail"
+			run "chown ${MY_USER}:${MY_GROUP} /var/mail/${MY_USER}"
 
 			# Postfix configuration
-			run "postconf -e 'inet_protocols=ipv4'" "${_debug}"
-			run "postconf -e 'virtual_alias_maps=pcre:/etc/postfix/virtual'" "${_debug}"
-			run "echo '/.*@.*/ ${_dvl_user}' >> /etc/postfix/virtual" "${_debug}"
+			run "postconf -e 'inet_protocols=ipv4'"
+			run "postconf -e 'virtual_alias_maps=pcre:/etc/postfix/virtual'"
+			run "echo '/.*@.*/ ${MY_USER}' >> /etc/postfix/virtual"
 
-			run "newaliases" "${_debug}"
+			run "newaliases"
 
-		elif [ "${_mail}" = "0" ]; then
-			log "info" "Disabling sending of emails." "${_debug}"
+		elif [ "${postfix_env_value}" = "0" ]; then
+			log "info" "Disabling sending of emails."
 
 		else
-			log "err" "Invalid value for \$${_env_mail_varname}" "${_debug}"
-			log "err" "Only 1 (for on) or 0 (for off) are allowed" "${_debug}"
+			log "err" "Invalid value for \$${postfix_env_varname}"
+			log "err" "Only 1 (for on) or 0 (for off) are allowed"
 			exit 1
 		fi
 	fi
+
+	unset -v postfix_env_varname
+	unset -v postfix_env_value
 }
 
 

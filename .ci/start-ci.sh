@@ -34,8 +34,8 @@ declare -a TESTS=()
 ###
 ### Sanity check
 ###
-if [ "${#}" -ne "2" ]; then
-	echo "Usage: start.ci <flavour> <type>"
+if [ "${#}" -ne "3" ]; then
+	echo "Usage: start.ci <image> <flavour> <type>"
 	exit 1
 fi
 
@@ -51,5 +51,8 @@ for f in ${FILES}; do
 done
 
 for i in "${TESTS[@]}"; do
-	run "${i} ${1} ${2}"
+	printf "\n\n\033[0;33m%s\033[0m\n" "################################################################################"
+	printf "\033[0;33m%s %s\033[0m\n"  "#" "${i}"
+	printf "\033[0;33m%s\033[0m\n\n"   "################################################################################"
+	run "${i} ${1} ${2} ${3}"
 done

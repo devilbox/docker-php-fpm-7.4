@@ -59,7 +59,7 @@ install:
   - max=100; i=0; while [ $i -lt $max ]; do if sudo apt-get -y -o Dpkg::Options::="--force-confnew" install docker-ce; then break; else i=$((i+1)); fi done
   - docker version
 script:
-  - .ci/start-ci.sh "${FLAVOUR}" "${TYPE}"
+  - .ci/start-ci.sh "${IMAGE}" "${FLAVOUR}" "${TYPE}"
 
 
 ###
@@ -123,40 +123,40 @@ jobs:
             if [ -n "${TRAVIS_TAG}" ]; then
               max=100; i=0; while [ $i -lt $max ]; do if
                 docker login --username "$DOCKER_USERNAME" --password "$DOCKER_PASSWORD" &&
-                docker push "${IMAGE}:base-alpine-${TRAVIS_TAG}" &&
-                docker push "${IMAGE}:mods-alpine-${TRAVIS_TAG}" &&
-                docker push "${IMAGE}:prod-alpine-${TRAVIS_TAG}" &&
-                docker push "${IMAGE}:work-alpine-${TRAVIS_TAG}" &&
-                docker push "${IMAGE}:base-debian-${TRAVIS_TAG}" &&
-                docker push "${IMAGE}:mods-debian-${TRAVIS_TAG}" &&
+                docker push "${IMAGE}:work-debian-${TRAVIS_TAG}" &&
                 docker push "${IMAGE}:prod-debian-${TRAVIS_TAG}" &&
-                docker push "${IMAGE}:work-debian-${TRAVIS_TAG}"; then break; else i=$((i+1)); fi
+                docker push "${IMAGE}:mods-debian-${TRAVIS_TAG}" &&
+                docker push "${IMAGE}:base-debian-${TRAVIS_TAG}" &&
+                docker push "${IMAGE}:work-alpine-${TRAVIS_TAG}" &&
+                docker push "${IMAGE}:prod-alpine-${TRAVIS_TAG}" &&
+                docker push "${IMAGE}:mods-alpine-${TRAVIS_TAG}" &&
+                docker push "${IMAGE}:base-alpine-${TRAVIS_TAG}"; then break; else i=$((i+1)); fi
               done;
               if [ $i -gt 98 ]; then false; fi
             elif [ "${TRAVIS_BRANCH}" == "master" ]; then
               max=100; i=0; while [ $i -lt $max ]; do if
                 docker login --username "$DOCKER_USERNAME" --password "$DOCKER_PASSWORD" &&
-                docker push "${IMAGE}:base-alpine" &&
-                docker push "${IMAGE}:mods-alpine" &&
-                docker push "${IMAGE}:prod-alpine" &&
-                docker push "${IMAGE}:work-alpine" &&
-                docker push "${IMAGE}:base-debian" &&
-                docker push "${IMAGE}:mods-debian" &&
+                docker push "${IMAGE}:work-debian" &&
                 docker push "${IMAGE}:prod-debian" &&
-                docker push "${IMAGE}:work-debian"; then break; else i=$((i+1)); fi
+                docker push "${IMAGE}:mods-debian" &&
+                docker push "${IMAGE}:base-debian" &&
+                docker push "${IMAGE}:work-alpine" &&
+                docker push "${IMAGE}:prod-alpine" &&
+                docker push "${IMAGE}:mods-alpine" &&
+                docker push "${IMAGE}:base-alpine"; then break; else i=$((i+1)); fi
               done;
               if [ $i -gt 98 ]; then false; fi
             elif [[ ${TRAVIS_BRANCH} =~ ^(release[/-][.0-9]+)$ ]]; then
               max=100; i=0; while [ $i -lt $max ]; do if
                 docker login --username "$DOCKER_USERNAME" --password "$DOCKER_PASSWORD" &&
-                docker push "${IMAGE}:base-alpine-${TRAVIS_BRANCH}" &&
-                docker push "${IMAGE}:mods-alpine-${TRAVIS_BRANCH}" &&
-                docker push "${IMAGE}:prod-alpine-${TRAVIS_BRANCH}" &&
-                docker push "${IMAGE}:work-alpine-${TRAVIS_BRANCH}" &&
-                docker push "${IMAGE}:base-debian-${TRAVIS_BRANCH}" &&
-                docker push "${IMAGE}:mods-debian-${TRAVIS_BRANCH}" &&
+                docker push "${IMAGE}:work-debian-${TRAVIS_BRANCH}" &&
                 docker push "${IMAGE}:prod-debian-${TRAVIS_BRANCH}" &&
-                docker push "${IMAGE}:work-debian-${TRAVIS_BRANCH}"; then break; else i=$((i+1)); fi
+                docker push "${IMAGE}:mods-debian-${TRAVIS_BRANCH}" &&
+                docker push "${IMAGE}:base-debian-${TRAVIS_BRANCH}" &&
+                docker push "${IMAGE}:work-alpine-${TRAVIS_BRANCH}" &&
+                docker push "${IMAGE}:prod-alpine-${TRAVIS_BRANCH}" &&
+                docker push "${IMAGE}:mods-alpine-${TRAVIS_BRANCH}" &&
+                docker push "${IMAGE}:base-alpine-${TRAVIS_BRANCH}"; then break; else i=$((i+1)); fi
               done;
               if [ $i -gt 98 ]; then false; fi
             else

@@ -127,6 +127,13 @@ copy_ini_files "${PHP_CUST_INI_DIR}" "${PHP_REAL_INI_DIR}"
 
 
 ###
+### mysqldump-secure
+###
+fix_mds_permissions
+set_mds_settings "MYSQL_BACKUP_USER" "MYSQL_BACKUP_PASS" "MYSQL_BACKUP_HOST"
+
+
+###
 ### Start
 ###
 exec /usr/bin/supervisord -c /etc/supervisor/supervisord.conf
