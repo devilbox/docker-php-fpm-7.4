@@ -61,6 +61,7 @@ Choose between [Alpine](https://www.alpinelinux.org) or [Debian](https://www.deb
     6. [MySQL and Redis connect via 127.0.0.1 (via port-forward)](#mysql-and-redis-connect-via-127-0-0-1-via-port-forward-)
     7. [Launch Postfix for mail-catching](#launch-postfix-for-mail-catching)
     8. [Webserver and PHP-FPM](#webserver-and-php-fpm)
+    9. [Create MySQL Backups](#create-mysql-backups)
 7. **[Automated builds](#automated-builds)**
 8. **[Contributing](#contributing)**
 9. **[Credits](#credits)**
@@ -491,9 +492,13 @@ Have a look at the following table to see all offered volumes for each Docker im
    <td colspan="3"></td>
   </tr>
   <tr>
-   <td rowspan="1"><strong>work</strong></td>
+   <td rowspan="2"><strong>work</strong></td>
    <td><code>/etc/bash-custom.d</code></td>
-   <td>Mount this directory into your host computer and add custom configuration files for `bash` and other tools.</td>
+   <td>Mount this directory into your host computer and add custom configuration files for <code>bash</code> and other tools.</td>
+  </tr>
+  <tr>
+   <td><code>/shared/backups</code></td>
+   <td>Mount this directory into your host computer to access MySQL backups created by <a href="https://mysqldump-secure.org" >mysqldump-secure</a>.</td>
   </tr>
  </tbody>
 </table>
@@ -718,6 +723,25 @@ $ docker run -d \
     -t devilbox/nginx-mainline
 ```
 
+#### Create MySQL Backups
+
+**Note:** This will only work with `work-(alpine|debian)` Docker images.
+
+The MySQL server could be another Docker container linked to the PHP-FPM container. Let's assume the PHP-FPM container is able to access the MySQL container by the hostname `mysql`.
+
+```
+# Start container
+$ docker run -d \
+    -e MYSQL_BACKUP_USER=root \
+    -e MYSQL_BACKUP_PASS=somepass \
+    -e MYSQL_BACKUP_HOST=mysql \
+    -v ~/backups:/shared/backsup \
+    --name php \
+    -t devilbox/php-fpm-7.3:work-debian
+
+# Run database dump
+$ docker exec -it php mysqldump-secure
+```
 
 <h2><img id="automated-builds" width="20" src="https://github.com/devilbox/artwork/raw/master/submissions_logo/cytopia/01/png/logo_64_trans.png"> Automated builds</h2>
 
