@@ -17,7 +17,13 @@ function run() {
 	local reset="\033[0m"
 
 	printf "${yellow}[%s] ${red}%s \$ ${green}${cmd}${reset}\n" "$(hostname)" "$(whoami)"
-	sh -c "LANG=C LC_ALL=C ${cmd}"
+	if sh -c "LANG=C LC_ALL=C ${cmd}"; then
+		printf "${green}[%s]${reset}\n" "OK"
+		return 0
+	else
+		printf "${red}[%s]${reset}\n" "ERROR"
+		return 1
+	fi
 }
 
 
@@ -42,7 +48,7 @@ function get_random_name() {
 ###
 ### Docker build
 ###
-docker_build() {
+function docker_build() {
 	local dockerfile="${1}"
 
 	local buildpath=
@@ -74,4 +80,68 @@ docker_build() {
 	if [ $i -gt 98 ]; then
 		false
 	fi
+}
+
+
+###
+### Docker run
+###
+function docker_run() {
+	local image_name="${1}"
+
+	shift
+	local args="${*}"
+
+	# Returns docker-id
+	did="$( sh -c "LANG=C LC_ALL=C docker run -d --name $( get_random_name ) ${args} ${image_name}" )"
+	sleep 5
+
+	# Just checking if it is up
+	docker exec -it ${did} ls >/dev/null 2>&1
+
+	# Only get 8 digits of docker id
+	echo "${did}" | grep -Eo '^[0-9a-zA-Z]{8}'
+}
+
+
+
+
+###
+### Show Docker logs
+###
+function docker_logs() {
+	local docker_id="${1}"
+
+	run "docker logs ${docker_id}"
+}
+
+###
+### Docker exec
+###
+function docker_exec() {
+	local did="${1}"
+	local cmd="${2}"
+	shift
+	shift
+	local args="${*}"
+
+	run "docker exec ${args} -it ${did} ${cmd}"
+}
+
+
+###
+### Stop container
+###
+function docker_stop() {
+	local did="${1}"
+	local name=
+	name="$( docker ps --no-trunc --format='{{.ID}} {{.Names}}' | grep "${did}" | head -1 | awk '{print $2}' )"
+	# Stop
+	run "docker stop ${did}"
+	if docker ps | grep -q "${did}"; then
+		run "docker kill ${did}" || true
+	fi
+
+	# Remove
+	run "docker rm -f ${name}"
 }

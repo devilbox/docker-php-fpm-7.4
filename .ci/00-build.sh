@@ -6,8 +6,9 @@ set -o pipefail
 
 CWD="$(cd -P -- "$(dirname -- "$0")" && pwd -P)"
 
-FLAVOUR="${1}"
-TYPE="${2}"
+#IMAGE="${1}"
+FLAVOUR="${2}"
+TYPE="${3}"
 
 # shellcheck disable=SC1090
 . "${CWD}/.lib.sh"

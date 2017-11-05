@@ -59,7 +59,7 @@ install:
   - max=100; i=0; while [ $i -lt $max ]; do if sudo apt-get -y -o Dpkg::Options::="--force-confnew" install docker-ce; then break; else i=$((i+1)); fi done
   - docker version
 script:
-  - .ci/start-ci.sh "${FLAVOUR}" "${TYPE}"
+  - .ci/start-ci.sh "${IMAGE}" "${FLAVOUR}" "${TYPE}"
 
 
 ###
