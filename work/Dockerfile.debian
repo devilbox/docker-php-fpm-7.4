@@ -13,17 +13,99 @@ LABEL \
 	license="MIT"
 
 
+###
+### Install Tools
+###
+
+# System dev tools
+RUN set -x \
+	&& mkdir -p  /usr/share/man/man1 \
+	&& mkdir -p  /usr/share/man/man7 \
+	&& apt-get update \
+	&& apt-get install --no-install-recommends --no-install-suggests -y \
+		ack-grep \
+		aspell \
+		autoconf \
+		automake \
+		bash-completion \
+		bzip2 \
+		coreutils \
+		curl \
+		dnsutils \
+		dos2unix \
+		file \
+		git \
+		git-svn \
+		hostname \
+		htop \
+		imagemagick \
+		iputils-ping \
+		less \
+		mongo-tools \
+		mongodb-clients \
+		moreutils \
+		mysql-client \
+		net-tools \
+		netcat \
+		postgresql-client-9.6 \
+		python-pip \
+		rubygems \
+		ruby-dev \
+		shellcheck \
+		silversearcher-ag \
+		subversion \
+		sudo \
+		tig \
+		vim \
+		w3m \
+		wget \
+		whois \
+		xz-utils \
+	&& rm -rf /var/lib/apt/lists/* \
+	&& apt-get purge -y --auto-remove \
+	&& rm -rf /usr/share/man
+
+# Node / NPM
+RUN set -x \
+	&& mkdir -p /usr/local/src \
+	&& VERSION="$( curl -Lq https://nodejs.org 2>/dev/null | grep LTS | grep -Eo 'data-version.*.' | grep -oE 'v[0-9.]+' )" \
+	&& wget --retry-connrefused --waitretry=1 --read-timeout=20 --timeout=15 --tries=30 \
+		-P /usr/local/src https://nodejs.org/dist/${VERSION}/node-${VERSION}-linux-x64.tar.xz \
+	&& unxz /usr/local/src/node-${VERSION}-linux-x64.tar.xz \
+	&& tar xvf /usr/local/src/node-${VERSION}-linux-x64.tar -C /usr/local/src \
+	&& ln -s /usr/local/src/node-${VERSION}-linux-x64 /usr/local/node \
+	&& ln -s /usr/local/node/bin/* /usr/local/bin/ \
+	&& rm -rf /usr/local/src/node-${VERSION}-linux-x64.tar.xz \
+	&& rm -rf /usr/local/src/node-${VERSION}-linux-x64/LICENSE \
+	&& rm -rf /usr/local/src/node-${VERSION}-linux-x64/*.md \
+	&& rm -rf /usr/local/src/node-${VERSION}-linux-x64/include \
+	&& rm -rf /usr/local/src/node-${VERSION}-linux-x64/share
+
+# Composer
+RUN set -x \
+	&& curl -sS https://getcomposer.org/installer | php \
+	&& mv composer.phar /usr/local/bin/composer \
+	&& composer self-update \
+	&& rm -rf /root/.composer
+
+
 
 ###
-### Install
+### Configure Bash
 ###
-RUN set -x \
-	&& apt-get update \
-	&& DEBIAN_FRONTEND=noninteractive apt-get install --no-install-recommends --no-install-suggests -y \
-		# dig
-		dnsutils \
-	&& rm -rf /var/lib/apt/lists/* \
-	&& apt-get purge -y --auto-remove
+RUN \
+	{ \
+		echo ". /etc/bash-devilbox"; \
+		echo "if [ -d /etc/bash-custom.d/ ]; then"; \
+		echo "    for f in /etc/bash-custom.d/*.sh ; do"; \
+		echo "        if [ -r \"\${f}\" ]; then"; \
+		echo "            . \"\${f}\""; \
+		echo "        fi"; \
+		echo "    done"; \
+		echo "    unset f"; \
+		echo "fi"; \
+	} | tee -a /home/devilbox/.bashrc /root/.bashrc \
+	&& chown devilbox:devilbox /home/devilbox/.bashrc
 
 
 
@@ -36,10 +118,22 @@ RUN set -x \
 
 
 ###
+### Copy files
+###
+#COPY ./data/docker-entrypoint.sh /docker-entrypoint.sh
+#COPY ./data/docker-entrypoint.d/*.sh /docker-entrypoint.d/
+COPY ./data/bash-devilbox /etc/bash-devilbox
+COPY ./data/sudo-devilbox /etc/sudoers.d/devilbox
+
+
+
+###
 ### Volumes
 ###
+VOLUME /etc/bash-custom.d
 VOLUME /etc/php-custom.d
 VOLUME /etc/php-modules.d
+VOLUME /shared/backups
 VOLUME /var/log/php
 VOLUME /var/mail
 
