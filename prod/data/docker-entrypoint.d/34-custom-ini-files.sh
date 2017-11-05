@@ -1,4 +1,10 @@
 #!/bin/sh
+#
+# Available global variables:
+#   + MY_USER
+#   + MY_GROUP
+#   + DEBUG_LEVEL
+
 
 set -e
 set -u
@@ -12,24 +18,29 @@ set -u
 ### Copy *.ini files from source to destination with prefix
 ###
 copy_ini_files() {
-	_src="${1}"
-	_dst="${2}"
-	_debug="${3}"
+	ini_src="${1}"
+	ini_dst="${2}"
 
-	if [ ! -d "${_src}" ]; then
-		run "mkdir -p ${_src}" "${_debug}"
+	if [ ! -d "${ini_src}" ]; then
+		run "mkdir -p ${ini_src}"
 	fi
-	_files="$( find "${_src}" -type f -iname '*.ini' )"
+	ini_files="$( find "${ini_src}" -type f -iname '*.ini' )"
 
 	# loop over them line by line
 	IFS='
 	'
-	for _f in ${_files}; do
-		_name="$( basename "${_f}" )"
-		log "info" "PHP.ini: ${_name} -> ${_dst}/devilbox-${_name}" "${_debug}"
-		run "cp ${_f} ${_dst}/devilbox-${_name}" "${_debug}"
+	for ini_f in ${ini_files}; do
+		ini_name="$( basename "${ini_f}" )"
+		log "info" "PHP.ini: ${ini_name} -> ${ini_dst}/zzz-devilbox-${ini_name}"
+		run "cp ${ini_f} ${ini_dst}/devilbox-${ini_name}"
 	done
-	run "find ${_dst} -type f -iname '*.ini' -exec chmod 0644 \"{}\" \;" "${_debug}"
+	run "find ${ini_dst} -type f -iname '*.ini' -exec chmod 0644 \"{}\" \;"
+
+	unset -v ini_src
+	unset -v ini_dst
+	unset -v ini_files
+	unset -v ini_f
+	unset -v ini_name
 }
 
 

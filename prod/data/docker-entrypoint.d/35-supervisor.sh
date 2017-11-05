@@ -1,10 +1,14 @@
 #!/bin/sh
+#
+# Available global variables:
+#   + MY_USER
+#   + MY_GROUP
+#   + DEBUG_LEVEL
+
 
 set -e
 set -u
 
-
-SUPERVISOR_CONF="/etc/supervisor/conf.d"
 
 
 ############################################################
@@ -15,37 +19,42 @@ SUPERVISOR_CONF="/etc/supervisor/conf.d"
 ### Add service to supervisord
 ###
 supervisor_add_service() {
-	_name="${1}"
-	_command="${2}"
-	_priority=
+	supervisor_name="${1}"
+	supervisor_command="${2}"
+	supervisor_confd="${3}"
+	supervisor_priority=
 
-	if [ "${#}" -gt "2" ]; then
-		_priority="${3}"
+	if [ "${#}" -gt "3" ]; then
+		supervisor_priority="${4}"
 	fi
 
+	if [ ! -d "${supervisor_confd}" ]; then
+		run "mkdir -p ${supervisor_confd}"
+	fi
+
+	# Add services
 	{
-		echo "[program:${_name}]";
-		echo "command=${_command}";
-		if [ -n "${_priority}" ]; then
-			echo "priority=${_priority}";
+		echo "[program:${supervisor_name}]";
+		echo "command = ${supervisor_command}";
+
+		if [ -n "${supervisor_priority}" ]; then
+			echo "priority = ${supervisor_priority}";
 		fi
-		echo "autostart=true";
-		echo "autorestart=true";
-		echo "stdout_logfile=/dev/stdout";
-		echo "stdout_logfile_maxbytes=0";
-		echo "stderr_logfile=/dev/stderr";
-		echo "stderr_logfile_maxbytes=0";
-		echo "stdout_events_enabled=true";
-		echo "stderr_events_enabled=true";
-	} > "${SUPERVISOR_CONF}/${_name}.conf"
 
+		echo "autostart               = true";
+		echo "autorestart             = true";
+
+		echo "stdout_logfile          = /dev/stdout";
+		echo "stdout_logfile_maxbytes = 0";
+		echo "stdout_events_enabled   = true";
+
+		echo "stderr_logfile          = /dev/stderr";
+		echo "stderr_logfile_maxbytes = 0";
+		echo "stderr_events_enabled   = true";
+	} > "${supervisor_confd}/${supervisor_name}.conf"
+
+	unset -v supervisor_name
+	unset -v supervisor_command
+	unset -v supervisor_confd
+	unset -v supervisor_priority
 }
-
-
-############################################################
-# Sanity Checks
-############################################################
-
-if [ ! -d "${SUPERVISOR_CONF}" ]; then
-	echo "supervisor config dir does not exist: ${SUPERVISOR_CONF}"
-fi

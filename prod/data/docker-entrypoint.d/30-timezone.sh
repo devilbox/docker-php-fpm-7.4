@@ -1,4 +1,10 @@
 #!/bin/sh
+#
+# Available global variables:
+#   + MY_USER
+#   + MY_GROUP
+#   + DEBUG_LEVEL
+
 
 set -e
 set -u
@@ -9,35 +15,38 @@ set -u
 ############################################################
 
 ###
-### Change UID
+### Change Timezone
 ###
 set_timezone() {
-	_env_varname="${1}"
-	_php_ini="${2}"
-	_debug="${3}"
+	tz_env_varname="${1}"
+	tz_php_ini="${2}"
 
-	if ! env_set "${_env_varname}"; then
-		log "info" "\$${_env_varname} not set." "${_debug}"
-		log "info" "Setting PHP: timezone=UTC" "${_debug}"
-		run "sed -i'' 's|^[[:space:]]*;*[[:space:]]*date\.timezone[[:space:]]*=.*$|date.timezone = UTF|g' ${_php_ini}" "${_debug}"
+	if ! env_set "${tz_env_varname}"; then
+		log "info" "\$${tz_env_varname} not set."
+		log "info" "Setting PHP: timezone=UTC"
+		run "sed -i'' 's|^[[:space:]]*;*[[:space:]]*date\.timezone[[:space:]]*=.*$|date.timezone = UTF|g' ${tz_php_ini}"
 	else
-		_timezone="$( env_get "${_env_varname}" )"
-		if [ -f "/usr/share/zoneinfo/${_timezone}" ]; then
+		tz_timezone="$( env_get "${tz_env_varname}" )"
+		if [ -f "/usr/share/zoneinfo/${tz_timezone}" ]; then
 			# Unix Time
-			log "info" "Setting container timezone to: ${_timezone}" "${_debug}"
-			run "rm /etc/localtime" "${_debug}"
-			run "ln -s /usr/share/zoneinfo/${_timezone} /etc/localtime" "${_debug}"
+			log "info" "Setting container timezone to: ${tz_timezone}"
+			run "rm /etc/localtime"
+			run "ln -s /usr/share/zoneinfo/${tz_timezone} /etc/localtime"
 
 			# PHP Time
-			log "info" "Setting PHP: timezone=${_timezone}" "${_debug}"
-			run "sed -i'' 's|^[[:space:]]*;*[[:space:]]*date\.timezone[[:space:]]*=.*$|date.timezone = ${_timezone}|g' ${_php_ini}" "${_debug}"
+			log "info" "Setting PHP: timezone=${tz_timezone}"
+			run "sed -i'' 's|^[[:space:]]*;*[[:space:]]*date\.timezone[[:space:]]*=.*$|date.timezone = ${tz_timezone}|g' ${tz_php_ini}"
 		else
-			log "err" "Invalid timezone for \$${_env_varname}." "${_debug}"
-			log "err" "\$TIMEZONE: '${_timezone}' does not exist." "${_debug}"
+			log "err" "Invalid timezone for \$${tz_env_varname}."
+			log "err" "\$TIMEZONE: '${tz_timezone}' does not exist."
 			exit 1
 		fi
 	fi
-	log "info" "Docker date set to: $(date)" "${_debug}"
+	log "info" "Docker date set to: $(date)"
+
+	unset -v tz_env_varname
+	unset -v tz_php_ini
+	unset -v tz_timezone
 }
 
 

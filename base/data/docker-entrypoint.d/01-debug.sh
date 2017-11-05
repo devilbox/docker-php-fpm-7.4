@@ -12,12 +12,11 @@ set -u
 ### Debug level
 ###
 get_debug_level() {
-	_env_varname="${1}"
-	_default="${2}"
-
-	if ! env_set "${_env_varname}"; then
-		echo "${_default}"
+	if ! env_set "${1}"; then
+		# Return default specified value
+		echo "${2}"
 	else
-		env_get "${_env_varname}"
+		# Return env value
+		env_get "${1}"
 	fi
 }
