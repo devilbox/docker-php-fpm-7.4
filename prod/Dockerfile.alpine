@@ -28,7 +28,8 @@ RUN set -x \
 		supervisor \
 	\
 	&& rm -rf /etc/supervisor* \
-	&& mkdir -p /etc/supervisor/conf.d
+	&& mkdir -p /etc/supervisor/conf.d \
+	&& mkdir -p /var/log/supervisor
 
 # Locale support
 RUN set -x \

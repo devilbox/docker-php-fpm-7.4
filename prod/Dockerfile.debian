@@ -30,7 +30,8 @@ RUN set -x \
 	&& apt-get purge -y --auto-remove \
 	\
 	&& rm -rf /etc/supervisor* \
-	&& mkdir -p /etc/supervisor/conf.d
+	&& mkdir -p /etc/supervisor/conf.d \
+	&& mkdir -p /var/log/supervisor
 
 
 
