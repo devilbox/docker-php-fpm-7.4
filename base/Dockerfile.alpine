@@ -220,13 +220,14 @@ RUN set -x \
 	&& cp /usr/local/src/php-src/php.ini-production ${PHP_CONFIG_FILE_PATH}/php.ini-production \
 	&& ln -sf ${PHP_CONFIG_FILE_PATH}/php.ini-development ${PHP_CONFIG_FILE_PATH}/php.ini \
 	\
+	# Clean-up
+	&& make clean \
+	\
 	&& { \
 		find /usr/local/bin /usr/local/sbin -type f -perm +0111 -exec strip --strip-all '{}' + \
 		|| true; \
 	} \
-	&& make clean \
-	&& cd / \
-	&& rm -rf /usr/local/src \
+	\
 	&& apk del .build-deps \
 	\
 	# Retrieve required run-time libraries
@@ -237,14 +238,27 @@ RUN set -x \
 			| awk 'system("[ -e /usr/local/lib/" $1 " ]") == 0 { next } { print "so:" $1 }' \
 	)" \
 	\
-	# Clean-up
 	&& apk del .php-build-deps \
 	&& apk add --no-cache --virtual .php-run-deps ${RUN_TIME_LIBS} \
 	\
 # https://github.com/docker-library/php/issues/443
 	&& pecl update-channels \
+	&& cd / \
+	&& rm -rf /media \
+	&& rm -rf /mnt \
+	&& rm -rf /opt \
 	&& rm -rf /root/.pearrc \
-	&& rm -rf /tmp/*
+	&& rm -rf /srv \
+	&& rm -rf /tmp/* \
+	&& rm -rf /usr/games \
+	&& rm -rf /usr/local/games \
+	&& rm -rf /usr/local/man \
+	&& rm -rf /usr/local/php \
+	&& rm -rf /usr/local/share \
+	&& rm -rf /usr/local/src \
+	&& rm -rf /usr/share/doc \
+	&& rm -rf /usr/share/man \
+	&& rm -rf /usr/src
 
 # PHP/PHP-FPM Post configuration
 RUN set -x \
