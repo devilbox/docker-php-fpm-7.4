@@ -339,7 +339,9 @@ RUN set -x \
 ### Verify
 ###
 RUN set -x \
-	&& /usr/local/sbin/php-fpm --test
+	&& /usr/local/sbin/php-fpm --test \
+	&& PHP_ERROR="$( php -v 2>&1 1>/dev/null )" \
+	&& if [ -n "${PHP_ERROR}" ]; then echo "${PHP_ERROR}"; false; fi
 
 
 
