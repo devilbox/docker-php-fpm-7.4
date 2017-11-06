@@ -56,8 +56,6 @@ ENV BUILD_DEPS \
 	file \
 	g++ \
 	gcc \
-	g++-6 \
-	gcc-6 \
 	make \
 	re2c
 
