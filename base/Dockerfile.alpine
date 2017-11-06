@@ -224,7 +224,7 @@ RUN set -x \
 	&& make clean \
 	\
 	&& { \
-		find /usr/local/bin /usr/local/sbin -type f -perm +0111 -exec strip --strip-all '{}' + \
+		find ${PHP_PREFIX}/bin ${PHP_PREFIX}/sbin ${PHP_PREFIX}/lib -type f -perm /u+x -exec strip --strip-all '{}' + \
 		|| true; \
 	} \
 	\
