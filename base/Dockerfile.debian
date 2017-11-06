@@ -256,27 +256,14 @@ RUN set -x \
 	&& cp /usr/local/src/php-src/php.ini-production ${PHP_CONFIG_FILE_PATH}/php.ini-production \
 	&& ln -sf ${PHP_CONFIG_FILE_PATH}/php.ini-development ${PHP_CONFIG_FILE_PATH}/php.ini \
 	\
+	# Clean-up
+	&& make clean \
+	\
 	&& { \
 		find ${PHP_PREFIX}/bin ${PHP_PREFIX}/sbin ${PHP_PREFIX}/lib -type f -executable -exec strip --strip-all '{}' + \
 		|| true; \
 	} \
-	&& make clean \
-	&& cd / \
-	&& rm -rf /media \
-	&& rm -rf /mnt \
-	&& rm -rf /opt \
-	&& rm -rf /srv \
-	&& rm -rf /usr/games \
-	&& rm -rf /usr/local/games \
-	&& rm -rf /usr/local/man \
-	&& rm -rf /usr/local/php \
-	&& rm -rf /usr/local/share \
-	&& rm -rf /usr/local/src \
-	&& rm -rf /usr/share/doc \
-	&& rm -rf /usr/share/man \
-	&& rm -rf /usr/src \
 	\
-	# Clean-up
 	&& apt-get update \
 	&& apt-get remove -y \
 		${BUILD_DEPS} \
@@ -294,8 +281,22 @@ RUN set -x \
 	\
 # https://github.com/docker-library/php/issues/443
 	&& pecl update-channels \
+	&& cd / \
+	&& rm -rf /media \
+	&& rm -rf /mnt \
+	&& rm -rf /opt \
 	&& rm -rf /root/.pearrc \
-	&& rm -rf /tmp/*
+	&& rm -rf /srv \
+	&& rm -rf /tmp/* \
+	&& rm -rf /usr/games \
+	&& rm -rf /usr/local/games \
+	&& rm -rf /usr/local/man \
+	&& rm -rf /usr/local/php \
+	&& rm -rf /usr/local/share \
+	&& rm -rf /usr/local/src \
+	&& rm -rf /usr/share/doc \
+	&& rm -rf /usr/share/man \
+	&& rm -rf /usr/src
 
 # PHP/PHP-FPM Post configuration
 RUN set -x \
