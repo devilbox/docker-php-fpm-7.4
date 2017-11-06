@@ -201,6 +201,8 @@ RUN set -x \
 		--with-pgsql \
 		--with-pspell=/usr \
 		--with-readline \
+#recode extension can not be configured together with: imap
+#		--with-recode=/usr \
 		--with-snmp=/usr \
 		--with-tidy \
 		--with-xmlrpc \
