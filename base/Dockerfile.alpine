@@ -49,6 +49,7 @@ ENV MY_USER="devilbox" \
 
 ENV BUILD_DEPS \
 	ca-certificates \
+	binutils \
 	git \
 	wget \
 	autoconf \
