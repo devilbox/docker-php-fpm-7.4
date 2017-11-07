@@ -33,21 +33,36 @@ RUN set -x \
 		${PECL_BUILD_DEPS} \
 	&& update-ca-certificates \
 	\
+#	&& git clone --depth=1 https://github.com/phalcon/cphalcon /tmp/cphalcon \
+#	&& cd /tmp/cphalcon/build \
+#	&& ./install \
+	\
+#	&& pecl install apcu \
 #	&& pecl install amqp \
 	&& pecl install igbinary \
 #	&& pecl install imagick \
+#	&& pecl install -f pecl.php.net/mcrypt \
+#	&& pecl install memcache \
 #	&& pecl install memcached \
 #	&& pecl install mongodb \
 #	&& pecl install msgpack \
 	&& pecl install redis \
+#	&& pecl install uploadprogress \
+#	&& pecl install xdebug \
 	\
-#	&& echo "extension=amqp.so"      > /usr/local/etc/php.d/amqp.ini \
-	&& echo "extension=igbinary.so"  > /usr/local/etc/php.d/igbinary.ini \
-#	&& echo "extension=imagick.so"   > /usr/local/etc/php.d/imagick.ini \
-#	&& echo "extension=memcached.so" > /usr/local/etc/php.d/memcached.ini \
-#	&& echo "extension=mongodb.so"   > /usr/local/etc/php.d/mongodb.ini \
-#	&& echo "extension=msgpack.so"   > /usr/local/etc/php.d/msgpack.ini \
-	&& echo "extension=redis.so"     > /usr/local/etc/php.d/redis.ini \
+#	&& echo "extension=apcu.so"           > /usr/local/etc/php.d/apcu.ini \
+#	&& echo "extension=amqp.so"           > /usr/local/etc/php.d/amqp.ini \
+	&& echo "extension=igbinary.so"       > /usr/local/etc/php.d/igbinary.ini \
+#	&& echo "extension=imagick.so"        > /usr/local/etc/php.d/imagick.ini \
+#	&& echo "extension=mcrypt.so"         > /usr/local/etc/php.d/mcrypt.ini \
+#	&& echo "extension=memcache.so"       > /usr/local/etc/php.d/memcache.ini \
+#	&& echo "extension=memcached.so"      > /usr/local/etc/php.d/memcached.ini \
+#	&& echo "extension=mongodb.so"        > /usr/local/etc/php.d/mongodb.ini \
+#	&& echo "extension=msgpack.so"        > /usr/local/etc/php.d/msgpack.ini \
+#	&& echo "extension=phalcon.so"        > /usr/local/etc/php.d/phalcon.ini \
+	&& echo "extension=redis.so"          > /usr/local/etc/php.d/redis.ini \
+#	&& echo "extension=uploadprogress.so" > /usr/local/etc/php.d/uploadprogress.ini \
+#	&& echo "extension=xdebug.so"         > /usr/local/etc/php.d/xdebug.ini \
 	\
 	&& { \
 		find /usr/local/bin /usr/local/sbin -type f -perm +0111 -exec strip --strip-all '{}' + \
