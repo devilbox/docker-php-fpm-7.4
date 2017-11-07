@@ -306,7 +306,7 @@ RUN set -x \
 	&& sed -i'' 's/^;*\s*cgi\.fix_pathinfo\s*=.*$/cgi.fix_pathinfo = 0/g' ${PHP_CONFIG_FILE_PATH}/php.ini \
 	&& grep -E '^cgi\.fix_pathinfo\s*=\s*0$' ${PHP_CONFIG_FILE_PATH}/php.ini \
 	\
-	&& echo "zend_extension=opcache.so" > ${ARG PHP_CONFIG_FILE_SCAN_DIR}/opcache.ini \
+	&& echo "zend_extension=opcache.so" > ${PHP_CONFIG_FILE_SCAN_DIR}/opcache.ini \
 	\
 	&& cd ${PHP_CONFIG_FILE_PATH} \
 	&& { \
