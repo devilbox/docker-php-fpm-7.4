@@ -104,6 +104,7 @@ docker stop "$( docker ps | grep "my_tmp_${NAME}" | awk '{print $1}')" > /dev/nu
 PHP_MODULES="$( echo "${PHP_MODULES}" | sed 's/\[PHP Modules\]//g' )"       # remove empty lines
 PHP_MODULES="$( echo "${PHP_MODULES}" | sed 's/\[Zend Modules\]//g' )"       # remove empty lines
 
+PHP_MODULES="$( echo "${PHP_MODULES}" | sort -u )"       # Unique
 PHP_MODULES="$( echo "${PHP_MODULES}" | sed '/^\s*$/d' )"       # remove empty lines
 PHP_MODULES="$( echo "${PHP_MODULES}" | tr '\n' ',' )"          # newlines to commas
 #PHP_MODULES="$( echo "${PHP_MODULES}" | sed 's/],/]\n\n/g' )"   # extra line for [foo]
