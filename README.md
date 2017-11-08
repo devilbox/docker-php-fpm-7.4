@@ -185,11 +185,17 @@ The following table shows a more complete overview about the offered Docker imag
   <tr>
    <td rowspan="2"><strong>base</strong></td>
    <td><code>devilbox/php-fpm-7.3:base-alpine</code></td>
-   <td><img src="https://images.microbadger.com/badges/image/devilbox/php-fpm-7.3:base-alpine.svg" /> <img src="https://images.microbadger.com/badges/version/devilbox/php-fpm-7.3:base-alpine.svg" /></td>
+   <td>
+    <a href="https://microbadger.com/images/devilbox/php-fpm-7.3"><img src="https://images.microbadger.com/badges/image/devilbox/php-fpm-7.3:base-alpine.svg" /></a>
+    <a href="https://microbadger.com/images/devilbox/php-fpm-7.3"><img src="https://images.microbadger.com/badges/version/devilbox/php-fpm-7.3:base-alpine.svg" /></a>
+   </td>
   </tr>
   <tr>
    <td><code>devilbox/php-fpm-7.3:base-debian</code></td>
-   <td><img src="https://images.microbadger.com/badges/image/devilbox/php-fpm-7.3:base-debian.svg" /> <img src="https://images.microbadger.com/badges/version/devilbox/php-fpm-7.3:base-debian.svg" /></td>
+   <td>
+    <a href="https://microbadger.com/images/devilbox/php-fpm-7.3"><img src="https://images.microbadger.com/badges/image/devilbox/php-fpm-7.3:base-debian.svg" /></a>
+    <a href="https://microbadger.com/images/devilbox/php-fpm-7.3"><img src="https://images.microbadger.com/badges/version/devilbox/php-fpm-7.3:base-debian.svg" /></a>
+   </td>
   </tr>
   <tr>
    <td colspan="3"></td>
@@ -197,11 +203,17 @@ The following table shows a more complete overview about the offered Docker imag
   <tr>
    <td rowspan="2"><strong>mods</strong></td>
    <td><code>devilbox/php-fpm-7.3:mods-alpine</code></td>
-   <td><img src="https://images.microbadger.com/badges/image/devilbox/php-fpm-7.3:mods-alpine.svg" /> <img src="https://images.microbadger.com/badges/version/devilbox/php-fpm-7.3:mods-alpine.svg" /></td>
+   <td>
+    <a href="https://microbadger.com/images/devilbox/php-fpm-7.3"><img src="https://images.microbadger.com/badges/image/devilbox/php-fpm-7.3:mods-alpine.svg" /></a>
+    <a href="https://microbadger.com/images/devilbox/php-fpm-7.3"><img src="https://images.microbadger.com/badges/version/devilbox/php-fpm-7.3:mods-alpine.svg" /></a>
+   </td>
   </tr>
   <tr>
    <td><code>devilbox/php-fpm-7.3:mods-debian</code></td>
-   <td><img src="https://images.microbadger.com/badges/image/devilbox/php-fpm-7.3:mods-debian.svg" /> <img src="https://images.microbadger.com/badges/version/devilbox/php-fpm-7.3:mods-debian.svg" /></td>
+   <td>
+    <a href="https://microbadger.com/images/devilbox/php-fpm-7.3"><img src="https://images.microbadger.com/badges/image/devilbox/php-fpm-7.3:mods-debian.svg" /></a>
+    <a href="https://microbadger.com/images/devilbox/php-fpm-7.3"><img src="https://images.microbadger.com/badges/version/devilbox/php-fpm-7.3:mods-debian.svg" /></a>
+   </td>
   </tr>
   <tr>
    <td colspan="3"></td>
@@ -209,11 +221,17 @@ The following table shows a more complete overview about the offered Docker imag
   <tr>
    <td rowspan="2"><strong>prod</strong></td>
    <td><code>devilbox/php-fpm-7.3:prod-alpine</code></td>
-   <td><img src="https://images.microbadger.com/badges/image/devilbox/php-fpm-7.3:prod-alpine.svg" /> <img src="https://images.microbadger.com/badges/version/devilbox/php-fpm-7.3:prod-alpine.svg" /></td>
+   <td>
+    <a href="https://microbadger.com/images/devilbox/php-fpm-7.3"><img src="https://images.microbadger.com/badges/image/devilbox/php-fpm-7.3:prod-alpine.svg" /></a>
+    <a href="https://microbadger.com/images/devilbox/php-fpm-7.3"><img src="https://images.microbadger.com/badges/version/devilbox/php-fpm-7.3:prod-alpine.svg" /></a>
+   </td>
   </tr>
   <tr>
    <td><code>devilbox/php-fpm-7.3:prod-debian</code></td>
-   <td><img src="https://images.microbadger.com/badges/image/devilbox/php-fpm-7.3:prod-debian.svg" /> <img src="https://images.microbadger.com/badges/version/devilbox/php-fpm-7.3:prod-debian.svg" /></td>
+   <td>
+    <a href="https://microbadger.com/images/devilbox/php-fpm-7.3"><img src="https://images.microbadger.com/badges/image/devilbox/php-fpm-7.3:prod-debian.svg" /></a>
+    <a href="https://microbadger.com/images/devilbox/php-fpm-7.3"><img src="https://images.microbadger.com/badges/version/devilbox/php-fpm-7.3:prod-debian.svg" /></a>
+   </td>
   </tr>
   <tr>
    <td colspan="3"></td>
@@ -221,11 +239,17 @@ The following table shows a more complete overview about the offered Docker imag
   <tr>
    <td rowspan="2"><strong>work</strong></td>
    <td><code>devilbox/php-fpm-7.3:work-alpine</code></td>
-   <td><img src="https://images.microbadger.com/badges/image/devilbox/php-fpm-7.3:work-alpine.svg" /> <img src="https://images.microbadger.com/badges/version/devilbox/php-fpm-7.3:work-alpine.svg" /></td>
+   <td>
+    <a href="https://microbadger.com/images/devilbox/php-fpm-7.3"><img src="https://images.microbadger.com/badges/image/devilbox/php-fpm-7.3:work-alpine.svg" /></a>
+    <a href="https://microbadger.com/images/devilbox/php-fpm-7.3"><img src="https://images.microbadger.com/badges/version/devilbox/php-fpm-7.3:work-alpine.svg" /></a>
+   </td>
   </tr>
   <tr>
    <td><code>devilbox/php-fpm-7.3:work-debian</code></td>
-   <td><img src="https://images.microbadger.com/badges/image/devilbox/php-fpm-7.3:work-debian.svg" /> <img src="https://images.microbadger.com/badges/version/devilbox/php-fpm-7.3:work-debian.svg" /></td>
+   <td>
+    <a href="https://microbadger.com/images/devilbox/php-fpm-7.3"><img src="https://images.microbadger.com/badges/image/devilbox/php-fpm-7.3:work-debian.svg" /></a>
+    <a href="https://microbadger.com/images/devilbox/php-fpm-7.3"><img src="https://images.microbadger.com/badges/version/devilbox/php-fpm-7.3:work-debian.svg" /></a>
+   </td>
   </tr>
  </tbody>
 </table>
@@ -329,8 +353,10 @@ Check out this table to see which Docker image provides what PHP modules.
 <h2><img id="php-fpm-7.3-features" width="20" src="https://github.com/devilbox/artwork/raw/master/submissions_logo/cytopia/01/png/logo_64_trans.png"> PHP-FPM 7.3 Features</h2>
 
 #### Image: base
-<img src="https://images.microbadger.com/badges/version/devilbox/php-fpm-7.3:base-alpine.svg" /> <img src="https://images.microbadger.com/badges/image/devilbox/php-fpm-7.3:base-alpine.svg" /><br/>
-<img src="https://images.microbadger.com/badges/version/devilbox/php-fpm-7.3:base-debian.svg" /> <img src="https://images.microbadger.com/badges/image/devilbox/php-fpm-7.3:base-debian.svg" /> 
+<a href="https://microbadger.com/images/devilbox/php-fpm-7.3"><img src="https://images.microbadger.com/badges/version/devilbox/php-fpm-7.3:base-alpine.svg" /></a>
+<a href="https://microbadger.com/images/devilbox/php-fpm-7.3"><img src="https://images.microbadger.com/badges/image/devilbox/php-fpm-7.3:base-alpine.svg" /></a><br/>
+<a href="https://microbadger.com/images/devilbox/php-fpm-7.3"><img src="https://images.microbadger.com/badges/version/devilbox/php-fpm-7.3:base-debian.svg" /></a>
+<a href="https://microbadger.com/images/devilbox/php-fpm-7.3"><img src="https://images.microbadger.com/badges/image/devilbox/php-fpm-7.3:base-debian.svg" /></a>
 ```shell
 docker pull devilbox/php-fpm-7.3:base-alpine
 docker pull devilbox/php-fpm-7.3:base-debian
@@ -339,8 +365,10 @@ docker pull devilbox/php-fpm-7.3:base-debian
 Generic PHP-FPM base image. Use it to derive your own php-fpm docker image from it and add more extensions, tools and injectables.<br/><br/><sub>(Does not offer any environment variables except for `NEW_UID` and `NEW_GID`)</sub>
 
 #### Image: mods
-<img src="https://images.microbadger.com/badges/version/devilbox/php-fpm-7.3:mods-alpine.svg" /> <img src="https://images.microbadger.com/badges/image/devilbox/php-fpm-7.3:mods-alpine.svg" /><br/>
-<img src="https://images.microbadger.com/badges/version/devilbox/php-fpm-7.3:mods-debian.svg" /> <img src="https://images.microbadger.com/badges/image/devilbox/php-fpm-7.3:mods-debian.svg" /> 
+<a href="https://microbadger.com/images/devilbox/php-fpm-7.3"><img src="https://images.microbadger.com/badges/version/devilbox/php-fpm-7.3:mods-alpine.svg" /></a>
+<a href="https://microbadger.com/images/devilbox/php-fpm-7.3"><img src="https://images.microbadger.com/badges/image/devilbox/php-fpm-7.3:mods-alpine.svg" /></a><br/>
+<a href="https://microbadger.com/images/devilbox/php-fpm-7.3"><img src="https://images.microbadger.com/badges/version/devilbox/php-fpm-7.3:mods-debian.svg" /></a>
+<a href="https://microbadger.com/images/devilbox/php-fpm-7.3"><img src="https://images.microbadger.com/badges/image/devilbox/php-fpm-7.3:mods-debian.svg" /></a>
 ```shell
 docker pull devilbox/php-fpm-7.3:mods-alpine
 docker pull devilbox/php-fpm-7.3:mods-debian
@@ -349,8 +377,10 @@ docker pull devilbox/php-fpm-7.3:mods-debian
 Generic PHP-FPM image with fully loaded extensions. Use it to derive your own php-fpm docker image from it and add more extensions, tools and injectables.<br/><br/><sub>(Does not offer any environment variables except for `NEW_UID` and `NEW_GID`)</sub></td>
 
 #### Image: prod
-<img src="https://images.microbadger.com/badges/version/devilbox/php-fpm-7.3:prod-alpine.svg" /> <img src="https://images.microbadger.com/badges/image/devilbox/php-fpm-7.3:prod-alpine.svg" /><br/>
-<img src="https://images.microbadger.com/badges/version/devilbox/php-fpm-7.3:prod-debian.svg" /> <img src="https://images.microbadger.com/badges/image/devilbox/php-fpm-7.3:prod-debian.svg" />
+<a href="https://microbadger.com/images/devilbox/php-fpm-7.3"><img src="https://images.microbadger.com/badges/version/devilbox/php-fpm-7.3:prod-alpine.svg" /></a>
+<a href="https://microbadger.com/images/devilbox/php-fpm-7.3"><img src="https://images.microbadger.com/badges/image/devilbox/php-fpm-7.3:prod-alpine.svg" /></a><br/>
+<a href="https://microbadger.com/images/devilbox/php-fpm-7.3"><img src="https://images.microbadger.com/badges/version/devilbox/php-fpm-7.3:prod-debian.svg" /></a>
+<a href="https://microbadger.com/images/devilbox/php-fpm-7.3"><img src="https://images.microbadger.com/badges/image/devilbox/php-fpm-7.3:prod-debian.svg" /></a>
 ```shell
 docker pull devilbox/php-fpm-7.3:prod-alpine
 docker pull devilbox/php-fpm-7.3:prod-debian
@@ -359,8 +389,10 @@ docker pull devilbox/php-fpm-7.3:prod-debian
 Devilbox production image. This Docker image comes with many injectables, port-forwardings, mail-catch-all and user/group rewriting.
 
 #### Image: work
-<img src="https://images.microbadger.com/badges/version/devilbox/php-fpm-7.3:work-alpine.svg" /> <img src="https://images.microbadger.com/badges/image/devilbox/php-fpm-7.3:work-alpine.svg" /><br/>
-<img src="https://images.microbadger.com/badges/version/devilbox/php-fpm-7.3:work-debian.svg" /> <img src="https://images.microbadger.com/badges/image/devilbox/php-fpm-7.3:work-debian.svg" /> 
+<a href="https://microbadger.com/images/devilbox/php-fpm-7.3"><img src="https://images.microbadger.com/badges/version/devilbox/php-fpm-7.3:work-alpine.svg" /></a>
+<a href="https://microbadger.com/images/devilbox/php-fpm-7.3"><img src="https://images.microbadger.com/badges/image/devilbox/php-fpm-7.3:work-alpine.svg" /></a><br/>
+<a href="https://microbadger.com/images/devilbox/php-fpm-7.3"><img src="https://images.microbadger.com/badges/version/devilbox/php-fpm-7.3:work-debian.svg" /></a>
+<a href="https://microbadger.com/images/devilbox/php-fpm-7.3"><img src="https://images.microbadger.com/badges/image/devilbox/php-fpm-7.3:work-debian.svg" /></a>
 ```shell
 docker pull devilbox/php-fpm-7.3:work-alpine
 docker pull devilbox/php-fpm-7.3:work-debian
@@ -593,7 +625,7 @@ You want to use tools such as `git`, `drush`, `composer`, `npm`, `eslint`, `phpc
    <td>PHP_CodeSniffer tokenizes PHP, JavaScript and CSS files and detects violations of a defined set of coding standards..</td>
   </tr>
   <tr>
-   <td><a href="(https://github.com/symfony/symfony-installer">symfony installer</a></td>
+   <td><a href="https://github.com/symfony/symfony-installer">symfony installer</a></td>
    <td>This is the official installer to start new projects based on the Symfony full-stack framework.</td>
   </tr>
   <tr>
