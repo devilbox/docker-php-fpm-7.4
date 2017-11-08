@@ -17,10 +17,192 @@ LABEL \
 ###
 ### Install
 ###
+
+# System dev tools
 RUN set -x \
 	&& apk update \
 	&& apk add --no-cache \
-		bash
+		ack \
+		aspell \
+		autoconf \
+		automake \
+		bash \
+		bash-completion \
+		bzip2 \
+		coreutils \
+		curl \
+		file \
+		gcc \
+		git \
+		git-svn \
+		htop \
+		imagemagick \
+		less \
+		libc-dev \
+		nodejs-current \
+		nodejs-current-npm \
+		make \
+		mongodb-tools \
+		mysql-client \
+		net-tools \
+		postgresql-client \
+		ruby \
+		subversion \
+		sudo \
+		tig \
+		vim \
+		w3m \
+		wget \
+		whois \
+		xz
+
+# Rubygems
+RUN set -x \
+	&& apk add --no-cache \
+		ruby-rdoc \
+		ruby-dev \
+		ruby-irb \
+	\
+	&& git clone --recursive https://github.com/rubygems/rubygems /usr/local/src/rubygems \
+	&& cd /usr/local/src/rubygems \
+	&& ruby setup.rb \
+	&& gem update --system \
+	&& cd / \
+	&& rm -rf /usr/local/src/rubygems
+
+# Composer
+RUN set -x \
+	&& curl -sS https://getcomposer.org/installer | php \
+	&& mv composer.phar /usr/local/bin/composer \
+	&& composer self-update \
+	&& rm -rf /root/.composer
+
+# Drush
+RUN set -x \
+	&& DRUSH_VERSION="$( curl -q https://api.github.com/repos/drush-ops/drush/releases 2>/dev/null | grep tag_name | grep -Eo '\"[0-9.]+\"' | head -1 | sed 's/\"//g' )" \
+	&& mkdir -p /usr/local/src \
+	&& git clone https://github.com/drush-ops/drush.git /usr/local/src/drush \
+	&& chown -R ${MY_USER}:${MY_GROUP} /usr/local/src/drush \
+	&& v="${DRUSH_VERSION}" su ${MY_USER} -p -c 'cd /usr/local/src/drush && git checkout ${v}' \
+	&& su - ${MY_USER} -c 'PATH=/usr/local/bin:$PATH; cd /usr/local/src/drush && composer install --no-interaction --no-progress' \
+	&& ln -s /usr/local/src/drush/drush /usr/local/bin/drush \
+	&& rm -rf /usr/local/src/drush/.git \
+	&& rm -rf /usr/local/src/drush/docs \
+	&& rm -rf /usr/local/src/drush/examples \
+	&& rm -rf /usr/local/src/drush/misc \
+	&& rm -rf /usr/local/src/drush/tests \
+	&& rm -rf /root/.drush
+
+# Drupal Console
+RUN set -x \
+	&& curl https://drupalconsole.com/installer -L -o drupal.phar \
+	&& mv drupal.phar /usr/local/bin/drupal \
+	&& chmod +x /usr/local/bin/drupal
+
+# WP-CLI
+RUN set -x \
+	&& curl -O https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar \
+	&& mv wp-cli.phar /usr/local/bin/wp \
+	&& chmod +x /usr/local/bin/wp \
+	&& wp cli update
+
+# Symfony CLI
+RUN set -x \
+	&& curl -LsS https://symfony.com/installer -o /usr/local/bin/symfony \
+	&& chmod +x /usr/local/bin/symfony
+
+# Laravel CLI
+RUN set -x \
+	&& mkdir -p /usr/local/src \
+	&& git clone https://github.com/laravel/installer /usr/local/src/laravel-installer \
+	&& cd /usr/local/src/laravel-installer && git checkout $(git tag | sort -V | tail -1) \
+	&& chown -R ${MY_USER}:${MY_GROUP} /usr/local/src/laravel-installer \
+	&& su - ${MY_USER} -c 'PATH=/usr/local/bin:$PATH; cd /usr/local/src/laravel-installer && composer install' \
+	&& ln -s /usr/local/src/laravel-installer/laravel /usr/local/bin/laravel \
+	&& rm -rf /usr/local/src/laravel-installer/laravel/.git
+
+# Phalcon DevTools
+#RUN set -x \
+#	&& mkdir -p /usr/local/src \
+#	&& git clone https://github.com/phalcon/phalcon-devtools /usr/local/src/phalcon-devtools \
+#	&& cd /usr/local/src/phalcon-devtools \
+#	&& git checkout $(git tag | grep 'v3.0' | sort -V | tail -1) \
+#	&& su - ${MY_USER} -c 'cd /usr/local/src/phalcon-devtools && ./phalcon.sh' \
+#	&& ln -s /usr/local/src/phalcon-devtools/phalcon.php /usr/local/bin/phalcon \
+#	&& cd / \
+#	&& rm -rf /usr/local/src/phalcon-devtools/.git
+
+# Mysqldump-secure
+RUN set -x \
+	&& mkdir -p /usr/local/src \
+	&& git clone https://github.com/cytopia/mysqldump-secure.git /usr/local/src/mysqldump-secure \
+	&& cd /usr/local/src/mysqldump-secure \
+	&& git checkout $(git describe --abbrev=0 --tags) \
+	&& cp /usr/local/src/mysqldump-secure/bin/mysqldump-secure /usr/local/bin \
+	&& cp /usr/local/src/mysqldump-secure/etc/mysqldump-secure.conf /etc \
+	&& cp /usr/local/src/mysqldump-secure/etc/mysqldump-secure.cnf /etc \
+	&& touch /var/log/mysqldump-secure.log \
+	&& chown ${MY_USER}:${MY_GROUP} /etc/mysqldump-secure.* \
+	&& chown ${MY_USER}:${MY_GROUP} /var/log/mysqldump-secure.log \
+	&& chmod 0400 /etc/mysqldump-secure.conf \
+	&& chmod 0400 /etc/mysqldump-secure.cnf \
+	&& chmod 0644 /var/log/mysqldump-secure.log \
+	&& sed -i'' 's/^DUMP_DIR=.*/DUMP_DIR="\/shared\/backups\/mysql"/g' /etc/mysqldump-secure.conf \
+	&& sed -i'' 's/^DUMP_DIR_CHMOD=.*/DUMP_DIR_CHMOD="0755"/g' /etc/mysqldump-secure.conf \
+	&& sed -i'' 's/^DUMP_FILE_CHMOD=.*/DUMP_FILE_CHMOD="0644"/g' /etc/mysqldump-secure.conf \
+	&& sed -i'' 's/^LOG_CHMOD=.*/LOG_CHMOD="0644"/g' /etc/mysqldump-secure.conf \
+	&& sed -i'' 's/^NAGIOS_LOG=.*/NAGIOS_LOG=0/g' /etc/mysqldump-secure.conf \
+	\
+	&& cd / \
+	&& rm -rf /usr/local/src/mysqldump-secure
+
+# Awesome-CI
+RUN set -x \
+	&& mkdir -p /usr/local/src \
+	&& git clone https://github.com/cytopia/awesome-ci.git /usr/local/src/awesome-ci \
+	&& cd /usr/local/src/awesome-ci \
+	&& git checkout $(git describe --abbrev=0 --tags) \
+	&& ./configure --prefix=/usr/local \
+	&& make install \
+	&& cd / \
+	&& rm -rf /usr/local/src/awesome-ci
+
+# Awesome-CI requirements
+RUN set -x \
+	&& gem install mdl \
+#	&& gem install scss_lint \
+	&& npm install -g eslint \
+	&& npm install -g jsonlint \
+	&& npm install -g mdlint \
+	&& npm install -g gulp
+
+# Grunt
+RUN set -x \
+	&& npm install -g grunt \
+	&& npm install -g grunt-cli
+
+# Webpack
+RUN set -x \
+	&& npm install -g --save-dev webpack
+
+
+
+###
+### Configure Bash
+###
+RUN \
+	{ \
+		echo ". /etc/bash-devilbox"; \
+		echo "if [ -d /etc/bash-custom.d/ ]; then"; \
+		echo "    for f in /etc/bash-custom.d/*.sh ; do"; \
+		echo "        if [ -r \"\${f}\" ]; then"; \
+		echo "            . \"\${f}\""; \
+		echo "        fi"; \
+		echo "    done"; \
+		echo "    unset f"; \
+		echo "fi"; \
+	} | tee -a /home/${MY_USER}/.bashrc /root/.bashrc \
+	&& chown ${MY_USER}:${MY_GROUP} /home/${MY_USER}/.bashrc
 
 
 
@@ -28,15 +210,29 @@ RUN set -x \
 ### Verify
 ###
 RUN set -x \
-	&& /usr/local/sbin/php-fpm --test
+	&& /usr/local/sbin/php-fpm --test \
+	&& PHP_ERROR="$( php -v 2>&1 1>/dev/null )" \
+	&& if [ -n "${PHP_ERROR}" ]; then echo "${PHP_ERROR}"; false; fi
+
+
+
+###
+### Copy files
+###
+COPY ./data/docker-entrypoint.sh /docker-entrypoint.sh
+COPY ./data/docker-entrypoint.d/*.sh /docker-entrypoint.d/
+COPY ./data/bash-devilbox /etc/bash-devilbox
+COPY ./data/sudo-devilbox /etc/sudoers.d/devilbox
 
 
 
 ###
 ### Volumes
 ###
+VOLUME /etc/bash-custom.d
 VOLUME /etc/php-custom.d
 VOLUME /etc/php-modules.d
+VOLUME /shared/backups
 VOLUME /var/log/php
 VOLUME /var/mail
 

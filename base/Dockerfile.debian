@@ -56,8 +56,6 @@ ENV BUILD_DEPS \
 	file \
 	g++ \
 	gcc \
-	g++-6 \
-	gcc-6 \
 	make \
 	re2c
 
@@ -239,6 +237,8 @@ RUN set -x \
 		--with-pgsql \
 		--with-pspell=/usr \
 		--with-readline \
+#recode extension can not be configured together with: imap
+#		--with-recode=/usr \
 		--with-snmp=/usr \
 		--with-tidy \
 		--with-xmlrpc \
@@ -256,27 +256,14 @@ RUN set -x \
 	&& cp /usr/local/src/php-src/php.ini-production ${PHP_CONFIG_FILE_PATH}/php.ini-production \
 	&& ln -sf ${PHP_CONFIG_FILE_PATH}/php.ini-development ${PHP_CONFIG_FILE_PATH}/php.ini \
 	\
+	# Clean-up
+	&& make clean \
+	\
 	&& { \
-		find ${PHP_PREFIX}/bin ${PHP_PREFIX}/sbin ${PHP_PREFIX}/lib -type f -executable -exec strip --strip-all '{}' + \
+		find ${PHP_PREFIX}/bin ${PHP_PREFIX}/sbin ${PHP_PREFIX}/lib -type f -perm /u+x -exec strip --strip-all '{}' + \
 		|| true; \
 	} \
-	&& make clean \
-	&& cd / \
-	&& rm -rf /media \
-	&& rm -rf /mnt \
-	&& rm -rf /opt \
-	&& rm -rf /srv \
-	&& rm -rf /usr/games \
-	&& rm -rf /usr/local/games \
-	&& rm -rf /usr/local/man \
-	&& rm -rf /usr/local/php \
-	&& rm -rf /usr/local/share \
-	&& rm -rf /usr/local/src \
-	&& rm -rf /usr/share/doc \
-	&& rm -rf /usr/share/man \
-	&& rm -rf /usr/src \
 	\
-	# Clean-up
 	&& apt-get update \
 	&& apt-get remove -y \
 		${BUILD_DEPS} \
@@ -294,8 +281,22 @@ RUN set -x \
 	\
 # https://github.com/docker-library/php/issues/443
 	&& pecl update-channels \
+	&& cd / \
+	&& rm -rf /media \
+	&& rm -rf /mnt \
+	&& rm -rf /opt \
 	&& rm -rf /root/.pearrc \
-	&& rm -rf /tmp/*
+	&& rm -rf /srv \
+	&& rm -rf /tmp/* \
+	&& rm -rf /usr/games \
+	&& rm -rf /usr/local/games \
+	&& rm -rf /usr/local/man \
+	&& rm -rf /usr/local/php \
+	&& rm -rf /usr/local/share \
+	&& rm -rf /usr/local/src \
+	&& rm -rf /usr/share/doc \
+	&& rm -rf /usr/share/man \
+	&& rm -rf /usr/src
 
 # PHP/PHP-FPM Post configuration
 RUN set -x \
@@ -304,6 +305,8 @@ RUN set -x \
 	\
 	&& sed -i'' 's/^;*\s*cgi\.fix_pathinfo\s*=.*$/cgi.fix_pathinfo = 0/g' ${PHP_CONFIG_FILE_PATH}/php.ini \
 	&& grep -E '^cgi\.fix_pathinfo\s*=\s*0$' ${PHP_CONFIG_FILE_PATH}/php.ini \
+	\
+	&& echo "zend_extension=opcache.so" > ${PHP_CONFIG_FILE_SCAN_DIR}/opcache.ini \
 	\
 	&& cd ${PHP_CONFIG_FILE_PATH} \
 	&& { \
@@ -336,7 +339,9 @@ RUN set -x \
 ### Verify
 ###
 RUN set -x \
-	&& /usr/local/sbin/php-fpm --test
+	&& /usr/local/sbin/php-fpm --test \
+	&& PHP_ERROR="$( php -v 2>&1 1>/dev/null )" \
+	&& if [ -n "${PHP_ERROR}" ]; then echo "${PHP_ERROR}"; false; fi
 
 
 

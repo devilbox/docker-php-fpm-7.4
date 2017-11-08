@@ -109,7 +109,7 @@ RUN set -x \
 	&& git clone https://github.com/drush-ops/drush.git /usr/local/src/drush \
 	&& chown -R ${MY_USER}:${MY_GROUP} /usr/local/src/drush \
 	&& v="${DRUSH_VERSION}" su ${MY_USER} -p -c 'cd /usr/local/src/drush && git checkout ${v}' \
-	&& su - ${MY_USER} -c 'cd /usr/local/src/drush && composer install --no-interaction --no-progress' \
+	&& su - ${MY_USER} -c 'PATH=/usr/local/bin:$PATH; cd /usr/local/src/drush && composer install --no-interaction --no-progress' \
 	&& ln -s /usr/local/src/drush/drush /usr/local/bin/drush \
 	&& rm -rf /usr/local/src/drush/.git \
 	&& rm -rf /usr/local/src/drush/docs \
@@ -142,7 +142,7 @@ RUN set -x \
 	&& git clone https://github.com/laravel/installer /usr/local/src/laravel-installer \
 	&& cd /usr/local/src/laravel-installer && git checkout $(git tag | sort -V | tail -1) \
 	&& chown -R ${MY_USER}:${MY_GROUP} /usr/local/src/laravel-installer \
-	&& su - ${MY_USER} -c 'cd /usr/local/src/laravel-installer && composer install' \
+	&& su - ${MY_USER} -c 'PATH=/usr/local/bin:$PATH; cd /usr/local/src/laravel-installer && composer install' \
 	&& ln -s /usr/local/src/laravel-installer/laravel /usr/local/bin/laravel \
 	&& rm -rf /usr/local/src/laravel-installer/laravel/.git
 
@@ -192,7 +192,7 @@ RUN set -x \
 	&& cd / \
 	&& rm -rf /usr/local/src/awesome-ci
 
-## Awesome-CI requirements
+# Awesome-CI requirements
 RUN set -x \
 	&& gem install mdl \
 	&& gem install scss_lint \
@@ -235,7 +235,9 @@ RUN \
 ### Verify
 ###
 RUN set -x \
-	&& /usr/local/sbin/php-fpm --test
+	&& /usr/local/sbin/php-fpm --test \
+	&& PHP_ERROR="$( php -v 2>&1 1>/dev/null )" \
+	&& if [ -n "${PHP_ERROR}" ]; then echo "${PHP_ERROR}"; false; fi
 
 
 
