@@ -172,6 +172,7 @@ RUN set -x \
 	&& chmod 0400 /etc/mysqldump-secure.conf \
 	&& chmod 0400 /etc/mysqldump-secure.cnf \
 	&& chmod 0644 /var/log/mysqldump-secure.log \
+	&& sed -i'' 's/^COMPRESS_ARG=.*/COMPRESS_ARG="-9 -c"/g' /etc/mysqldump-secure.conf \
 	&& sed -i'' 's/^DUMP_DIR=.*/DUMP_DIR="\/shared\/backups\/mysql"/g' /etc/mysqldump-secure.conf \
 	&& sed -i'' 's/^DUMP_DIR_CHMOD=.*/DUMP_DIR_CHMOD="0755"/g' /etc/mysqldump-secure.conf \
 	&& sed -i'' 's/^DUMP_FILE_CHMOD=.*/DUMP_FILE_CHMOD="0644"/g' /etc/mysqldump-secure.conf \
