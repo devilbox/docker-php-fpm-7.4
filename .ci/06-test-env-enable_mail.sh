@@ -50,6 +50,6 @@ if [ "${TYPE}" = "prod" ] || [ "${TYPE}" = "work" ]; then
 	fi
 
 	docker_stop "${did}"
-	rm -r "${MOUNTPOINT}"
+	rm -rf "${MOUNTPOINT}"
 
 fi

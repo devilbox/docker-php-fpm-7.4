@@ -56,6 +56,6 @@ if [ "${TYPE}" = "prod" ] || [ "${TYPE}" = "work" ]; then
 	run "cat ${MOUNTPOINT}/*"
 
 	docker_stop "${did}"
-	rm -r "${MOUNTPOINT}"
+	rm -rf "${MOUNTPOINT}"
 
 fi
