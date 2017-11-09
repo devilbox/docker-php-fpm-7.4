@@ -10,18 +10,37 @@ set -o pipefail
 ###
 function run() {
 	local cmd="${1}"
+	local to_stderr=0
+
+	# Output to stderr instead?
+	if [ "${#}" -eq "2" ]; then
+		to_stderr="${2}"
+	fi
 
 	local red="\033[0;31m"
 	local green="\033[0;32m"
 	local yellow="\033[0;33m"
 	local reset="\033[0m"
 
-	printf "${yellow}[%s] ${red}%s \$ ${green}${cmd}${reset}\n" "$(hostname)" "$(whoami)"
+	if [ "${to_stderr}" -eq "0" ]; then
+		printf "${yellow}[%s] ${red}%s \$ ${green}${cmd}${reset}\n" "$(hostname)" "$(whoami)"
+	else
+		printf "${yellow}[%s] ${red}%s \$ ${green}${cmd}${reset}\n" "$(hostname)" "$(whoami)" >&2
+	fi
+
 	if sh -c "LANG=C LC_ALL=C ${cmd}"; then
-		printf "${green}[%s]${reset}\n" "OK"
+		if [ "${to_stderr}" -eq "0" ]; then
+			printf "${green}[%s]${reset}\n" "OK"
+		else
+			printf "${green}[%s]${reset}\n" "OK" >&2
+		fi
 		return 0
 	else
-		printf "${red}[%s]${reset}\n" "ERROR"
+		if [ "${to_stderr}" -eq "0" ]; then
+			printf "${red}[%s]${reset}\n" "ERROR"
+		else
+			printf "${red}[%s]${reset}\n" "ERROR" >&2
+		fi
 		return 1
 	fi
 }
@@ -93,7 +112,7 @@ function docker_run() {
 	local args="${*}"
 
 	# Returns docker-id
-	did="$( sh -c "LANG=C LC_ALL=C docker run -d --name $( get_random_name ) ${args} ${image_name}" )"
+	did="$( run "docker run -d --name $( get_random_name ) ${args} ${image_name}" "1" )"
 	sleep 5
 
 	# Just checking if it is up
