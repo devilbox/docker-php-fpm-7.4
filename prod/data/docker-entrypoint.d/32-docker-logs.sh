@@ -77,6 +77,12 @@ set_docker_logs() {
 			fi
 
 			# Fix permissions (in case uid/gid has changed)
+			if [ ! -f "${dl_log_dir}/php-fpm.access" ]; then
+				touch "${dl_log_dir}/php-fpm.access"
+			fi
+			if [ ! -f "${dl_log_dir}/php-fpm.error" ]; then
+				touch "${dl_log_dir}/php-fpm.error"
+			fi
 			run "chown -R ${MY_USER}:${MY_GROUP} ${dl_log_dir}"
 
 			# Adjust PHP-FPM config to log to file
