@@ -605,6 +605,10 @@ You want to use tools such as `git`, `drush`, `composer`, `npm`, `eslint`, `phpc
    <td>A CLI tool to easily install and manage the laravel framework.</td>
   </tr>
   <tr>
+   <td><a href="http://linuxbrew.sh">linuxbrew</a></td>
+   <td>The Homebrew package manager for Linux.</td>
+  </tr>
+  <tr>
    <td><a href="https://mysqldump-secure.org">mysqldump-secure</a></td>
    <td>Secury MySQL database backup tool with encryption.</td>
   </tr>

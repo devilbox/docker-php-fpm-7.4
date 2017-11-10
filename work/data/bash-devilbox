@@ -1,6 +1,3 @@
-# PATH
-PATH=/usr/local/node/bin:/usr/local/sbin:/usr/local/bin:/usr/local/node/bin:/usr/sbin:/usr/bin:/sbin:/bin
-
 # Bash Completion
 if ! shopt -oq posix; then
 	if [ -f /usr/share/bash-completion/bash_completion ]; then

@@ -21,7 +21,7 @@ LABEL \
 #	MY_GROUP="devilbox" \
 #	MY_UID="1000" \
 #	MY_GID="1000"
-
+ENV BASH_PROFILE=".bashrc"
 
 
 ###
@@ -211,6 +211,17 @@ RUN set -x \
 RUN set -x \
 	&& npm install -g --save-dev webpack
 
+# Linuxbrew
+RUN set -x \
+	&& su - ${MY_USER} -c \
+		'PATH=/usr/local/bin:$PATH; curl -fsSL https://raw.githubusercontent.com/Linuxbrew/install/master/install.sh | bash' \
+	&& v="${BASH_PROFILE}" su ${MY_USER} -c -p \
+		'echo "PATH=/home/devilbox/.linuxbrew/bin:/home/devilbox/.linuxbrew/sbin:/usr/bin:/usr/sbin:/bin:/sbin" >> /home/devilbox/${v}' \
+	&& v="${BASH_PROFILE}" su ${MY_USER} -c -p \
+		'echo "export MANPATH=/home/devilbox/.linuxbrew/share/man:${MANPATH}"   >> /home/devilbox/${v}' \
+	&& v="${BASH_PROFILE}" su ${MY_USER} -c -p \
+		'echo "export INFOPATH=/home/devilbox/.linuxbrew/share/man:${INFOPATH}" >> /home/devilbox/${v}'
+
 
 
 ###
@@ -218,6 +229,8 @@ RUN set -x \
 ###
 RUN \
 	{ \
+		echo "PATH=\${PATH}:/usr/local/bin:/usr/local/sbin:/usr/local/node/bin"; \
+		echo "export PATH"; \
 		echo ". /etc/bash-devilbox"; \
 		echo "if [ -d /etc/bash-custom.d/ ]; then"; \
 		echo "    for f in /etc/bash-custom.d/*.sh ; do"; \
@@ -227,8 +240,8 @@ RUN \
 		echo "    done"; \
 		echo "    unset f"; \
 		echo "fi"; \
-	} | tee -a /home/${MY_USER}/.bashrc /root/.bashrc \
-	&& chown ${MY_USER}:${MY_GROUP} /home/${MY_USER}/.bashrc
+	} | tee -a /home/${MY_USER}/${BASH_PROFILE} /root/${BASH_PROFILE} \
+	&& chown ${MY_USER}:${MY_GROUP} /home/${MY_USER}/${BASH_PROFILE}
 
 
 
