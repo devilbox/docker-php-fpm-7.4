@@ -101,7 +101,8 @@ RUN set -x \
 	&& rm -rf /usr/local/src/drush/examples \
 	&& rm -rf /usr/local/src/drush/misc \
 	&& rm -rf /usr/local/src/drush/tests \
-	&& rm -rf /root/.drush
+	&& rm -rf /root/.drush \
+	&& rm -rf /home/${MY_USER}/.composer
 
 # Drupal Console
 RUN set -x \
@@ -129,7 +130,9 @@ RUN set -x \
 	&& chown -R ${MY_USER}:${MY_GROUP} /usr/local/src/laravel-installer \
 	&& su - ${MY_USER} -c 'PATH=/usr/local/bin:$PATH; cd /usr/local/src/laravel-installer && composer install' \
 	&& ln -s /usr/local/src/laravel-installer/laravel /usr/local/bin/laravel \
-	&& rm -rf /usr/local/src/laravel-installer/laravel/.git
+	&& rm -rf /usr/local/src/laravel-installer/laravel/.git \
+	&& rm -rf /home/${MY_USER}/.composer
+
 
 # Phalcon DevTools
 #RUN set -x \
@@ -198,14 +201,15 @@ RUN set -x \
 
 # Linuxbrew
 RUN set -x \
-	&& su - ${MY_USER} -c \
-		'PATH=/usr/local/bin:$PATH; curl -fsSL https://raw.githubusercontent.com/Linuxbrew/install/master/install.sh | bash' \
+	&& mkdir -p /usr/local/src \
+	&& git clone https://github.com/Linuxbrew/brew.git /usr/local/src/linuxbrew \
+	&& chown -R ${MY_USER}:${MY_GROUP} /usr/local/src/linuxbrew \
 	&& v="${BASH_PROFILE}" su ${MY_USER} -c -p \
-		'echo "PATH=/home/devilbox/.linuxbrew/bin:/home/devilbox/.linuxbrew/sbin:/usr/bin:/usr/sbin:/bin:/sbin" >> /home/devilbox/${v}' \
+		'echo "PATH=/usr/local/src/linuxbrew/bin:/usr/local/src/linuxbrew/sbin:/usr/bin:/usr/sbin:/bin:/sbin" >> /home/devilbox/${v}' \
 	&& v="${BASH_PROFILE}" su ${MY_USER} -c -p \
-		'echo "export MANPATH=/home/devilbox/.linuxbrew/share/man:${MANPATH}"   >> /home/devilbox/${v}' \
+		'echo "export MANPATH=/usr/local/src/linuxbrew/share/man:${MANPATH}"   >> /home/devilbox/${v}' \
 	&& v="${BASH_PROFILE}" su ${MY_USER} -c -p \
-		'echo "export INFOPATH=/home/devilbox/.linuxbrew/share/man:${INFOPATH}" >> /home/devilbox/${v}'
+		'echo "export INFOPATH=/usr/local/src/linuxbrew/share/man:${INFOPATH}" >> /home/devilbox/${v}'
 
 
 
