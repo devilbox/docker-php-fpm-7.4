@@ -28,7 +28,7 @@ if [ "${TYPE}" = "prod" ] || [ "${TYPE}" = "work" ]; then
 
 	did="$( docker_run "${IMAGE}:${TYPE}-${FLAVOUR}" "-e DEBUG_ENTRYPOINT=2 -e NEW_UID=$(id -u) -e NEW_GID=$(id -g) -e DOCKER_LOGS=0 -v ${MOUNTPOINT}:/var/log/php" )"
 
-	sleep 5
+	run "sleep 10"
 
 	if [ ! -f "${MOUNTPOINT}/php-fpm.access" ]; then
 		echo "Access log does not exist: ${MOUNTPOINT}/php-fpm.access"
@@ -56,6 +56,6 @@ if [ "${TYPE}" = "prod" ] || [ "${TYPE}" = "work" ]; then
 	run "cat ${MOUNTPOINT}/*"
 
 	docker_stop "${did}"
-	rm -rf "${MOUNTPOINT}"
+	run "rm -rf ${MOUNTPOINT}" || true
 
 fi

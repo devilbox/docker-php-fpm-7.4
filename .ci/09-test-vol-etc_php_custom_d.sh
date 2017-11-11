@@ -62,6 +62,13 @@ if [ "${TYPE}" = "prod" ] || [ "${TYPE}" = "work" ]; then
 	### 02 Test
 	###
 
+	# php.ini was copied
+	if ! docker_logs "${p_id}" | grep "post.ini"; then
+		docker_logs "${p_id}"
+		false
+	fi
+
+	# vhost is working
 	if ! run "curl -qL localhost/index.php | grep 'hello world'"; then
 		run "curl -L localhost/index.php"
 		docker_logs "${p_id}"
@@ -98,16 +105,14 @@ if [ "${TYPE}" = "prod" ] || [ "${TYPE}" = "work" ]; then
 	fi
 
 
-
-
 	###
 	### 03 Clean-up
 	###
 
-	docker_stop "${h_id}" || true
-	docker_stop "${p_id}" || true
+	docker_stop "${h_id}"
+	docker_stop "${p_id}"
 
-	rm -rf "${DIR_WWW}"
-	rm -rf "${DIR_INI}"
+	run "rm -rf ${DIR_WWW}" || true
+	run "rm -rf ${DIR_INI}" || true
 
 fi
