@@ -119,11 +119,3 @@ echo "${PHP_MODULES}"
 
 
 run "sed -i'' 's|<td id=\"mod-${TYPE}-${FLAVOUR}\">.*<\/td>|<td id=\"mod-${TYPE}-${FLAVOUR}\">${PHP_MODULES}<\/td>|g' ${CWD}/README.md"
-#(
-#	echo
-#	echo "**[Version]**"
-#	echo
-#	echo "${PHP_VERSION}"
-#	echo
-#	echo "${PHP_MODULES}"
-#) >> ${CWD}/doc/PHP-FPM-${FLAVOUR}-${TYPE}.md
