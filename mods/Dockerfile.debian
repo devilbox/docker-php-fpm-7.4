@@ -104,7 +104,7 @@ RUN set -x \
 	&& echo "extension=redis.so"          > /usr/local/etc/php.d/redis.ini \
 #	&& echo "extension=swoole.so"         > /usr/local/etc/php.d/swoole.ini \
 #	&& echo "extension=uploadprogress.so" > /usr/local/etc/php.d/uploadprogress.ini \
-#	&& echo "extension=xdebug.so"         > /usr/local/etc/php.d/xdebug.ini \
+#	&& echo "zend_extension=xdebug.so"    > /usr/local/etc/php.d/xdebug.ini \
 	\
 	&& apt-get remove -y \
 		${BUILD_DEPS} \
