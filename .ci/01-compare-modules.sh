@@ -27,7 +27,7 @@ docker_stop "${did}"
 # Prepare modules to be inserted into README.md
 mod="$( echo "${mod}" | sed 's/\[PHP Modules\]//g' )"  # remove empty lines
 mod="$( echo "${mod}" | sed 's/\[Zend Modules\]//g' )" # remove empty lines
-mod="$( echo "${mod}" | sort -u )"                     # Unique
+mod="$( echo "${mod}" | sort -fu )"                    # Unique
 mod="$( echo "${mod}" | sed '/^\s*$/d' )"              # remove empty lines
 mod="$( echo "${mod}" | tr '\n' ',' )"                 # newlines to commas
 mod="$( echo "${mod}" | sed 's/,$//g' )"               # remove trailing comma
