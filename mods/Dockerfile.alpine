@@ -62,6 +62,23 @@ RUN set -x \
 #	&& make \
 #	&& make install \
 	\
+# Uploadprogress (from source)
+	&& git clone https://github.com/php/pecl-php-uploadprogress /tmp/uploadprogress \
+	&& cd /tmp/uploadprogress \
+	&& phpize \
+	&& ./configure --enable-uploadprogress \
+	&& make \
+	&& make install \
+	\
+# Xdebug (from source)
+#	&& git clone https://github.com/xdebug/xdebug /tmp/xdebug \
+#	&& cd /tmp/xdebug \
+##	&& git checkout $( git branch -a | grep xdebug | sort -n | sed 's|^\s*remotes/origin/||g' | tail -1 ) \
+#	&& phpize \
+#	&& ./configure --enable-xdebug \
+#	&& make \
+#	&& make install \
+	\
 # Pecls
 #	&& pecl install apcu \
 #	&& pecl install amqp \
@@ -88,7 +105,7 @@ RUN set -x \
 #	&& echo "extension=phalcon.so"        > /usr/local/etc/php.d/phalcon.ini \
 	&& echo "extension=redis.so"          > /usr/local/etc/php.d/redis.ini \
 #	&& echo "extension=swoole.so"         > /usr/local/etc/php.d/swoole.ini \
-#	&& echo "extension=uploadprogress.so" > /usr/local/etc/php.d/uploadprogress.ini \
+	&& echo "extension=uploadprogress.so" > /usr/local/etc/php.d/uploadprogress.ini \
 #	&& echo "zend_extension=xdebug.so"    > /usr/local/etc/php.d/xdebug.ini \
 	\
 	&& { \
