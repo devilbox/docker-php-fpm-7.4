@@ -4,15 +4,15 @@
 if [ "${#}" -ne "2" ]; then
 	echo "Usage: ${0} <flavor> <type>"
 	echo
-	echo "Example: ${0} debian base"
-	echo "Example: ${0} debian mods"
-	echo "Example: ${0} debian prod"
-	echo "Example: ${0} debian work"
+	echo "Example: ${0} base debian"
+	echo "Example: ${0} mods debian"
+	echo "Example: ${0} prod debian"
+	echo "Example: ${0} work debian"
 	echo
-	echo "Example: ${0} alpine base"
-	echo "Example: ${0} alpine mods"
-	echo "Example: ${0} alpine prod"
-	echo "Example: ${0} alpine work"
+	echo "Example: ${0} base alpine"
+	echo "Example: ${0} mods alpine"
+	echo "Example: ${0} prod alpine"
+	echo "Example: ${0} work alpine"
 	exit 1
 fi
 
@@ -20,8 +20,8 @@ fi
 ### Globals
 ###
 CWD="$(cd -P -- "$(dirname -- "$0")" && pwd -P)"
-FLAVOUR="${1}"
-TYPE="${2}"
+TYPE="${1}"
+FLAVOUR="${2}"
 
 
 ###
