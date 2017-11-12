@@ -18,17 +18,22 @@ LABEL \
 ### Envs
 ###
 ENV PECL_BUILD_DEPS \
-	libssl-dev \
+#	libjemalloc-dev \
+	libmagickwand-dev \
 	libmemcached-dev \
+#	libmcrypt-dev \
+#	libnghttp2-dev \
 	librabbitmq-dev \
-	libmagickwand-dev
-#	libmcrypt-dev
+	libssl-dev
 
 ENV PECL_RUNTIME_DEPS \
-	libmemcachedutil2 \
+#	libjemalloc-dev \
+#	libjemalloc1 \
 	libmagick++-6.q16-7 \
-	librabbitmq4
-#	libmcrypt4
+	libmemcachedutil2
+#	libmcrypt4 \
+#	libnghttp2-14 \
+#	librabbitmq4 \
 
 
 
@@ -44,10 +49,35 @@ RUN set -x \
 	&& apt-get purge -y --auto-remove \
 	&& update-ca-certificates \
 	\
+# PhalconPHP
 #	&& git clone --depth=1 https://github.com/phalcon/cphalcon /tmp/cphalcon \
 #	&& cd /tmp/cphalcon/build \
 #	&& ./install \
 	\
+# Swoole
+#	&& git clone https://github.com/swoole/swoole-src /tmp/swoole-src \
+#	&& cd /tmp/swoole-src \
+#	&& phpize \
+#	&& ./configure \
+#		--enable-sockets \
+##		--enable-async-redis \
+#		--enable-openssl \
+#		--enable-http2 \
+##		--enable-thread \
+##		--enable-hugepage \
+#		--enable-swoole \
+#		--enable-swoole-static \
+#		--with-swoole \
+#		--with-openssl-dir=/usr \
+##		--with-jemalloc-dir=/usr \
+#		--enable-mysqlnd \
+#		--enable-coroutine \
+##		--enable-picohttpparser \
+#		--enable-timewheel \
+#	&& make \
+#	&& make install \
+	\
+# Pecls
 #	&& pecl install apcu \
 #	&& pecl install amqp \
 	&& pecl install igbinary \
@@ -72,6 +102,7 @@ RUN set -x \
 	&& echo "extension=msgpack.so"        > /usr/local/etc/php.d/msgpack.ini \
 #	&& echo "extension=phalcon.so"        > /usr/local/etc/php.d/phalcon.ini \
 	&& echo "extension=redis.so"          > /usr/local/etc/php.d/redis.ini \
+#	&& echo "extension=swoole.so"         > /usr/local/etc/php.d/swoole.ini \
 #	&& echo "extension=uploadprogress.so" > /usr/local/etc/php.d/uploadprogress.ini \
 #	&& echo "extension=xdebug.so"         > /usr/local/etc/php.d/xdebug.ini \
 	\
