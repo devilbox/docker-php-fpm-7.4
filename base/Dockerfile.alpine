@@ -190,6 +190,7 @@ RUN set -x \
 		--with-ldap-sasl=/usr \
 		--with-libzip=/usr \
 		--with-mhash \
+#		--with-mm \
 		--with-mysqli=mysqlnd \
 		--with-openssl \
 		--with-pcre-regex=/usr \
