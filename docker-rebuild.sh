@@ -97,25 +97,16 @@ run "docker build --no-cache -t ${VEND}/${NAME}:${TAG} -f ${TYPE}/Dockerfile.${F
 ###
 docker run -d --rm --name my_tmp_${NAME} -t ${VEND}/${NAME}:${TAG}
 PHP_MODULES="$( docker exec my_tmp_${NAME} php -m )"
-#PHP_VERSION="$( docker exec my_tmp_${NAME} php -v | sed 's/\s*$//g' )"
 docker stop "$( docker ps | grep "my_tmp_${NAME}" | awk '{print $1}')" > /dev/null
 
-
-PHP_MODULES="$( echo "${PHP_MODULES}" | sed 's/\[PHP Modules\]//g' )"       # remove empty lines
-PHP_MODULES="$( echo "${PHP_MODULES}" | sed 's/\[Zend Modules\]//g' )"       # remove empty lines
-
-PHP_MODULES="$( echo "${PHP_MODULES}" | sort -u )"       # Unique
-PHP_MODULES="$( echo "${PHP_MODULES}" | sed '/^\s*$/d' )"       # remove empty lines
-PHP_MODULES="$( echo "${PHP_MODULES}" | tr '\n' ',' )"          # newlines to commas
-#PHP_MODULES="$( echo "${PHP_MODULES}" | sed 's/],/]\n\n/g' )"   # extra line for [foo]
-#PHP_MODULES="$( echo "${PHP_MODULES}" | sed 's/,\[/\n\n\[/g' )" # extra line for [foo]
-PHP_MODULES="$( echo "${PHP_MODULES}" | sed 's/,$//g' )"        # remove trailing comma
-PHP_MODULES="$( echo "${PHP_MODULES}" | sed 's/,/, /g' )"       # Add space to comma
-#PHP_MODULES="$( echo "${PHP_MODULES}" | sed 's/]/]**/g' )"      # Markdown bold
-#PHP_MODULES="$( echo "${PHP_MODULES}" | sed 's/\[/**\[/g' )"    # Markdown bold
-
+PHP_MODULES="$( echo "${PHP_MODULES}" | sed 's/\[PHP Modules\]//g' )"  # Remove PHP Modules headlines
+PHP_MODULES="$( echo "${PHP_MODULES}" | sed 's/\[Zend Modules\]//g' )" # Remove Zend Modules headline
+PHP_MODULES="$( echo "${PHP_MODULES}" | sort -fu )"                    # Unique
+PHP_MODULES="$( echo "${PHP_MODULES}" | sed '/^\s*$/d' )"              # Remove empty lines
+PHP_MODULES="$( echo "${PHP_MODULES}" | tr '\n' ',' )"                 # Newlines to commas
+PHP_MODULES="$( echo "${PHP_MODULES}" | sed 's/,$//g' )"               # Remove trailing comma
+PHP_MODULES="$( echo "${PHP_MODULES}" | sed 's/,/, /g' )"              # Add space to comma
 
 echo "${PHP_MODULES}"
-
 
 run "sed -i'' 's|<td id=\"mod-${TYPE}-${FLAVOUR}\">.*<\/td>|<td id=\"mod-${TYPE}-${FLAVOUR}\">${PHP_MODULES}<\/td>|g' ${CWD}/README.md"
