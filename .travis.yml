@@ -74,20 +74,7 @@ jobs:
         - TYPE=
       before_script:
         - if [ "${TRAVIS_PULL_REQUEST}" == "false" ]; then
-            if [ -n "${TRAVIS_TAG}" ]; then
-              max=100; i=0; while [ $i -lt $max ]; do if
-                docker build -t "${IMAGE}:base-alpine-${TRAVIS_TAG}" -f base/Dockerfile.alpine base/ &&
-                docker build -t "${IMAGE}:mods-alpine-${TRAVIS_TAG}" -f mods/Dockerfile.alpine mods/ &&
-                docker build -t "${IMAGE}:prod-alpine-${TRAVIS_TAG}" -f prod/Dockerfile.alpine prod/ &&
-                docker build -t "${IMAGE}:work-alpine-${TRAVIS_TAG}" -f work/Dockerfile.alpine work/ &&
-                docker build -t "${IMAGE}:base-debian-${TRAVIS_TAG}" -f base/Dockerfile.debian base/ &&
-                docker build -t "${IMAGE}:mods-debian-${TRAVIS_TAG}" -f mods/Dockerfile.debian mods/ &&
-                docker build -t "${IMAGE}:prod-debian-${TRAVIS_TAG}" -f prod/Dockerfile.debian prod/ &&
-                docker build -t "${IMAGE}:work-debian-${TRAVIS_TAG}" -f work/Dockerfile.debian work/ &&
-                docker images; then break; else i=$((i+1)); fi
-              done;
-              if [ $i -gt 98 ]; then false; fi
-            elif [ "${TRAVIS_BRANCH}" == "master" ]; then
+            if [ -n "${TRAVIS_TAG}" ] || [ "${TRAVIS_BRANCH}" == "master" ] || [[ ${TRAVIS_BRANCH} =~ ^(release-[.0-9]+)$ ]]; then
               max=100; i=0; while [ $i -lt $max ]; do if
                 docker build -t "${IMAGE}:base-alpine" -f base/Dockerfile.alpine base/ &&
                 docker build -t "${IMAGE}:mods-alpine" -f mods/Dockerfile.alpine mods/ &&
@@ -100,19 +87,6 @@ jobs:
                 docker images; then break; else i=$((i+1)); fi
               done;
               if [ $i -gt 98 ]; then false; fi
-            elif [[ ${TRAVIS_BRANCH} =~ ^(release-[.0-9]+)$ ]]; then
-              max=100; i=0; while [ $i -lt $max ]; do if
-                docker build -t "${IMAGE}:base-alpine-${TRAVIS_BRANCH}" -f base/Dockerfile.alpine base/ &&
-                docker build -t "${IMAGE}:mods-alpine-${TRAVIS_BRANCH}" -f mods/Dockerfile.alpine mods/ &&
-                docker build -t "${IMAGE}:prod-alpine-${TRAVIS_BRANCH}" -f prod/Dockerfile.alpine prod/ &&
-                docker build -t "${IMAGE}:work-alpine-${TRAVIS_BRANCH}" -f work/Dockerfile.alpine work/ &&
-                docker build -t "${IMAGE}:base-debian-${TRAVIS_BRANCH}" -f base/Dockerfile.debian base/ &&
-                docker build -t "${IMAGE}:mods-debian-${TRAVIS_BRANCH}" -f mods/Dockerfile.debian mods/ &&
-                docker build -t "${IMAGE}:prod-debian-${TRAVIS_BRANCH}" -f prod/Dockerfile.debian prod/ &&
-                docker build -t "${IMAGE}:work-debian-${TRAVIS_BRANCH}" -f work/Dockerfile.debian work/ &&
-                docker images; then break; else i=$((i+1)); fi
-              done;
-              if [ $i -gt 98 ]; then false; fi
             else
               echo "Skipping branch ${TRAVIS_BRANCH}";
             fi
@@ -122,6 +96,14 @@ jobs:
         - if [ "${TRAVIS_PULL_REQUEST}" == "false" ]; then
             if [ -n "${TRAVIS_TAG}" ]; then
               max=100; i=0; while [ $i -lt $max ]; do if
+                docker tag "${IMAGE}:base-alpine" "${IMAGE}:base-alpine-${TRAVIS_TAG}" &&
+                docker tag "${IMAGE}:mods-alpine" "${IMAGE}:mods-alpine-${TRAVIS_TAG}" &&
+                docker tag "${IMAGE}:prod-alpine" "${IMAGE}:prod-alpine-${TRAVIS_TAG}" &&
+                docker tag "${IMAGE}:work-alpine" "${IMAGE}:work-alpine-${TRAVIS_TAG}" &&
+                docker tag "${IMAGE}:base-debian" "${IMAGE}:base-debian-${TRAVIS_TAG}" &&
+                docker tag "${IMAGE}:mods-debian" "${IMAGE}:mods-debian-${TRAVIS_TAG}" &&
+                docker tag "${IMAGE}:prod-debian" "${IMAGE}:prod-debian-${TRAVIS_TAG}" &&
+                docker tag "${IMAGE}:work-debian" "${IMAGE}:work-debian-${TRAVIS_TAG}" &&
                 docker login --username "$DOCKER_USERNAME" --password "$DOCKER_PASSWORD" &&
                 docker push "${IMAGE}:work-debian-${TRAVIS_TAG}" &&
                 docker push "${IMAGE}:prod-debian-${TRAVIS_TAG}" &&
@@ -148,6 +130,14 @@ jobs:
               if [ $i -gt 98 ]; then false; fi
             elif [[ ${TRAVIS_BRANCH} =~ ^(release-[.0-9]+)$ ]]; then
               max=100; i=0; while [ $i -lt $max ]; do if
+                docker tag "${IMAGE}:base-alpine" "${IMAGE}:base-alpine-${TRAVIS_BRANCH}" &&
+                docker tag "${IMAGE}:mods-alpine" "${IMAGE}:mods-alpine-${TRAVIS_BRANCH}" &&
+                docker tag "${IMAGE}:prod-alpine" "${IMAGE}:prod-alpine-${TRAVIS_BRANCH}" &&
+                docker tag "${IMAGE}:work-alpine" "${IMAGE}:work-alpine-${TRAVIS_BRANCH}" &&
+                docker tag "${IMAGE}:base-debian" "${IMAGE}:base-debian-${TRAVIS_BRANCH}" &&
+                docker tag "${IMAGE}:mods-debian" "${IMAGE}:mods-debian-${TRAVIS_BRANCH}" &&
+                docker tag "${IMAGE}:prod-debian" "${IMAGE}:prod-debian-${TRAVIS_BRANCH}" &&
+                docker tag "${IMAGE}:work-debian" "${IMAGE}:work-debian-${TRAVIS_BRANCH}" &&
                 docker login --username "$DOCKER_USERNAME" --password "$DOCKER_PASSWORD" &&
                 docker push "${IMAGE}:work-debian-${TRAVIS_BRANCH}" &&
                 docker push "${IMAGE}:prod-debian-${TRAVIS_BRANCH}" &&
