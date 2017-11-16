@@ -85,6 +85,7 @@ ENV PHP_BUILD_DEPS \
 	net-snmp-dev \
 	openldap-dev \
 	pcre-dev \
+	pcre2-dev \
 	postgresql-dev \
 	readline-dev \
 	sqlite-dev \
@@ -193,7 +194,7 @@ RUN set -x \
 #		--with-mm \
 		--with-mysqli=mysqlnd \
 		--with-openssl \
-		--with-pcre-regex=/usr \
+		--with-pcre-regex \
 		--with-pcre-jit \
 #		--with-pdo-firebird \
 		--with-pdo-mysql=mysqlnd \

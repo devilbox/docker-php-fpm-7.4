@@ -77,6 +77,7 @@ ENV PHP_BUILD_DEPS \
 	libldb-dev \
 	libmcrypt-dev \
 	libmm-dev \
+	libpcre2-dev \
 	libpcre3-dev \
 	libpng-dev \
 	libpq-dev \
@@ -231,7 +232,7 @@ RUN set -x \
 		--with-mm \
 		--with-mysqli=mysqlnd \
 		--with-openssl \
-		--with-pcre-regex=/usr \
+		--with-pcre-regex \
 		--with-pcre-jit \
 		--with-pdo-firebird \
 		--with-pdo-mysql=mysqlnd \
