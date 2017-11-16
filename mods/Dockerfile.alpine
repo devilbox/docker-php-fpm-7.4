@@ -18,7 +18,8 @@ LABEL \
 ### Envs
 ###
 ENV PECL_BUILD_DEPS \
-	rabbitmq-c-dev
+	rabbitmq-c-dev \
+	pcre-dev
 
 
 
@@ -33,10 +34,52 @@ RUN set -x \
 		${PECL_BUILD_DEPS} \
 	&& update-ca-certificates \
 	\
+# PhalconPHP
 #	&& git clone --depth=1 https://github.com/phalcon/cphalcon /tmp/cphalcon \
 #	&& cd /tmp/cphalcon/build \
-#	&& ./install \
+#	&& bash ./install \
 	\
+# Swoole
+#	&& git clone https://github.com/swoole/swoole-src /tmp/swoole-src \
+#	&& cd /tmp/swoole-src \
+#	&& phpize \
+#	&& ./configure \
+#		--enable-sockets \
+##		--enable-async-redis \
+#		--enable-openssl \
+#		--enable-http2 \
+##		--enable-thread \
+##		--enable-hugepage \
+#		--enable-swoole \
+#		--enable-swoole-static \
+#		--with-swoole \
+#		--with-openssl-dir=/usr \
+##		--with-jemalloc-dir=/usr \
+#		--enable-mysqlnd \
+#		--enable-coroutine \
+##		--enable-picohttpparser \
+#		--enable-timewheel \
+#	&& make \
+#	&& make install \
+	\
+# Uploadprogress (from source)
+	&& git clone https://github.com/php/pecl-php-uploadprogress /tmp/uploadprogress \
+	&& cd /tmp/uploadprogress \
+	&& phpize \
+	&& ./configure --enable-uploadprogress \
+	&& make \
+	&& make install \
+	\
+# Xdebug (from source)
+#	&& git clone https://github.com/xdebug/xdebug /tmp/xdebug \
+#	&& cd /tmp/xdebug \
+##	&& git checkout $( git branch -a | grep xdebug | sort -n | sed 's|^\s*remotes/origin/||g' | tail -1 ) \
+#	&& phpize \
+#	&& ./configure --enable-xdebug \
+#	&& make \
+#	&& make install \
+	\
+# Pecls
 #	&& pecl install apcu \
 #	&& pecl install amqp \
 	&& pecl install igbinary \
@@ -44,8 +87,8 @@ RUN set -x \
 #	&& pecl install -f pecl.php.net/mcrypt \
 #	&& pecl install memcache \
 #	&& pecl install memcached \
-#	&& pecl install mongodb \
-#	&& pecl install msgpack \
+	&& pecl install mongodb \
+	&& pecl install msgpack \
 	&& pecl install redis \
 #	&& pecl install uploadprogress \
 #	&& pecl install xdebug \
@@ -61,8 +104,9 @@ RUN set -x \
 #	&& echo "extension=msgpack.so"        > /usr/local/etc/php.d/msgpack.ini \
 #	&& echo "extension=phalcon.so"        > /usr/local/etc/php.d/phalcon.ini \
 	&& echo "extension=redis.so"          > /usr/local/etc/php.d/redis.ini \
-#	&& echo "extension=uploadprogress.so" > /usr/local/etc/php.d/uploadprogress.ini \
-#	&& echo "extension=xdebug.so"         > /usr/local/etc/php.d/xdebug.ini \
+#	&& echo "extension=swoole.so"         > /usr/local/etc/php.d/swoole.ini \
+	&& echo "extension=uploadprogress.so" > /usr/local/etc/php.d/uploadprogress.ini \
+#	&& echo "zend_extension=xdebug.so"    > /usr/local/etc/php.d/xdebug.ini \
 	\
 	&& { \
 		find /usr/local/bin /usr/local/sbin -type f -perm +0111 -exec strip --strip-all '{}' + \
@@ -80,6 +124,7 @@ RUN set -x \
 	&& apk del .pecl-build-deps \
 	&& apk add --no-cache --virtual .php-run-deps ${RUN_TIME_LIBS} \
 	\
+	&& cd / \
 	&& rm -rf /tmp/*
 
 

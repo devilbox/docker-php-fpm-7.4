@@ -161,6 +161,6 @@ function docker_stop() {
 		run "docker kill ${did}" || true
 	fi
 
-	# Remove
-	run "docker rm -f ${name}"
+	# Remove if still exist
+	run "docker rm ${name} >/dev/null 2>&1 || true"
 }

@@ -76,6 +76,8 @@ ENV PHP_BUILD_DEPS \
 	libldap2-dev \
 	libldb-dev \
 	libmcrypt-dev \
+	libmm-dev \
+	libpcre2-dev \
 	libpcre3-dev \
 	libpng-dev \
 	libpq-dev \
@@ -106,6 +108,7 @@ ENV RUN_TIME_LIBS \
 	libfbclient2 \
 	libfreetype6 \
 	libjpeg62 \
+	libmm14 \
 	libpng16-16 \
 	libpq5 \
 	libreadline7 \
@@ -226,9 +229,10 @@ RUN set -x \
 		--with-ldap-sasl=/usr \
 		--with-libzip=/usr \
 		--with-mhash \
+		--with-mm \
 		--with-mysqli=mysqlnd \
 		--with-openssl \
-		--with-pcre-regex=/usr \
+		--with-pcre-regex \
 		--with-pcre-jit \
 		--with-pdo-firebird \
 		--with-pdo-mysql=mysqlnd \

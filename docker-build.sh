@@ -4,15 +4,15 @@
 if [ "${#}" -ne "2" ]; then
 	echo "Usage: ${0} <flavor> <type>"
 	echo
-	echo "Example: ${0} debian base"
-	echo "Example: ${0} debian mods"
-	echo "Example: ${0} debian prod"
-	echo "Example: ${0} debian work"
+	echo "Example: ${0} base debian"
+	echo "Example: ${0} mods debian"
+	echo "Example: ${0} prod debian"
+	echo "Example: ${0} work debian"
 	echo
-	echo "Example: ${0} alpine base"
-	echo "Example: ${0} alpine mods"
-	echo "Example: ${0} alpine prod"
-	echo "Example: ${0} alpine work"
+	echo "Example: ${0} base alpine"
+	echo "Example: ${0} mods alpine"
+	echo "Example: ${0} prod alpine"
+	echo "Example: ${0} work alpine"
 	exit 1
 fi
 
@@ -20,8 +20,8 @@ fi
 ### Globals
 ###
 CWD="$(cd -P -- "$(dirname -- "$0")" && pwd -P)"
-FLAVOUR="${1}"
-TYPE="${2}"
+TYPE="${1}"
+FLAVOUR="${2}"
 
 
 ###
@@ -97,33 +97,16 @@ run "docker build -t ${VEND}/${NAME}:${TAG} -f ${TYPE}/Dockerfile.${FLAVOUR} ${C
 ###
 docker run -d --rm --name my_tmp_${NAME} -t ${VEND}/${NAME}:${TAG}
 PHP_MODULES="$( docker exec my_tmp_${NAME} php -m )"
-#PHP_VERSION="$( docker exec my_tmp_${NAME} php -v | sed 's/\s*$//g' )"
 docker stop "$( docker ps | grep "my_tmp_${NAME}" | awk '{print $1}')" > /dev/null
 
-
-PHP_MODULES="$( echo "${PHP_MODULES}" | sed 's/\[PHP Modules\]//g' )"       # remove empty lines
-PHP_MODULES="$( echo "${PHP_MODULES}" | sed 's/\[Zend Modules\]//g' )"       # remove empty lines
-
-PHP_MODULES="$( echo "${PHP_MODULES}" | sort -u )"       # Unique
-PHP_MODULES="$( echo "${PHP_MODULES}" | sed '/^\s*$/d' )"       # remove empty lines
-PHP_MODULES="$( echo "${PHP_MODULES}" | tr '\n' ',' )"          # newlines to commas
-#PHP_MODULES="$( echo "${PHP_MODULES}" | sed 's/],/]\n\n/g' )"   # extra line for [foo]
-#PHP_MODULES="$( echo "${PHP_MODULES}" | sed 's/,\[/\n\n\[/g' )" # extra line for [foo]
-PHP_MODULES="$( echo "${PHP_MODULES}" | sed 's/,$//g' )"        # remove trailing comma
-PHP_MODULES="$( echo "${PHP_MODULES}" | sed 's/,/, /g' )"       # Add space to comma
-#PHP_MODULES="$( echo "${PHP_MODULES}" | sed 's/]/]**/g' )"      # Markdown bold
-#PHP_MODULES="$( echo "${PHP_MODULES}" | sed 's/\[/**\[/g' )"    # Markdown bold
-
+PHP_MODULES="$( echo "${PHP_MODULES}" | sed 's/\[PHP Modules\]//g' )"  # Remove PHP Modules headlines
+PHP_MODULES="$( echo "${PHP_MODULES}" | sed 's/\[Zend Modules\]//g' )" # Remove Zend Modules headline
+PHP_MODULES="$( echo "${PHP_MODULES}" | sort -fu )"                    # Unique
+PHP_MODULES="$( echo "${PHP_MODULES}" | sed '/^\s*$/d' )"              # Remove empty lines
+PHP_MODULES="$( echo "${PHP_MODULES}" | tr '\n' ',' )"                 # Newlines to commas
+PHP_MODULES="$( echo "${PHP_MODULES}" | sed 's/,$//g' )"               # Remove trailing comma
+PHP_MODULES="$( echo "${PHP_MODULES}" | sed 's/,/, /g' )"              # Add space to comma
 
 echo "${PHP_MODULES}"
 
-
 run "sed -i'' 's|<td id=\"mod-${TYPE}-${FLAVOUR}\">.*<\/td>|<td id=\"mod-${TYPE}-${FLAVOUR}\">${PHP_MODULES}<\/td>|g' ${CWD}/README.md"
-#(
-#	echo
-#	echo "**[Version]**"
-#	echo
-#	echo "${PHP_VERSION}"
-#	echo
-#	echo "${PHP_MODULES}"
-#) >> ${CWD}/doc/PHP-FPM-${FLAVOUR}-${TYPE}.md
