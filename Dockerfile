@@ -101,6 +101,7 @@ RUN set -xe; \
 #			gpg --keyserver ha.pool.sks-keyservers.net --recv-keys "$key"; \
 #		done; \
 #		gpg --batch --verify php.tar.xz.asc php.tar.xz; \
+#		command -v gpgconf > /dev/null && gpgconf --kill all; \
 #		rm -rf "$GNUPGHOME"; \
 #	fi; \
 	\
@@ -125,6 +126,17 @@ RUN set -eux; \
 		${PHP_EXTRA_BUILD_DEPS:-} \
 	; \
 	rm -rf /var/lib/apt/lists/*; \
+# Install latest Argon version from Debian Buser
+	echo "deb http://deb.debian.org/debian buster main" > /etc/apt/sources.list.d/debian-buster.list; \
+	apt-get update; \
+	apt-get install -y --no-install-recommends \
+		libargon2-0-dev \
+	; \
+	rm -rf /var/lib/apt/lists/*; \
+	rm /etc/apt/sources.list.d/debian-buster.list; \
+	apt-get update; \
+	rm -rf /var/lib/apt/lists/*; \
+# End of: Install latest Argon version from Debian Buser
 	\
 	export \
 		CFLAGS="$PHP_CFLAGS" \
@@ -245,6 +257,16 @@ RUN set -ex \
 		echo '[www]'; \
 		echo 'listen = 9000'; \
 	} | tee php-fpm.d/zz-docker.conf
+
+
+###
+### Verify
+###
+RUN set -x \
+	&& php -v | grep -oE 'PHP\s[.0-9]+' | grep -oE '[.0-9]+' | grep '^7.3' \
+	&& /usr/local/sbin/php-fpm --test \
+	&& PHP_ERROR="$( php -v 2>&1 1>/dev/null )" \
+	&& if [ -n "${PHP_ERROR}" ]; then echo "${PHP_ERROR}"; false; fi
 
 EXPOSE 9000
 CMD ["php-fpm"]
