@@ -115,7 +115,6 @@ RUN set -eux; \
 	apt-get update; \
 	apt-get install -y --no-install-recommends \
 		bison \
-		libargon2-0-dev \
 		libcurl4-openssl-dev \
 		libedit-dev \
 		libsodium-dev \
@@ -130,7 +129,7 @@ RUN set -eux; \
 	echo "deb http://deb.debian.org/debian buster main" > /etc/apt/sources.list.d/debian-buster.list; \
 	apt-get update; \
 	apt-get install -y --no-install-recommends \
-		libargon2-0-dev \
+		libargon2-dev \
 	; \
 	rm -rf /var/lib/apt/lists/*; \
 	rm /etc/apt/sources.list.d/debian-buster.list; \
