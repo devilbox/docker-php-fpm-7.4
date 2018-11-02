@@ -1,3 +1,3 @@
-# PHP 7.3 FPM
+# PHP 7.4 FPM
 
-[![Build Status](https://travis-ci.org/devilbox/docker-php-fpm-7.3.svg?branch=master)](https://travis-ci.org/devilbox/docker-php-fpm-7.3)
+[![Build Status](https://travis-ci.org/devilbox/docker-php-fpm-7.4.svg?branch=master)](https://travis-ci.org/devilbox/docker-php-fpm-7.4)

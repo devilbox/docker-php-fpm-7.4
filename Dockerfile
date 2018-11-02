@@ -107,7 +107,7 @@ RUN set -xe; \
 	\
 	apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false $fetchDeps
 
-COPY docker-php-source /usr/local/bin/
+COPY data/docker-php-source /usr/local/bin/
 
 RUN set -eux; \
 	\
@@ -212,7 +212,7 @@ RUN set -eux; \
 	pecl update-channels; \
 	rm -rf /tmp/pear ~/.pearrc
 
-COPY docker-php-ext-* docker-php-entrypoint /usr/local/bin/
+COPY data/docker-php-ext-* data/docker-php-entrypoint /usr/local/bin/
 
 # sodium was built as a shared module (so that it can be replaced later if so desired), so let's enable it too (https://github.com/docker-library/php/issues/598)
 RUN docker-php-ext-enable sodium
@@ -261,11 +261,11 @@ RUN set -ex \
 ###
 ### Verify
 ###
-RUN set -x \
-	&& php -v | grep -oE 'PHP\s[.0-9]+' | grep -oE '[.0-9]+' | grep '^7.3' \
-	&& /usr/local/sbin/php-fpm --test \
-	&& PHP_ERROR="$( php -v 2>&1 1>/dev/null )" \
-	&& if [ -n "${PHP_ERROR}" ]; then echo "${PHP_ERROR}"; false; fi
+#RUN set -x \
+#	&& php -v | grep -oE 'PHP\s[.0-9]+' | grep -oE '[.0-9]+' | grep '^7.3' \
+#	&& /usr/local/sbin/php-fpm --test \
+#	&& PHP_ERROR="$( php -v 2>&1 1>/dev/null )" \
+#	&& if [ -n "${PHP_ERROR}" ]; then echo "${PHP_ERROR}"; false; fi
 
 EXPOSE 9000
 CMD ["php-fpm"]

@@ -22,14 +22,13 @@ services:
 ###
 env:
   global:
-    - IMAGE: devilbox/php-fpm-7.3
     # travis encrypt DOCKER_USERNAME=user
     # travis encrypt DOCKER_PASSWORD=pass
     # Must be regenerated when repository name/owner changes
     # DOCKER_USERNAME
-    - secure: "MrARiUXZqbpT/84xlr+J/D4FSx1sp0vOpVEefZdg0QTAicC0R1MOm4FIUXOZMZMGrJYD1Kdx8bdInZLE6GgLjy0G16Ke0iYt6fOsuwlRpwUgwJFYIPKmaCrekkRsWA8rCuFkF/ihfXxruikovXUhnl9CAS8Cqg/1G7g3975Dd8y8sj2+sCKECd2RBW7P5jh7zPKeet2ZZxcbxqAYfy5Qm6JwYCw0qfR2ffXo0OzQYiPn7ClDdWvHwEd1tPI7gLAxTwSGGV15xcXF5ya57XZtuECAaC5y5gHy8zJQ/UfwILYeZd/6dMbv2t1b9K6/svT++jv83Tj5ypDc1HDjDos/aejGzc74T95fzzfv6Z5jfd4z87svFGxyxWsY60YGjxU7rydziY9dKICSZU/+Xid8tN2nvgQUpgiPQahekRB8WqgkBPA8neVTdG+mLMu7lOFlRGBeEfMpiqRCIoaJRoN8RDhDuh/d6hPziNHz1c/k64/G7/uyGTHo9mg0sw/Ors1tf5GYvyPYN3GJU49U5WVrLRU5WB0GG/9JvG8UNbSV7b5LRkyXqfMN63acDLq4oHof+9tj4yY2w950cOVplUHKsP/VXx0IvHImMgdtj2ii/516PfmfvaxXmNiwCe5/abUHITQ66BQ4UZ8ovd2kby0AtdDq4CxRyN0h+5c1YcEsRRw="
+    - secure: "iJrEdQr7FAx07nmkgJTOlArYv1/quYmyLBTjqrM6xg1RwzQoPLK2xyz4/RHumublntXHUNi/wmdPBjctxKzL9Yd5CUExoa2h36K0SeyrZwb/5ksMSu4UxlKciT7XQMIUJr1Mcl7ru++uW+PAsnj3jdaz0ybq2woyI9/Nd367YoAxFD3lT6EbgnYQFe7yti/FBkFa/uiIalZSa+7FRo6fm0Y8KynNwYCkY22lGPjrXiepUsGPak+V8BIuDeqaIDRbrYQNY5SexSAZoOoNtY20ayLgx57n+ZMmyW+O3tQWLX0efeiwW6bLsBLCnN5y4VBuH41/J7T3UQEVEMPWaadGJCW8iJdF+wyaArhggZNFBwCPdoBUAfY4+psefRX2PO+YPemcMrfV5An5BPMIEwagLhSbdYf4TDMi8TLWq6JrIfxPFKtl8cbwG/FPdBCJLrG1yT6d0A581lVGdcKzn2HOi3YnO9/Wf/S8nqYx7C0N6m837DogWLO56L9kBx2Ne/mtsO9+wRuEMUlxmYuF/cCK7o7ZdnJ/m/DQhdTDSLLnaKV99a90chxsaKh/yjXcCaC5vFQppptBcMHOM5qg0aWmDzkShV3RXpcoLvSpVRHe7wMKOIL/XleokFLZ9Zod/W4dIh8fmsYNd2Xesg6pHQ8+HenFouWj4Qsm14CzBjvRzbE="
     # DOCKER_PASSWORD
-    - secure: "mq17YsAgt1X0ttin2gCr70e950eTroNjkI++BDXPnBzlIO0fOsJmzYvwyq4qbBdCBALDnznumFd0s/pwOYIjA0E28kr1SptO1l75zNGFjtqCGi2LM5uDEh4xOo0LBDKlaqX6KwnGoKortTrBeNoQRrX8Ar4u6GQs5Uf/vocMe+2Puqie2Gi1EYLhSCDKDNJSW0S6AxGC6ndW55OYo/w+inrWeyEvN4/ZtWqSIl6YfGJHTMtEUgr4zRDD9OGdgINnLANzrb0mOa14Hooy6in8vR/BoZKOst5zQg0hprF5PSDS249ZjM5cljZ6nHDnFOTF1jFQuS2l7TSCkkmcmEsExE/bK7u5CbyZoFbfYSiaAPo5lMY9L6Nh9eEd4gl3Qd490qOqWtSkq5JfNzmBhu8YLo/L8USLFjwbX63nnASpDLGDhIY+5y2RbH0BL2w7HRlRWljw9Mjb0EypzY3DVnwsgThTH6UEmYbYpGn8S3aMwnMpXkQI2DbqXpUkOXPUsnUdytavBtzHOKarl8veeYyBB/kDM3AZHTskjPg6/DZybSZnKE+EuKZ4By54GRPFRBrAjOKSgp2BbeGHqjiybFneGJx8LjGZYtQFCbep1waZBBASk2dIVR3lI/kANsQRuLCMO6EMFKGaEh0jiDElO+3rEYvr06/mUdYTL3Avslxqufc="
+    - secure: "pi7Xnn7Jd8NAZzRuNi+lbVuDO76rt/6elu74Su19UUZvCH6ZFIyXhW5EZcmKQzs7i5zEWef+9C6EpFK5ZkiNrFiXA7msEv97qVU51I91/DhpNYuQVQ9823oGadleX2rAl4IughH98LmHWeDflAH7XERdSx5Su9QWii57HeBVodY2/zoISyiNfDWlaj5MgUeddWELSQHEmpXAZOF/EpLyku9fAMYEGhQclzaxI+WvUS1QREQ7b4DVV+b9cVK62GmqYGskwJc8IoYmYYRRf47LcfOUotBLYfWRw4nRfue0ta8oi4BAUOwnA8f4ATFAoBZoJC39CPPDqOiGjbLSIR8TIEeNVSUzBHrb21OoyH4X3o8MZ7YBjeMBhyzclf1x/9y2jhFEGEp8SDlP4Y3yTOnXPwTNHehhUwqLep4BnuIMDlXLC/L44jC/ETNAyznd2ABCtUEHYTCEDC7eWqCnPOiGI+01+1dovU/0LHXa+lmYVk1OdZCADFDPtDrYdnLF50HcYAp/M2RvRyxbOwkFsND3hyDldjmDF9SX6CXX1+2fzXu7GjDZX7LDA8atWL5qHJWGrl+/Dbv4b7oaB0igcidJljGxIV6IjOEB8lOsimGA3zwioAV2olg2hG8i8vM3BD64ntw3ZKmRN/Q67IFQSAr6zssN6xg8SiezTE4NiEfy1eY="
 
 
 ###
@@ -46,7 +45,8 @@ install:
 ### Build and test
 ###
 before_script:
-  - docker build -t ${IMAGE} .
+  - make build
+  - make test
 
 
 ###
@@ -55,25 +55,17 @@ before_script:
 script:
   # Push to docker hub on success
   - if [ "${TRAVIS_PULL_REQUEST}" == "false" ]; then
-      yes | docker login --username "$DOCKER_USERNAME" --password "$DOCKER_PASSWORD" &&
+      make login USER="${DOCKER_USERNAME}" PASS="${DOCKER_PASSWORD}";
       if [ -n "${TRAVIS_TAG}" ]; then
-        max=100; i=0; while [ $i -lt $max ]; do if
-          docker tag "${IMAGE}" "${IMAGE}:${TRAVIS_TAG}" &&
-          docker push "${IMAGE}:${TRAVIS_TAG}"; then break; else i=$((i+1)); fi
-        done;
-        if [ $i -gt 98 ]; then false; fi
+        make push TAG="${TRAVIS_TAG}";
       elif [ "${TRAVIS_BRANCH}" == "master" ]; then
         max=100; i=0; while [ $i -lt $max ]; do if
-          docker push "${IMAGE}"; then break; else i=$((i+1)); fi
-        done;
-        if [ $i -gt 98 ]; then false; fi
+          make push;
       elif [[ ${TRAVIS_BRANCH} =~ ^(release-[.0-9]+)$ ]]; then
-        max=100; i=0; while [ $i -lt $max ]; do if
-          docker tag "${IMAGE}" "${IMAGE}:${TRAVIS_BRANCH}" &&
-          docker push "${IMAGE}:${TRAVIS_BRANCH}"; then break; else i=$((i+1)); fi
-        done;
-        if [ $i -gt 98 ]; then false; fi
+        make push TAG="${TRAVIS_BRANCH}";
       else
         echo "Skipping branch ${TRAVIS_BRANCH}";
       fi
+    else
+      echo "Skipping push on PR";
     fi
