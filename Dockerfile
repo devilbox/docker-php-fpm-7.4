@@ -261,11 +261,11 @@ RUN set -ex \
 ###
 ### Verify
 ###
-#RUN set -x \
-#	&& php -v | grep -oE 'PHP\s[.0-9]+' | grep -oE '[.0-9]+' | grep '^7.3' \
-#	&& /usr/local/sbin/php-fpm --test \
-#	&& PHP_ERROR="$( php -v 2>&1 1>/dev/null )" \
-#	&& if [ -n "${PHP_ERROR}" ]; then echo "${PHP_ERROR}"; false; fi
+RUN set -x \
+	&& php -v | grep -oE 'PHP\s[.0-9]+' | grep -oE '[.0-9]+' | grep '^7.4' \
+	&& /usr/local/sbin/php-fpm --test \
+	&& PHP_ERROR="$( php -v 2>&1 1>/dev/null )" \
+	&& if [ -n "${PHP_ERROR}" ]; then echo "${PHP_ERROR}"; false; fi
 
 EXPOSE 9000
 CMD ["php-fpm"]
