@@ -59,8 +59,7 @@ script:
       if [ -n "${TRAVIS_TAG}" ]; then
         make push TAG="${TRAVIS_TAG}";
       elif [ "${TRAVIS_BRANCH}" == "master" ]; then
-        max=100; i=0; while [ $i -lt $max ]; do if
-          make push;
+        make push;
       elif [[ ${TRAVIS_BRANCH} =~ ^(release-[.0-9]+)$ ]]; then
         make push TAG="${TRAVIS_BRANCH}";
       else
