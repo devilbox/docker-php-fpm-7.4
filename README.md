@@ -18,6 +18,21 @@ This repository will provide you a fully functional PHP-FPM 7.4 Docker image bui
 
 * [PHP-FPM 5.2](https://github.com/devilbox/docker-php-fpm-5.2)
 * [PHP-FPM 5.3](https://github.com/devilbox/docker-php-fpm-5.3)
+* [PHP-FPM](https://github.com/devilbox/docker-php-fpm) (all PHP versions)
+
+
+## Build
+
+```bash
+# Build the Docker image locally
+make build
+
+# Rebuild (without cache) the Docker image locally
+make rebuild
+
+# Test the Docker image after building
+make test
+```
 
 
 ## Usage
@@ -27,6 +42,35 @@ Add the following `FROM` line into your Dockerfile:
 ```dockerfile
 FROM devilbox/php-fpm-7.4:latest
 ```
+
+
+## Example
+
+Create a temporary directory, navigate into it and copy/paste the commands below to get started.
+
+#### 1. Setup hello world webpage
+```bash
+mkdir htdocs
+echo "<?php echo 'hello world';" > htdocs/index.php
+```
+
+#### 2. Start PHP container
+```bash
+docker run -d --rm --name devilbox-php-fpm-7-4 \
+  -v $(pwd)/htdocs:/var/www/default/htdocs devilbox/php-fpm-7.4
+```
+
+#### 3. Start Nginx container
+```bash
+docker run -d --rm --name devilbox-nginx-stable \
+  -v $(pwd)/htdocs:/var/www/default/htdocs \
+  -e PHP_FPM_ENABLE=1 \
+  -e PHP_FPM_SERVER_ADDR=devilbox-php-fpm-7-4 \
+  -p 8080:80 \
+  --link devilbox-php-fpm-7-4 \
+  devilbox/nginx-stable
+```
+
 
 ## License
 
