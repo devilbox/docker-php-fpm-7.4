@@ -14,6 +14,7 @@ This repository will provide you a fully functional PHP-FPM 7.4 Docker image bui
 |------------|------------------|
 | <a href="https://hub.docker.com/r/devilbox/php-fpm-7.4"><img height="82px" src="http://dockeri.co/image/devilbox/php-fpm-7.4" /></a> | <a href="https://github.com/cytopia/devilbox" ><img height="82px" src="https://raw.githubusercontent.com/devilbox/artwork/master/submissions_banner/cytopia/01/png/banner_256_trans.png" /></a> |
 
+
 ## Similar Base Images
 
 * [PHP-FPM 5.2](https://github.com/devilbox/docker-php-fpm-5.2)
@@ -70,6 +71,10 @@ docker run -d --rm --name devilbox-nginx-stable \
   --link devilbox-php-fpm-7-4 \
   devilbox/nginx-stable
 ```
+
+#### 4. Open browser
+
+Open up your browser at http://127.0.0.1:8080
 
 
 ## License
