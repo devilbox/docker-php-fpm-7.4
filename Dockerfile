@@ -187,6 +187,8 @@ RUN set -eux; \
 		${PHP_EXTRA_CONFIGURE_ARGS:-} \
 	; \
 	make -j "$(nproc)"; \
+# Download PEAR from GitHub to mitigate current hack of pear.php.net
+	curl https://raw.githubusercontent.com/pear/pearweb_phars/master/install-pear-nozlib.phar > pear/install-pear-nozlib.phar; \
 	make install; \
 	find /usr/local/bin /usr/local/sbin -type f -executable -exec strip --strip-all '{}' + || true; \
 	make clean; \
