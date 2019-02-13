@@ -181,6 +181,11 @@ RUN set -eux; \
 		--with-openssl \
 		--with-zlib \
 		\
+# Pear has been disabled by default and therefore pecl won't be available:
+# Branch: PHP-7.4
+# Commit: e93d6d97aab7a5de1f7b8dc750ca9d08214de8c4
+		--with-pear \
+		\
 # bundled pcre does not support JIT on s390x
 # https://manpages.debian.org/stretch/libpcre3-dev/pcrejit.3.en.html#AVAILABILITY_OF_JIT_SUPPORT
 		$(test "$gnuArch" = 's390x-linux-gnu' && echo '--without-pcre-jit') \
