@@ -79,7 +79,7 @@ RUN set -xe; \
 	cd /usr/src; \
 	\
 #	wget -O php.tar.xz "$PHP_URL"; \
-	git clone http://git.php.net/repository/php-src.git php; \
+	git clone https://github.com/php/php-src.git php; \
 	cd php; \
 	git checkout PHP-7.4; \
 	./buildconf --force; \
